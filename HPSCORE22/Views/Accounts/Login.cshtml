@@ -1,0 +1,706 @@
+﻿@{
+    Layout = "_Loginlayout";
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    /* ===== BASE RESET & LIGHT THEME ===== */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(145deg, #f0f4ff 0%, #e8edf5 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        color: #1e293b;
+    }
+
+    /* ===== ANIMATED BACKGROUND ORBS (LIGHT PASTEL) ===== */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.4;
+        will-change: transform;
+        animation: floatOrb 14s infinite alternate ease-in-out;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .orb-1 {
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, #a78bfa, #818cf8);
+        top: -15%;
+        left: -10%;
+        animation-duration: 16s;
+    }
+
+    .orb-2 {
+        width: 450px;
+        height: 450px;
+        background: radial-gradient(circle, #7dd3fc, #38bdf8);
+        bottom: -10%;
+        right: -10%;
+        animation-duration: 18s;
+        animation-delay: -4s;
+        opacity: 0.3;
+    }
+
+    .orb-3 {
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, #f9a8d4, #f472b6);
+        top: 40%;
+        left: 60%;
+        animation-duration: 20s;
+        animation-delay: -8s;
+        opacity: 0.25;
+    }
+
+    @@keyframes floatOrb {
+        0% {
+            transform: translate(0, 0) scale(1);
+        }
+
+        100% {
+            transform: translate(40px, -30px) scale(1.1);
+        }
+    }
+
+    /* ===== LAYOUT CONTAINER ===== */
+    main {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 420px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ===== LOGO SECTION (LIGHT) ===== */
+    .header-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .logo-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        padding: 0.5rem 1.8rem 0.5rem 1.2rem;
+        border-radius: 60px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .logo-icon {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.4);
+    }
+
+        .logo-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+    .logo-text {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.025em;
+    }
+
+    /* ===== CARD (LIGHT GLASSMORPHISM) ===== */
+    .signin-card {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border-radius: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .card-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+        .card-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-header p {
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+    /* ===== FORM STYLING ===== */
+    .form-group {
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+
+    label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .label-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 0.85rem 1.2rem;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid #e2e8f0;
+        border-radius: 1.2rem;
+        font-size: 0.95rem;
+        color: #0f172a;
+        outline: none;
+        transition: all 0.25s ease;
+        font-weight: 500;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #818cf8;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        /* Fix red validation */
+        input[type="text"]:invalid,
+        input[type="password"]:invalid {
+            box-shadow: none;
+        }
+
+    /* Autofill override (light) */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px #f8fafc inset !important;
+        -webkit-text-fill-color: #0f172a !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .password-container {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: #64748b;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.2rem;
+        transition: color 0.2s;
+    }
+
+        .toggle-password:hover {
+            color: #1e293b;
+        }
+
+    .forget-link {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #6366f1;
+        text-decoration: none;
+        transition: color 0.2s;
+        letter-spacing: 0.2px;
+    }
+
+        .forget-link:hover {
+            color: #4f46e5;
+            text-decoration: underline;
+        }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin: 1.2rem 0 1.8rem;
+    }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #6366f1;
+            cursor: pointer;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .checkbox-group label {
+            text-transform: none;
+            font-weight: 500;
+            color: #334155;
+            font-size: 0.85rem;
+            cursor: pointer;
+            letter-spacing: 0;
+            margin-bottom: 0;
+        }
+
+    /* ===== SUBMIT BUTTON ===== */
+    .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        border: none;
+        padding: 0.9rem;
+        border-radius: 1.5rem;
+        font-weight: 700;
+        font-size: 1rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        box-shadow: 0 10px 24px -10px rgba(79, 70, 229, 0.45);
+        cursor: pointer;
+        transition: all 0.25s ease;
+        letter-spacing: 0.3px;
+        margin-bottom: 0.5rem;
+    }
+
+        .submit-btn:hover {
+            transform: scale(1.01);
+            background: linear-gradient(135deg, #818cf8, #4f46e5);
+            box-shadow: 0 14px 28px -10px #4f46e5cc;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    /* ===== ERROR MESSAGE (LIGHT) ===== */
+    .alert-danger {
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .alert-danger p {
+            color: #b91c1c !important;
+            font-size: 0.875rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+    /* ===== FOOTER ===== */
+    .footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.7rem;
+        color: #64748b;
+        letter-spacing: 0.3px;
+        opacity: 0.8;
+        line-height: 1.6;
+    }
+
+    .signup-cta {
+        text-align: center;
+        margin-top: 1.2rem;
+        font-size: 0.85rem;
+        color: #475569;
+    }
+
+        .signup-cta a {
+            color: #4f46e5;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+            .signup-cta a:hover {
+                color: #6366f1;
+                text-decoration: underline;
+            }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 640px), (max-height: 700px) {
+        body {
+            overflow-y: auto;
+            align-items: flex-start;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        main {
+            max-width: 95%;
+            padding: 0.5rem;
+        }
+
+        .signin-card {
+            padding: 1.8rem 1.2rem;
+            border-radius: 1.5rem;
+        }
+
+        .card-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .card-header p {
+            font-size: 0.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .submit-btn {
+            padding: 0.75rem;
+        }
+
+        .checkbox-group {
+            margin: 0.8rem 0 1.2rem;
+        }
+
+        .orb {
+            width: 200px;
+            height: 200px;
+            filter: blur(40px);
+        }
+
+        .logo-wrapper {
+            padding: 0.4rem 1.2rem;
+        }
+    }
+
+    @@media (max-width: 420px), (max-height: 600px) {
+        .signin-card {
+            padding: 1.2rem 0.8rem;
+            border-radius: 1rem;
+        }
+
+        .card-header h1 {
+            font-size: 1.3rem;
+        }
+    }
+    /* ===== SELECT DROPDOWN STYLING ===== */
+    select.form-control {
+        width: 100%;
+        padding: 0.85rem 1.2rem;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid #e2e8f0;
+        border-radius: 1.2rem;
+        font-size: 0.95rem;
+        color: #0f172a;
+        outline: none;
+        transition: all 0.25s ease;
+        font-weight: 500;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        appearance: auto;
+        cursor: pointer;
+    }
+
+        select.form-control:focus {
+            border-color: #818cf8;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        select.form-control option {
+            padding: 0.5rem;
+            background: #ffffff;
+            color: #0f172a;
+        }
+</style>
+
+<body>
+    <!-- Background Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <main data-purpose="login-container">
+        <!-- Logo Section -->
+        <div class="header-logo" data-purpose="header-logo">
+            <div class="logo-wrapper">
+                <div class="logo-icon">
+                    <svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 17L12 13L20 17L12 21L4 17Z" fill="white" fill-opacity="0.6"></path>
+                        <path d="M4 10L12 6L20 10L12 14L4 10Z" fill="white" fill-opacity="0.8"></path>
+                        <path d="M4 3L12 1L20 3L12 7L4 3Z" fill="white"></path>
+                    </svg>
+                </div>
+                <span class="logo-text">Alpha Care</span>
+            </div>
+        </div>
+
+        <!-- Card Container -->
+        <section class="signin-card" data-purpose="signin-card">
+            <div class="card-header">
+                <p style="margin-bottom: 0;">Central Retail Service Management</p>
+            </div>
+
+            @if (ViewBag.ApiErrorMessage != null)
+            {
+                <div class="alert-warning" style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.5rem;">
+                    <p style="color: #92400e !important; font-size: 0.875rem; margin: 0;">
+                        <i class="fas fa-exclamation-triangle"></i> @ViewBag.ApiErrorMessage
+                    </p>
+                </div>
+            }
+
+            @if (ViewBag.ErrorMSG != null)
+            {
+                <div class="alert-danger">
+                    <p id="errorMessage">@ViewBag.ErrorMSG</p>
+                </div>
+            }
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                @Html.AntiForgeryToken()
+
+                <!-- Business Unit Dropdown -->
+                <div class="form-group">
+                    <label for="businessUnit"><i class="fas fa-building" style="margin-right: 6px;"></i>Business Unit</label>
+                    <select id="businessUnit" name="BusinessUnit" class="form-control" required>
+                        @if (ViewBag.BusinessUnits != null)
+                        {
+                            foreach (var item in ViewBag.BusinessUnits)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="username"><i class="far fa-user-circle" style="margin-right: 6px;"></i>User Name</label>
+                    <input id="username" name="Username" placeholder="Enter your username" required type="text" autocomplete="username" />
+                </div>
+
+                <div class="form-group">
+                    <div class="label-flex">
+                        <label for="password"><i class="fas fa-lock" style="margin-right: 6px;"></i>Password</label>
+                        <a class="forget-link" href="#" id="forgotLink">Forgot?</a>
+                    </div>
+
+                    <div class="password-container">
+                        <input id="password" name="Password" placeholder="Enter your password" required type="password" autocomplete="current-password" />
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility"><i class="far fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input id="remember" name="remember" type="checkbox" />
+                    <label for="remember">Keep me signed in</label>
+                </div>
+
+                <button class="submit-btn" type="submit" id="btnLogin">
+                    <i class="fas fa-arrow-right-to-bracket"></i> Sign In
+                </button>
+            </form>
+
+            <div class="signup-cta">
+                Don't have an account? <a href="#">Get started</a>
+            </div>
+        </section>
+
+        <div class="footer">
+            <span>Copyright © 2026 PRG-MIS.</span>
+            <span>All rights reserved.</span>
+            <span>Service Management Software</span>
+        </div>
+    </main>
+
+    @section Scripts {
+        <!-- Font Awesome for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            $(document).ready(function () {
+                // Show/Hide Password
+                $('.toggle-password').on('click', function () {
+                    const input = $('#password');
+                    const currentType = input.attr('type');
+                    const newType = currentType === 'password' ? 'text' : 'password';
+                    input.attr('type', newType);
+                    $(this).html(newType === 'password' ? '<i class="far fa-eye"></i>' : '<i class="far fa-eye-slash"></i>');
+                });
+
+                // Forgot Password
+                $('#forgotLink').on('click', function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Reset Password',
+                        text: 'Password recovery feature will be available soon.',
+                        background: '#ffffff',
+                        color: '#1e293b',
+                        confirmButtonColor: '#6366f1',
+                        confirmButtonText: 'Got it'
+                    });
+                });
+
+                // AJAX Login with Business Unit
+                $('#loginForm').on('submit', function (e) {
+                    e.preventDefault();
+                    const $btn = $('#btnLogin');
+                    if ($btn.prop('disabled')) return;
+                    $btn.prop('disabled', true);
+                    $btn.html('<i class="fas fa-spinner fa-pulse"></i> Signing in...');
+
+                    const model = {
+                        BusinessUnit: $('select[name="BusinessUnit"]').val(),
+                        Username: $('input[name="Username"]').val().trim(),
+                        Password: $('input[name="Password"]').val()
+                    };
+
+                    // Validation
+                    if (!model.BusinessUnit) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Missing Data',
+                            text: 'Please select a Business Unit',
+                            background: '#ffffff',
+                            color: '#1e293b',
+                            confirmButtonColor: '#6366f1'
+                        });
+                        $btn.prop('disabled', false);
+                        $btn.html('<i class="fas fa-arrow-right-to-bracket"></i> Sign In');
+                        return;
+                    }
+
+                    if (!model.Username || !model.Password) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Missing Data',
+                            text: 'Username and Password are required',
+                            background: '#ffffff',
+                            color: '#1e293b',
+                            confirmButtonColor: '#6366f1'
+                        });
+                        $btn.prop('disabled', false);
+                        $btn.html('<i class="fas fa-arrow-right-to-bracket"></i> Sign In');
+                        return;
+                    }
+
+                    // Get anti-forgery token
+                    const token = $('input[name="__RequestVerificationToken"]').val();
+
+                    $.ajax({
+                        url: '@Url.Action("Login", "Accounts")',
+                        type: 'POST',
+                        headers: { 'RequestVerificationToken': token },
+                        data: model,
+                        success: function (res) {
+                            if (res.success) {
+                                window.location.href = res.redirect;
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Login Failed',
+                                    text: res.message || 'Invalid credentials',
+                                    background: '#ffffff',
+                                    color: '#1e293b',
+                                    confirmButtonColor: '#6366f1'
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            let errorMsg = 'Server error. Please try again.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMsg = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMsg,
+                                background: '#ffffff',
+                                color: '#1e293b',
+                                confirmButtonColor: '#6366f1'
+                            });
+                        },
+                        complete: function () {
+                            $btn.prop('disabled', false);
+                            $btn.html('<i class="fas fa-arrow-right-to-bracket"></i> Sign In');
+                        }
+                    });
+                });
+
+                // Auto-hide error message
+                setTimeout(function() {
+                    $('#errorMessage').fadeOut('slow');
+                }, 5000);
+            });
+        </script>
+    }
+</body>

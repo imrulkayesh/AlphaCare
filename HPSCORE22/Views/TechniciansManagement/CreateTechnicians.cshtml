@@ -1,0 +1,151 @@
+﻿@model RetailCare.Models.ServiceViewModel.TechnicianViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- ADD JQUERY -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet" />
+<div class="row">
+    <div class="card">
+        <div class="top-border"></div>
+        <div class="card-header entryfromheader">
+            <h3 class="card-title"> Add New Technicinas</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveTechnicianData", "TechniciansManagement", FormMethod.Post, new { @class = "form-inline" }))
+            {
+                <div class="row">
+                    @Html.HiddenFor(m => m.TechnicianDetails.TECHNICIANID)
+                    <div class="col-md-3 col-sm-12">
+                        @Html.LabelFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "control-label" })
+                        @Html.TextBoxFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "form-control"})
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="">
+                            @Html.LabelFor(m => m.TechnicianDetails.TECHNICIANNAME, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextBoxFor(m => m.TechnicianDetails.TECHNICIANNAME, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TechnicianDetails.TECHNICIANNAME, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="">
+                            @Html.LabelFor(m => m.TechnicianDetails.STAFFID, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextBoxFor(m => m.TechnicianDetails.STAFFID, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TechnicianDetails.STAFFID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="">
+                            @Html.LabelFor(m => m.TechnicianDetails.CONTACTNO, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextBoxFor(m => m.TechnicianDetails.CONTACTNO, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TechnicianDetails.CONTACTNO, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="">
+                            @Html.LabelFor(m => m.TechnicianDetails.EMAIL, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextBoxFor(m => m.TechnicianDetails.EMAIL, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="">
+                            @Html.LabelFor(m => m.TechnicianDetails.ADDRESS, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextBoxFor(m => m.TechnicianDetails.ADDRESS, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TechnicianDetails.ADDRESS, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="">
+                            @Html.LabelFor(m => m.TechnicianDetails.ZONEID, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.DropDownListFor(m => m.TechnicianDetails.ZONEID, new SelectList(Model.ZoneList, "ZONEID", "ZONENAME"), "Select Zone Name", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TechnicianDetails.ZONEID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+@*                     <div class="col-md-3 col-sm-12">
+                        <div class="">
+                            @Html.LabelFor(m => m.TechnicianDetails.COMPANYID, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.DropDownListFor(m => m.TechnicianDetails.COMPANYID, new SelectList(Model.CompanyList, "COMPANYID", "COMPANYNAME"), new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div> *@
+                    <div class="col-md-3 col-sm-12">
+                        <div class="">
+
+                            @Html.CheckBox(
+                            "TechnicianDetails.CheckedBox",
+                                                true, // checked by default
+                                                new
+                                                {
+                                                    id = "chkActive",
+                                                    @class = "form-check-input"
+                                                })
+                        <label class="assignlable">Is Active</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="d-md-flex d-sm-block" style="gap: 2%">
+                    <h6><b>Problem Types</b></h6>
+                    <div class="d-md-flex g-2">
+                        <input type="checkbox" id="AllRounder">
+                        <label for="vehicle1"> All Rounder</label><br>
+                    </div>
+                    </div>
+                    <div class="classitems">
+                    @foreach (var item in Model.ProductList)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input checkbox"
+                                       type="checkbox"
+                                       name="CheckingClassNameList"
+                                       value="@item.PRODUCTID"
+                                       id="class_@item.PRODUCTID"
+                                       @(Model.CheckingClassNameList != null &&
+                                                                      Model.CheckingClassNameList.Contains(item.PRODUCTID) ? "checked" : "") />
+
+                        <label class="form-control-label" for="class_@item.ITEMID">
+                            @item.PRODUCTNAME
+                        </label>
+                    </div>
+                                        }
+                    </div>
+                </div>
+                if (Model.TechnicianDetails.TECHNICIANID > 0)
+                {
+                    <div class="mt-3 col-sm-12">
+                        <button type="submit" class="btn btn-primary" style="float: right !important; background-color:red">Update</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-3 col-sm-12">
+                        <button type="submit" class="btn btn-primary" style="float: right !important;background-color:green">Save</button>
+                    </div>
+                }
+
+            }
+        </div>
+    </div>
+</div>
+<style>
+    .classitems {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 2%;
+    }
+
+</style>
+<script>
+    $(document).on('change', '#AllRounder', function () {
+		var IsChecked=this.checked;
+		var checkboxes = $('.checkbox');
+        if (IsChecked) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+		}
+    });
+</script>

@@ -1,0 +1,50 @@
+﻿@* _SweetAlert.cshtml *@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Function to show SweetAlert anywhere
+    function showAlert(title, message, icon = 'success') {
+        Swal.fire(title, message, icon);
+    }
+
+    // TempData alert
+    @if (TempData["AlertMessage"] != null)
+    {
+        <text>
+            Swal.fire({
+                title: '@TempData["AlertTitle"]',
+                text: '@TempData["AlertMessage"]',
+                icon: '@TempData["AlertIcon"]'
+            });
+        </text>
+    }
+
+    // Auto confirm dialogs for elements with data-confirm attribute
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-confirm]').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                var message = el.getAttribute('data-confirm');
+                var href = el.getAttribute('href'); // for link buttons
+                var form = el.closest('form'); // for form buttons
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: message || 'This action cannot be undone!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (href) {
+                            window.location.href = href;
+                        } else if (form) {
+                            form.submit();
+                        }
+                    }
+                });
+            });
+        });
+    });
+</script>

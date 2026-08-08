@@ -1,0 +1,90 @@
+﻿<!-- Reusable DataTable Initialization -->
+<script>
+    $(document).ready(function () {
+        var pageTitle = document.title.split(' - ')[0]; // "Employees"
+        $('.datatable').DataTable({
+            responsive: true,
+            autoWidth: false,
+
+            dom:
+                "<'row mb-3'<'col-md-4'l><'col-md-4 text-center'B><'col-md-4'f>>" +
+                "<'row'<'col-md-12'tr>>" +
+                "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
+
+            buttons: [
+                {
+                    extend: 'copy',
+                    className: 'btn btn-sm btn-secondary'
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn btn-sm btn-success'
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn btn-sm btn-danger',
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    title: pageTitle,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    customize: function (doc) {
+                        doc.defaultStyle.fontSize = 9;
+                        doc.styles.tableHeader.fontSize = 10;
+                        doc.styles.title.fontSize = 14;
+                        doc.content[1].table.widths =
+                            Array(doc.content[1].table.body[0].length).fill('*');
+
+                        doc.footer = function (currentPage, pageCount) {
+                            return {
+                                text: currentPage + ' of ' + pageCount,
+                                alignment: 'center',
+                                margin: [0, 10]
+                            };
+                        };
+                    }
+                },
+                {
+                    extend: 'print',
+                    className: 'btn btn-sm btn-primary',
+                    title: pageTitle,
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                    customize: function (win) {
+
+                        /* PAGE LAYOUT */
+                        $(win.document.body)
+                            .css('font-size', '10pt')
+                            .css('margin', '20px');
+
+                        /* TITLE STYLE */
+                        $(win.document.body).find('h1')
+                            .css('text-align', 'center')
+                            .css('margin-bottom', '20px')
+                            .css('font-size', '16pt');
+
+                        /* TABLE FULL WIDTH */
+                        $(win.document.body).find('table')
+                            .addClass('table table-bordered')
+                            .css('width', '100%')
+                            .css('font-size', '10pt');
+
+                        /* HEADER STYLE */
+                        $(win.document.body).find('thead th')
+                            .css('background-color', '#343a40')
+                            .css('color', '#fff')
+                            .css('text-align', 'left');
+
+                        /* REMOVE DATATABLES DEFAULT BUTTONS */
+                        $(win.document.body).find('.dt-buttons').remove();
+                    }
+                }
+            ],
+
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50, 100]
+        });
+    });
+</script>

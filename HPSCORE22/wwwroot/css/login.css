@@ -1,0 +1,61 @@
+﻿/* Background */
+.mailchimp-bg {
+    background-color: #f2f2f2;
+}
+
+/* Monkey image */
+.mailchimp-monkey {
+    max-width: 320px;
+}
+
+/* Login box */
+.mailchimp-login {
+    max-width: 380px;
+    margin: auto;
+}
+
+/* Mailchimp logo text */
+.mailchimp-logo {
+    font-family: "Georgia", serif;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+/* Inputs */
+.mailchimp-login .form-control {
+    border-radius: 2px;
+}
+
+/* Login button */
+.mailchimp-login .btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+}
+
+    .mailchimp-login .btn-secondary:hover {
+        background-color: #d5d5d5;
+    }
+
+/* Links */
+.mailchimp-login a {
+    text-decoration: none;
+}
+/* Card wrapper for login form */
+.card.shadow-sm {
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15); /* Subtle shadow */
+    background-color: #fff; /* White background */
+    overflow: hidden;
+}
+
+/* Optional: extra padding for inner form */
+.card-body.p-4 {
+    padding: 2rem !important; /* Smooth spacing inside card */
+}
+
+/* Optional: hover effect on card */
+.card.shadow-sm:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease;
+}

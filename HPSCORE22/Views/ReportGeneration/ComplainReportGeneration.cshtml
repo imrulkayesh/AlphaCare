@@ -1,0 +1,89 @@
+﻿@model RetailCare.Models.ReportGenerationViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="~/Views/PartialView/_DataTableCSS.cshtml" />
+
+<div class="card">
+    <div class="top-border"></div>
+    <div class="card-header entryfromheader">
+        <h3 class="card-title"> Generated Complain List</h3>
+    </div>
+    <div class="card-body">
+
+        @using (Html.BeginForm("ComplainReport", "ReportGeneration", FormMethod.Post, new { @class = "form-inline" }))
+        {
+            <div class="row" style="padding: 1%;margin-left: 7%;">
+                <div class="col-md-4 col-sm-12">
+                    @Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "control-label" })<span style="color:red">*</span>
+                    @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    @Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "control-label" })<span style="color:red">*</span>
+                    @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-12 mt-3">
+                    <button class="btn btn-success" type="submit">Show</button>
+                </div>
+            </div>
+        }
+       
+        @if (Model.ComplainList.Count>0)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="locationTable" class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>SL</th>
+                                <th>Ticket ID</th>
+                                <th>Customer Name</th>
+                                <th>Contact No</th>
+                                <th>Customer Address</th>
+                                <th>Product Name</th>
+                                <th>Problem Name</th>
+                                <th>Assign Zone</th>
+                                <th>Assign Person</th>
+                                <th>Status Name</th>
+                                <th>Complain Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int i = 1;
+                                @foreach (var item in Model.ComplainList)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.TICKETCODE</td>
+                                        <td>@item.CUSTOMERNAME</td>
+                                        <td>@item.CONTACTNO</td>
+                                        <td>@item.LOCATION</td>
+                                        <td>@item.PRODUCTNAME</td>
+                                        <td>@item.PROBLEMNAME</td>
+                                        <td>@item.ZONENAME</td>
+                                        <td>@item.TECHNICIANNAME</td>
+                                        <td>@item.STATUSNAME</td>
+                                        <td>@item.COMPLAINDATE?.ToString("dd/MM/yyyy")</td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+            
+        }
+
+
+    </div>
+</div>
+<partial name="~/Views/PartialView/_DatatableJSCode.cshtml" />

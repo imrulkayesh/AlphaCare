@@ -1,0 +1,219 @@
+﻿@model RetailCare.Models.UserManagementViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- ADD JQUERY -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet" />
+<div class="row">
+    <div class="card frombody">
+        <div class="top-border"></div>
+        <div class="card-header entryfromheader">
+            <h3 class="card-title"> Create New User</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("CreateNewUser", "UserManagement", FormMethod.Post, new { @class = "form-floating" }))
+            {
+                <div class="row">
+                    @Html.HiddenFor(m => m.CreateNewUser.USERCODE)
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.USERNAME, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.CreateNewUser.USERNAME, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.USERNAME, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.STAFFID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.CreateNewUser.STAFFID, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.STAFFID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.EMAIL, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextBoxFor(m => m.CreateNewUser.EMAIL, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.EMAIL, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.CONTACTNO, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextBoxFor(m => m.CreateNewUser.CONTACTNO, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.CONTACTNO, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.ADDRESS, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.TextAreaFor(m => m.CreateNewUser.ADDRESS, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.ADDRESS, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.USERTYPEID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.DropDownListFor(m => m.CreateNewUser.USERTYPEID, new SelectList(Model.UserTypeList, "TYPEID", "TYPENAME"), "Select User Type", new { @class = "form-control multieselectordropdown", id = "itemName" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.USERTYPEID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.DEPARTMENTID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.DropDownListFor(m => m.CreateNewUser.DEPARTMENTID, new SelectList(Model.DeparmentList, "DEPTID", "DEPTNAME"), "Select Class", new { @class = "form-control multieselectordropdown", id = "itemName" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.DEPARTMENTID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.DESIGNATIONID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.DropDownListFor(m => m.CreateNewUser.DESIGNATIONID, new SelectList(Model.DesignationList, "DESIGNATIONID", "DESIGNATIONNAME"), "Select Designation", new { @class = "form-control multieselectordropdown", id = "itemName" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.DESIGNATIONID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.ZONEID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.DropDownListFor(m => m.CreateNewUser.ZONEID, new SelectList(Model.ZoneList, "ZONEID", "ZONENAME"), "Select Zone", new { @class = "form-control multieselectordropdown", id = "itemName" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.ZONEID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.USERID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.CreateNewUser.USERID, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.USERID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.PASSWORD, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.CreateNewUser.PASSWORD, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.PASSWORD, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-4">
+                        <div class="">
+                            @Html.CheckBox(
+                            "CreateNewUser.CheckedBox",
+                                                true, // checked by default
+                                                new
+                                                {
+                                                    id = "chkActive",
+                                                    @class = "form-check-input"
+                                                })
+                        <label class="assignlable">Is Active</label>
+                    </div>
+                </div>
+                </div>
+
+                if (Model.CreateNewUser.USERCODE > 0)
+                {
+                    <div class="mt-3 col-sm-12">
+                        <button type="submit" class="btn btn-primary" style="float: right !important; background-color:red">Update</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-3 col-sm-12">
+                        <button type="submit" class="btn btn-primary" style="float: right !important;background-color:green">Save</button>
+                    </div>
+                }
+
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="card">
+        <div class="top-border"></div>
+        <div class="card-header entryfromheader">
+            <h3 class="card-title">User List</h3>
+        </div>
+        <div class="card-body">
+            <table id="locationTable" class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>SL</th>
+                        <th>User Id	</th>
+                        <th>User Name</th>
+                        <th>Staff ID</th>
+                        <th>Contact No</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @{
+                        int i = 1;
+                        @foreach (var item in Model.UserList)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.USERID</td>
+                                <td>@item.USERNAME</td>
+                                <td>@item.STAFFID</td>
+                                <td>@item.CONTACTNO</td>
+                                <td>@item.ADDRESS</td>
+                                <td class="text-center">
+                                    <a asp-action="EditUserData"
+                                       asp-controller="UserManagement"
+                                       asp-route-id="@item.USERCODE"
+                                       class="btn btn-primary btn-sm assign-btn">
+                                        <i class="fas fa-arrow-alt-circle-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    } 
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--Data Table-->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#locationTable').DataTable({
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            ordering: true,
+            searching: true,
+            paging: true,
+            info: true,
+            autoWidth: false,
+            responsive: true, // ✅ better UI
+
+            language: {
+                search: "🔍 Search:",
+                lengthMenu: "Show _MENU_ entries",
+                zeroRecords: "No matching locations found",
+                info: "Showing _START_ to _END_ of _TOTAL_ locations",
+                infoEmpty: "No data available"
+            },
+
+            columnDefs: [
+                { orderable: false, targets: 5 } // action column
+            ]
+        });
+    });
+
+    function confirmDelete() {
+        return confirm("⚠️ Are you sure you want to delete?");
+    }
+</script>

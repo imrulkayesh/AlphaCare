@@ -1,0 +1,202 @@
+﻿/* DataTables AdminLTE polish */
+/*.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5rem;
+    border-radius: 6px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 6px;
+}
+
+.dataTables_wrapper .btn {
+    margin-right: 4px;
+}
+
+table.dataTable thead th {
+    vertical-align: middle;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}*/
+/* ===============================
+   DataTables AdminLTE Color Theme
+   =============================== */
+
+/* Header background & text */
+/*table.dataTable thead th {
+    background-color: #0d6efd;*/ /* Bootstrap primary blue */
+    /*color: #ffffff;
+    border-bottom: none;
+    text-align: center;
+    vertical-align: middle;
+}*/
+
+/* Header sorting icons */
+/*table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+    background-image: none !important;
+}*/
+
+/* Body row text */
+/*table.dataTable tbody td {
+    vertical-align: middle;
+}*/
+
+/* Zebra striping */
+/*table.dataTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}*/
+
+/* Row hover */
+/*table.dataTable tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.08);
+    transition: background-color 0.2s ease-in-out;
+}*/
+
+/* Search input */
+/*.dataTables_wrapper .dataTables_filter input {
+    border-radius: 6px;
+    border: 1px solid #0d6efd;
+    padding: 4px 10px;
+}*/
+
+/* Length dropdown */
+/*.dataTables_wrapper .dataTables_length select {
+    border-radius: 6px;
+    border: 1px solid #0d6efd;
+    padding: 4px 8px;
+}*/
+
+/* Pagination buttons */
+/*.dataTables_wrapper .dataTables_paginate .page-item .page-link {
+    color: #0d6efd;
+    border-radius: 6px;
+    margin: 0 2px;
+}*/
+
+/* Active pagination button */
+/*.dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #ffffff;
+}*/
+
+/* Disabled pagination */
+/*.dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link {
+    color: #6c757d;
+}*/
+
+/* Info text */
+/*.dataTables_wrapper .dataTables_info {
+    font-weight: 500;
+    color: #495057;
+}*/
+
+/* Buttons (export / custom) */
+/*.dataTables_wrapper .btn {
+    margin-right: 4px;
+    border-radius: 6px;
+}*/
+/* ===============================
+   DataTables – GREEN THEME
+   AdminLTE + Bootstrap
+   =============================== */
+
+/* ===== Table Header ===== */
+table.dataTable thead th {
+    background-color: #0094ff !important; /* Green */
+    color: #ffffff !important;
+    border-bottom: none !important;
+    vertical-align: middle;
+    text-align: left;
+}
+
+    /* Header hover */
+    table.dataTable thead th:hover {
+        background-color: #0026ff !important;
+    }
+
+/* Remove default sorting background images */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+    background-image: none !important;
+}
+
+    /* Sorting arrow color */
+    table.dataTable thead .sorting:after,
+    table.dataTable thead .sorting_asc:after,
+    table.dataTable thead .sorting_desc:after {
+        color: #ffffff !important;
+    }
+
+/* ===== Table Body ===== */
+table.dataTable tbody td {
+    vertical-align: middle;
+}
+
+/* Zebra rows */
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* Row hover */
+table.dataTable tbody tr:hover {
+    background-color: rgba(25, 135, 84, 0.08);
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* ===== Search Box ===== */
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #0026ff;
+    padding: 4px 10px;
+}
+
+ /*===== Show Entries Dropdown =====*/ 
+/*.dataTables_wrapper .dataTables_length select {
+    border-radius: 6px;
+    border: 1px solid #198754;
+    padding: 6px 8px;
+}*/
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 6px;
+    border: 1px solid #0026ff;
+    padding: 6px 8px; /* increased padding */
+    font-size: 16px; /* larger text */
+    min-width: 70px; /* ensures dropdown is wider */
+}
+
+/* ===== Pagination ===== */
+.dataTables_wrapper .dataTables_paginate .page-item .page-link {
+    color: #0094ff;
+    border-radius: 6px;
+    margin: 0 2px;
+}
+
+/* Active page */
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+    background-color: #0094ff; /*#198754;*/
+    border-color: #0094ff;
+    color: #ffffff;
+}
+
+/* Disabled page */
+.dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link {
+    color: #6c757d;
+}
+
+/* ===== Info Text ===== */
+.dataTables_wrapper .dataTables_info {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* ===== Buttons (Copy, Excel, PDF, Print) ===== */
+.dataTables_wrapper .btn {
+    margin-right: 4px;
+    border-radius: 6px;
+}

@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Alpha Care</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- AdminLTE / Bootstrap -->
+    <link rel="preload" href="~/css/adminlte.css" as="style" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/adminlte.css" asp-append-version="true" />
+    <link href="~/css/bootstrap-icons.min.css" rel="stylesheet" asp-append-version="true" />
+    <!-- Login specific -->
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <link href="~/css/sweetalert2.min.css" rel="stylesheet" asp-append-version="true" />
+</head>
+
+<body class="bg-body-tertiary">
+    <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
+    <!-- Login content only -->
+    @RenderBody()
+
+    <!-- Scripts -->
+    <script src="~/js/jquery-3.7.1.min.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/adminlte.js" asp-append-version="true"></script>
+    <script src="~/js/sweetalert2.min.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

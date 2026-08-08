@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Retail Care</title>
+
+    <!-- AdminLTE CSS -->
+    <link rel="preload" href="~/css/adminlte.css" as="style" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/adminlte.css" asp-append-version="true"/>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="~/css/bootstrap-icons.min.css" asp-append-version="true"/>
+
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true"/>
+
+    <!-- Custom DataTable CSS -->
+    <link rel="stylesheet" href="~/css/datatable.css" asp-append-version="true"/>
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true" />
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/css/all.min.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/select2.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/rowgroup.datatables.min.css" asp-append-version="true" />
+
+   
+</head>
+<body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+
+    <div class="app-wrapper">
+        <partial name="_TopNavBar.cshtml" />
+
+        <main class="app-main" style="padding: 2%;">
+            <div class="app-content">
+                @RenderBody()
+            </div>
+        </main>
+
+        <partial name="_Footer.cshtml" />
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/js/jquery-3.7.1.min.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/adminlte.js" asp-append-version="true"></script>
+    <script src="~/js/sweetalert2.min.js" asp-append-version="true"></script>
+    <script src="~/js/select2.min.js" asp-append-version="true"></script>
+    <script src="~/js/xlsx.full.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.datatables.min.js" asp-append-version="true"></script>
+    <script src="~/js/datatables.bootstrap5.min.js" asp-append-version="true"></script>
+    <script src="~/js/datatables.buttons.min.js" asp-append-version="true"></script>
+    <script src="~/js/buttons.bootstrap5.min.js" asp-append-version="true"></script>
+    <script src="~/js/jszip.min.js" asp-append-version="true"></script>
+    <script src="~/js/pdfmake.min.js" asp-append-version="true"></script>
+    <script src="~/js/vfs_fonts.js" asp-append-version="true"></script>
+    <script src="~/js/buttons.html5.min.js" asp-append-version="true"></script>
+    <script src="~/js/buttons.print.min.js" asp-append-version="true"></script>
+    <script src="~/js/datatables.rowgroup.min.js" asp-append-version="true"></script>
+    <script src="~/js/jspdf.umd.min.js" asp-append-version="true"></script>
+    <script src="~/js/jspdf.plugin.autotable.min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> *@
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- jsPDF AutoTable Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <!--Common Alert-->
+    <partial name="~/Views/PartialView/_SweetAlert.cshtml" />
+    <!--Common CSS-->
+    <partial name="~/Views/PartialView/_CustomeCSS.cshtml" />
+</body>
+</html>

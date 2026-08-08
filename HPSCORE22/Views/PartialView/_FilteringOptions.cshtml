@@ -1,0 +1,19 @@
+﻿@model RetailCare.Models.ReportGenerationViewModel
+@using (Html.BeginForm("ComplainReport", "ReportGeneration", FormMethod.Post, new { @class = "form-inline" }))
+{
+    <div class="row" style="padding: 1%;margin-left: 7%;">
+        <div class="col-md-4 col-sm-12">
+            @Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "control-label" })<span style="color:red">*</span>
+            @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4 col-sm-12">
+            @Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "control-label" })<span style="color:red">*</span>
+            @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-4 col-sm-12 mt-3">
+            <button class="btn btn-success" type="submit">Show</button>
+        </div>
+    </div>
+}

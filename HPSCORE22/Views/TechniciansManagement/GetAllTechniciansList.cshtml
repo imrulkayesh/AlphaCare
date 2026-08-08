@@ -1,0 +1,200 @@
+﻿@model RetailCare.Models.ServiceViewModel.TechnicianViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- ADD JQUERY -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet" />
+
+<div class="row mt-3">
+    <div class="card">
+        <div class="top-border"></div>
+        <div class="card-header entryfromheader">
+            <h3 class="card-title">Technicians List</h3>
+        </div>
+        <div class="card-body">
+            <table id="locationTable" class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>SL</th>
+                        <th>Technician Name</th>
+                        <th>Technician StaffID</th>
+                        <th>Contact No</th>
+                        <th>Email</th>
+                        <th>Location</th>
+                        <th>Zone Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int i = 1;
+                        @foreach (var item in Model.TechnicianList)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.TECHNICIANNAME</td>
+                                <td>@item.STAFFID</td>
+                                <td>@item.CONTACTNO</td>
+                                <td>@item.EMAIL</td>
+                                <td>@item.ADDRESS</td>
+                                <td>@item.ZONENAME</td>
+                                <td>@item.STATUS</td>
+                                <td class="text-center">
+                                    <a asp-action="EditTechnician"
+                                       asp-controller="TechniciansManagement"
+                                       asp-route-id="@item.TECHNICIANID"
+                                       class="btn btn-primary btn-sm assign-btn">
+                                        <i class="fas fa-arrow-alt-circle-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }
+                  
+                </tbody> 
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--Data Table-->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#locationTable').DataTable({
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            ordering: true,
+            searching: true,
+            paging: true,
+            info: true,
+            autoWidth: false,
+            responsive: true, // ✅ better UI
+
+            language: {
+                search: "🔍 Search:",
+                lengthMenu: "Show _MENU_ entries",
+                zeroRecords: "No matching locations found",
+                info: "Showing _START_ to _END_ of _TOTAL_ locations",
+                infoEmpty: "No data available"
+            },
+
+            columnDefs: [
+                { orderable: false, targets: 5 } // action column
+            ]
+        });
+    });
+
+    function confirmDelete() {
+        return confirm("⚠️ Are you sure you want to delete?");
+    }
+</script>
+<script>
+        $(document).on('click', '.assign-btn', function () {
+
+          var id = $(this).data('id');
+
+          var modal = new bootstrap.Modal(document.getElementById('assignModal'));
+          modal.show();
+
+          $.ajax({
+              url: '/ComplainList/GetComplainSingle',
+              type: 'GET',
+              data: { id: id },
+              success: function (res) {
+                  debugger;
+                  console.log(res);
+                   var data = res.complainList[0];
+
+                      $('#txtTicketID').val(data.TicketCode);
+                      $('#txtcustomername').val(data.CustomerName);
+                      $('#txtproductname').val(data.ProductName);
+                      $('#txtContactNumber').val(data.ContactNo);
+                      $('#txtlocationname').val(data.Location);
+              },
+              error: function (xhr) {
+                  console.log(xhr.responseText);
+              }
+          });
+      });
+    $(document).on('change', '#AssingedZone', function () {
+
+          var zoneId = $(this).val();
+
+          $.ajax({
+              url: '/ComplainList/GetZoneWiseSupervisor',
+              type: 'GET',
+              data: { zoneId: zoneId },
+              dataType: 'json',
+              success: function (res) {
+
+                  console.log(res);
+
+                  var ddl = $('#AssingedZonesupervisor');
+                  ddl.empty();
+                  ddl.append('<option value="">Select Supervisor</option>');
+
+                      $.each(res.SupervisorList, function (i, item) {
+
+                          ddl.append(
+                              '<option value="' + item.SupervisorId + '">' +
+                              item.SupervisorName +
+                              '</option>'
+                          );
+                      });
+              },
+              error: function (xhr) {
+                  console.log(xhr.responseText);
+              }
+          });
+      });
+    $('#btnSaveAssign').click(function () {
+
+        var errors = [];
+
+        $('.text-danger').text('');
+
+        if ($('#AssingedZone').val() == '') {
+            errors.push('Assign Zone is required');
+        }
+
+        if ($('#AssingedZonesupervisor').val() == '') {
+            errors.push('Supervisor is required');
+        }
+
+        if ($('#AssignModel_CompanyId').val() == '') {
+            errors.push('Company is required');
+        }
+
+        if ($('#AssignModel_StatusId').val() == '') {
+            errors.push('Status is required');
+        }
+
+        if ($('#AssignModel_FinishDate').val() == '') {
+            errors.push('Finish Date is required');
+        }
+        if (errors.length > 0) {
+
+            alert(errors.join('\n'));
+
+            return false; // modal remains open
+        }
+
+        $('#myForm').submit();
+
+    });
+</script>

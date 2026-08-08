@@ -1,0 +1,389 @@
+﻿@model RetailCare.Models.CRMViewModel.ComplainGenerationViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- ADD JQUERY -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet" />
+ <div class="row">
+    <div class="card frombody">
+        <div class="top-border"></div>
+        <div class="card-header entryfromheader">
+            <h3 class="card-title"> Generate & Assign Ticket</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveDataComplain", "ComplainGeneration", FormMethod.Post, new { @class = "form-floating" }))
+            {
+                <div class="row">
+                 @Html.HiddenFor(m => m.ComaplainModel.TICKETID)
+                 @Html.HiddenFor(m => m.ComaplainModel.TICKETCODE)
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        @Html.LabelFor(model => model.ComaplainModel.COMPLAINDATE, new { @class = "control-label" })<span style="color:red">*</span>
+                        @Html.TextBoxFor(model => model.ComaplainModel.COMPLAINDATE, "{0:yyyy-MM-dd}", new {@class = "form-control", type = "date"})
+                        @Html.ValidationMessageFor(model => model.ComaplainModel.COMPLAINDATE, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.ComaplainModel.CUSTOMERNAME, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.ComaplainModel.CUSTOMERNAME, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.CUSTOMERNAME, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.ComaplainModel.CONTACTNO, htmlAttributes: new { @class = "form-control-label", id = "CONTACTNO" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.ComaplainModel.CONTACTNO, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.CONTACTNO, "", new { @class = "text-danger" })
+                            <span id="phoneError" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.ComaplainModel.LOCATION, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextAreaFor(m => m.ComaplainModel.LOCATION, new { @class = "form-control fromdetails", rows = "5", cols = "50" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.LOCATION, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.ComaplainModel.PROBLEMTYPEID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.DropDownListFor(m => m.ComaplainModel.PROBLEMTYPEID, new SelectList(Model.ProductList, "PRODUCTID", "PRODUCTNAME"), "Select Product Name", new { @class = "form-control multieselectordropdown", id = "ProductName" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.PROBLEMTYPEID, "", new { @class = "text-danger" })
+                        </div>
+                   </div> 
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.ComaplainModel.SHOWROOM, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.ComaplainModel.SHOWROOM, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.SHOWROOM, "", new { @class = "text-danger" })
+                        </div>
+                 </div> 
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.ComaplainModel.STATUSID, htmlAttributes: new { @class = "form-control-label" })
+                            @Html.DropDownListFor(m => m.ComaplainModel.STATUSID, new SelectList(Model.StatusList, "STATUSID", "STATUSNAME"), new { @class = "form-control multieselectordropdown", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.STATUSID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                    <div class="">
+                            @Html.LabelFor(m => m.ComaplainModel.TECHNICIANID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.DropDownListFor(m => m.ComaplainModel.TECHNICIANID, new SelectList(Model.TechnicianList, "TECHNICIANID", "TECHNICIANNAME"), new { @class = "form-control multieselectordropdown", id = "technicansname" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.TECHNICIANID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 col-sm-12">
+                        <div>
+                            <h6><b>Problem Details</b></h6>
+                        </div>
+                        @if (Model.ProblemListAdded != null && Model.ProblemListAdded.Count > 0)
+                        {
+							int index = 0;
+                            for (int i = 0; i < Model.ProblemListAdded.Count; i++)
+                            {
+                                <div class="problem-row row mt-3">
+                                    <div class="col-md-3">
+                                        @Html.DropDownListFor(
+                                        m => m.ProblemListAdded[index].PROBLEMID,
+                                                        new SelectList(Model.ProblemList, "PROBLEMID", "PROBLEMNAME", Model.ProblemListAdded[index].PROBLEMID),
+                                                        new { @class = "form-control problemList" })
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(
+                                                        m => m.ProblemListAdded[i].QUANTITY,
+                                                        new { @class = "form-control", type = "number" })
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(
+                                                        m => m.ProblemListAdded[i].REMARKS,
+                                                        new { @class = "form-control" })
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end gap-2">
+                            <button type="button" class="btn btn-primary addRow">ADD+</button>
+                            <button type="button" class="btn btn-danger removeRow">Remove</button>
+                        </div>
+
+                                </div>
+                                index++;
+                            }
+                    }
+                                        else
+                    {
+                        <div id="problemContainer" style="display:none;">
+                            <div class="problem-row row mt-3">
+
+                                <div class="col-md-3">
+                                    <label>Problem Name</label>
+                                    <select class="form-select"
+                                            id="problemlist"
+                                            name="ComplainProblemList[0].PROBLEMID">
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label>Quantity</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           name="ComplainProblemList[0].QUANTITY" value=1>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label>Remarks</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="ComplainProblemList[0].REMARKS">
+                                </div>
+
+                                <div class="col-md-3 d-flex align-items-end gap-2">
+                                    <button type="button" class="btn btn-primary addRow">ADD+</button>
+                                    <button type="button" class="btn btn-danger removeRow">Remove</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                    </div>
+                </div>
+                if (Model.ComaplainModel.TICKETID>0)
+                {
+                    <div class="mt-3 col-sm-12">
+                        <button type="submit" class="btn btn-primary" style="float: right !important; background-color:red">Update</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-3 col-sm-12">
+                        <button type="submit" class="btn btn-primary" style="float: right !important;background-color:green">Save</button>
+                    </div>
+                }
+
+            }
+        </div>
+    </div>
+</div> 
+
+@* <div class="row mt-3">
+    <div class="card">
+        <div class="top-border"></div>
+        <div class="card-header entryfromheader">
+            <h3 class="card-title">Generate & Assign Ticket List</h3>
+        </div>
+        <div class="card-body">
+            <table id="locationTable" class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>SL</th>
+                        <th>Ticket ID</th>
+                        <th>Complain Date</th>
+                        <th>Customer Name</th>
+                        <th>Contact No</th>
+                        <th>Location</th>
+                        <th>Product Name</th>
+                        <th>Product Model Name</th>
+                        <th>Problem Name</th>
+                        <th>Zone</th>
+                        <th>Technician Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int i = 1;
+                        @foreach (var item in Model.ComplainList)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.TICKETCODE</td>
+                                <td>@item.COMPLAINDATE?.ToString("dd/MM/yyyy")</td>
+                                <td>@item.CUSTOMERNAME</td>
+                                <td>@item.CONTACTNO</td>
+                                <td>@item.LOCATION</td>
+                                <td>@item.PRODUCTNAME</td>
+                                <td>@item.PRMODELNAME</td>
+                                <td>@item.PROBLEMNAME</td>
+                                <td>@item.ZONENAME</td>
+                                <td>@item.TECHNICIANNAME</td>
+                                <td class="text-center">
+                                    <a asp-action="EditCompplain"
+                                       asp-controller="ComplainGeneration"
+                                       asp-route-id="@item.TICKETID"
+                                       class="btn btn-primary btn-sm assign-btn">
+                                        <i class="fas fa-arrow-alt-circle-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    }    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> *@
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--Data Table-->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    // Data table start
+    $(document).ready(function () {
+        $('#locationTable').DataTable({
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            ordering: true,
+            searching: true,
+            paging: true,
+            info: true,
+            autoWidth: false,
+            responsive: true, // ✅ better UI
+
+            language: {
+                search: "🔍 Search:",
+                lengthMenu: "Show _MENU_ entries",
+                zeroRecords: "No matching locations found",
+                info: "Showing _START_ to _END_ of _TOTAL_ locations",
+                infoEmpty: "No data available"
+            },
+
+            columnDefs: [
+                { orderable: false, targets: 5 } // action column
+            ]
+        });
+    });
+    function confirmDelete() {
+        return confirm("⚠️ Are you sure you want to delete?");
+    }
+     // Data table End
+
+     // Add Delete Problem Start
+    //   document.addEventListener("click", function (e) {
+
+    //     // Add row
+    //     if (e.target.classList.contains("addRow")) {
+
+    //         let row = e.target.closest(".problem-row");
+    //         let clone = row.cloneNode(true);
+
+    //         clone.querySelectorAll("input").forEach(x => x.value = "");
+    //         clone.querySelector("select").selectedIndex = 0;
+
+    //         document.getElementById("problemContainer").appendChild(clone);
+    //     }
+
+    //     // Remove row
+    //     if (e.target.classList.contains("removeRow")) {
+
+    //         let rows = document.querySelectorAll(".problem-row");
+
+    //         if (rows.length > 1) {
+    //             e.target.closest(".problem-row").remove();
+    //         }
+    //     }
+
+    // });
+        document.addEventListener("click", function (e) {
+
+        // Add Row
+        if (e.target.classList.contains("addRow")) {
+
+            let row = e.target.closest(".problem-row");
+            let clone = row.cloneNode(true);
+
+            // Clear values
+            clone.querySelectorAll("input").forEach(x => x.value = "");
+            clone.querySelector("select").selectedIndex = 0;
+
+            document.getElementById("problemContainer").appendChild(clone);
+
+            updateIndexes();
+        }
+
+        // Remove Row
+        if (e.target.classList.contains("removeRow")) {
+
+            let rows = document.querySelectorAll(".problem-row");
+
+            if (rows.length > 1) {
+                e.target.closest(".problem-row").remove();
+                updateIndexes();
+            }
+        }
+
+    });
+
+    function updateIndexes() {
+
+        document.querySelectorAll(".problem-row").forEach(function (row, index) {
+
+            row.querySelector("select").name =
+                `ComplainProblemList[${index}].PROBLEMID`;
+
+            row.querySelector("input[name*='QUANTITY']").name =
+                `ComplainProblemList[${index}].QUANTITY`;
+
+            row.querySelector("input[name*='REMARKS']").name =
+                `ComplainProblemList[${index}].REMARKS`;
+        });
+
+    }
+     // Add Delete Problem End
+
+     // Dependable & Ajax Code start
+       $(document).on('change', '#ProductName', function () {
+
+             var zoneId = $(this).val();
+
+             $.ajax({
+                 url: '@Url.Action("GetProductWiseProductModel", "ComplainGeneration")',
+                 type: 'GET',
+                 data: { ProductID: zoneId },
+                 dataType: 'json',
+                 success: function (res) {
+                      $("#technicansname").empty().append('<option value="">Select Technician</option>');
+                     console.log(res);
+                 var ddltech = $('#technicansname');
+                     ddltech.empty();
+                     ddltech.append('<option value="">Select Technican Name</option>');
+
+                         $.each(res.TechniciansList, function (i, item) {
+
+                             ddltech.append(
+                                 '<option value="' + item.TECHNICIANID + '">' +
+                                 item.TECHNICIANNAME +
+                                 '</option>'
+                             );
+                         });
+                  var ddltech = $('#problemlist');
+                     ddltech.empty();
+                     ddltech.append('<option value="">Select Problem Name</option>');
+                     $.each(res.ProblemDataModel, function (i, item) {
+
+                             ddltech.append(
+                                 '<option value="' + item.PROBLEMID + '">' +
+                                 item.PROBLEMNAME +
+                                 '</option>'
+                             );
+                         });
+                     document.getElementById("problemContainer").style.display = "block";
+                 },
+                 error: function (xhr) {
+                     console.log(xhr.responseText);
+                 }
+             });
+         });
+    // Dependable & Ajax Code End
+</script>

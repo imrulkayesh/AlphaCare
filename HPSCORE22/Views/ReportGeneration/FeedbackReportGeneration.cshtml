@@ -1,0 +1,135 @@
+﻿@model RetailCare.Models.ReportGenerationViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="~/Views/PartialView/_DataTableCSS.cshtml" />
+<div class="card">
+    <div class="top-border"></div>
+    <div class="card-header entryfromheader">
+        <h3 class="card-title"> Feedback List</h3>
+    </div>
+    <div class="card-body">
+
+        @using (Html.BeginForm("FeeBackReport", "ReportGeneration", FormMethod.Post, new { @class = "form-inline" }))
+        {
+            <div class="row" style="padding: 1%;margin-left: 7%;">
+                <div class="col-md-4 col-sm-12">
+                    @Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "control-label" })<span style="color:red">*</span>
+                    @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    @Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "control-label" })<span style="color:red">*</span>
+                    @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-4 col-sm-12 mt-3">
+                    <button class="btn btn-success" type="submit">Show</button>
+                </div>
+            </div>
+        }
+
+        @if (Model.FeedbackReport.Count > 0)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="locationTable" class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>SL</th>
+                                <th>Complain Date</th>
+                                <th>Ticket ID</th>
+                                <th>Customer Name</th>
+                                <th>Contact No</th>
+                                <th>Location</th>
+                                <th>Class Name</th>
+                                <th>Product Name</th>
+                                <th>Product Qty</th>
+                                <th>ComType Name</th>
+                                <th>Main Problem</th>
+                                <th>Sub Problem</th>
+                                <th>Model Name</th>
+                                <th>Model Code</th>
+                                <th>Serial No</th>
+                                <th>Assign Zone</th>
+                                <th>Assign Person</th>
+                                <th>Staff ID</th>
+                                <th>Working Date</th>
+                                <th>Complain Status</th>
+                                <th>Used Spare Parts</th>
+                                <th>Solved By Technician</th>
+                                <th>Tech1 StaffId</th>
+                                <th>Solved By</th>
+                                <th>Tech2 StaffId</th>
+                                <th>Assist1</th>
+                                <th>Tech3 StaffId</th>
+                                <th>Assist2</th>
+                                <th>Duration(Day)</th>
+                                <th>Remarks</th>
+                                <th>Purchase Date</th>
+                                <th>Warranty Status</th>
+                                <th>Barcode No</th>
+                                <th>Trxn Id</th>
+                                <th>Bill Amount</th>
+                           </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int i = 1;
+                                @foreach (var item in Model.FeedbackReport)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.EntryDate?.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.TicketID</td>
+                                        <td>@item.CustomerName</td>
+                                        <td>@item.CustomerContactNo</td>
+                                        <td>@item.CustomerAddress</td>
+                                        <td>@item.ItemName</td>
+                                        <td>@item.ProblemName</td>
+                                        <td>@item.ProductQty</td>
+                                        <td>@item.ComTypeName</td>
+                                        <td>@item.ProblemName</td>
+                                        <td>@item.SubProblem</td>
+                                        <td>@item.PrModelName</td>
+                                        <td>@item.ModelCode</td>
+                                        <td>@item.ZoneName</td>
+                                        <td>@item.TechnicianName</td>
+                                        <td>@item.StaffID</td>
+                                        <td>@item.WorkingDate</td>
+                                        <td>@item.StatusName</td>
+                                        <td>@item.UsedSpareParts</td>
+                                        <td>@item.SolvedBy</td>
+                                        <td>@item.Tech1StaffId</td>
+                                        <td>@item.SolvedBy1</td>
+                                        <td>@item.Tech2StaffId</td>
+                                        <td>@item.SolvedBy2</td>
+                                        <td>@item.Tech3StaffId</td>
+                                        <td>@item.SolvedBy3</td>
+                                        <td>@item.Duration</td>
+                                        <td>@item.Remarks</td>
+                                        <td>@item.PurchaseDate</td>
+                                        <td>@item.WaName</td>
+                                        <td>@item.BarcodeNo</td>
+                                        <td>@item.TransactionId</td>
+                                        <td>@item.BillAmount</td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+
+        }
+
+
+    </div>
+</div>
+<partial name="~/Views/PartialView/_DatatableJSCode.cshtml" />

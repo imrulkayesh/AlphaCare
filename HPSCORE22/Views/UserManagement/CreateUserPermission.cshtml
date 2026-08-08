@@ -1,0 +1,123 @@
+﻿@model RetailCare.Models.UserWiseMenuPermissionViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<div class="row">
+    <div class="card frombody">
+        <div class="top-border"></div>
+        <div class="card-header entryfromheader">
+            <h3 class="card-title"> User Wise Menu Permission</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("SaveUserPermission", "UserManagement", FormMethod.Post, new { @class = "form-floating" }))
+            {
+                <div class="row">
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            <label>User ID</label>
+                            <select name="userID" id="UserIDDetails" class="form-control">
+                                <option value="">Select User</option>
+                                @foreach (var UserInfo in Model.UserDetails)
+                                {
+                                    <option value="@UserInfo.USERID">@UserInfo.USERNAME</option>
+                                }
+                              
+                            </select>
+                        </div>
+                    </div>
+@*                     <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.UserWiseMenus., htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.DropDownListFor(m => m.CreateNewUser.DEPARTMENTID, new SelectList(Model.DeparmentList, "DEPTID", "DEPTNAME"), "Select Class", new { @class = "form-control multieselectordropdown", id = "itemName" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.DEPARTMENTID, "", new { @class = "text-danger" })
+                        </div>
+                    </div> *@
+                    <div class="col-md-4 col-sm-12 mt-4">
+                        <div class="">
+                            @Html.CheckBox(
+                            "UserWiseMenus.CheckedBox",
+                                                true, // checked by default
+                                                new
+                                                {
+                                                    id = "chkActive",
+                                                    @class = "form-check-input"
+                                                })
+                        <label class="assignlable">Is Active</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="">
+                    <h6>Menu Name</h6>
+                </div>
+                <div class="classitems">
+                    @foreach (var item in Model.Menus)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="CheckingMenuList"
+                                       value="@item.MENUID"
+                                       id="class_@item.MENUID"
+                                       @(Model.CheckingMenuList != null && Model.CheckingMenuList.Contains(item.MENUID) ? "checked" : "") />
+
+                                <label class="form-control-label" for="class_@item.MENUID">
+                            @item.TITLE
+                        </label>
+                    </div>
+                                        }
+                    </div>
+                </div>
+            <div class="mt-3 col-sm-12">
+                <button type="submit" class="btn btn-primary" style="float: right !important; background-color:green">Save</button>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+<style>
+    .classitems {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 2%;
+    }
+
+</style>
+<script>
+    $(document).ready(function () {
+
+        $("#UserIDDetails").on("change", function () {
+            alert($(this).val());
+            //EditPermission($(this).val());
+
+        });
+
+    });
+
+        function EditPermission(userId) {
+
+        $.ajax({
+            url: '@Url.Action("GetALlUserPermission", "ProductManagement")',
+            type: 'GET',
+            data: { UserID: userId },
+            success: function (response) {
+                var userModel = response.data[0];
+                $(".itemCheckbox").prop("checked", false);
+
+                $.each(response.data, function (i, item) {
+
+                    if (item.Active) {
+                        $("#item_" + item.ItemId).prop("checked", true);
+                    }
+
+                });
+            }
+        });
+
+    }
+</script>

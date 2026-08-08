@@ -1,0 +1,90 @@
+﻿ <!--begin::Sidebar-->
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="light" style="font-size: 0.875rem; color: #9EE7FF;">
+    <!--begin::Sidebar Brand-->
+    <div class="sidebar-brand">
+        <!--begin::Brand Link-->
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="brand-link">
+            @* <img src="~/assets/img/HPS.png" alt="PRG Logo" class="brand-image" /> *@
+            <span class="brand-text fw-bold">Alpha Care</span>
+            <!--end::Brand Text-->
+        </a>
+        <!--end::Brand Link-->
+    </div>
+    <!--end::Sidebar Brand-->
+    <!--begin::Sidebar Wrapper-->
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
+                <li class="nav-item">
+                    <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>Setup<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUser" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Management</a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUserPermission" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Menu Setup</a></li>
+@*                         <li class="nav-item"><a asp-area="" asp-controller="ProductManagement" asp-action="CreateNewBrand" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Brand Management</a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="ProductManagement" asp-action="CreateNewClass" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Class Management</a></li>*@
+                        @* newly added *@
+@*                         <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateNewClass" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Management</a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUserPermission" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Menu Setup</a></li>  *@
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>Ticket<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item"><a asp-area="" asp-controller="ComplainGeneration" asp-action="CreateToken" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Create Ticket </a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="ComplainGeneration" asp-action="GetAllTicket" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Ticket List</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>Technician<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item"><a asp-area="" asp-controller="TechniciansManagement" asp-action="CreateTechnicians" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>ADD Technician</a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="TechniciansManagement" asp-action="GetAllTechniciansList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Technician List</a></li>
+                        @* <li class="nav-item"><a asp-area="" asp-controller="AssignManagement" asp-action="TechnicianAssignList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Assign Technicians</a></li> *@
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>Feedback<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item"><a asp-area="" asp-controller="FeedBack" asp-action="GetAllTokenListForFeedback" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Give Feedback</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>Report<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item"><a asp-area="" asp-controller="ReportGeneration" asp-action="ComplainReportGeneration" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Complain Report</a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="ReportGeneration" asp-action="FeedbackReportGeneration" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Feedback Report</a></li>
+                        @* <li class="nav-item"><a asp-area="" asp-controller="AssignManagement" asp-action="TechnicianAssignList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Assign Technicians</a></li> *@
+                    </ul>
+                </li>
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <!--end::Sidebar Wrapper-->
+</aside>
+<!--end::Sidebar-->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const dashboardMenu = document.querySelector('.nav-item.has-treeview');
+
+        if (dashboardMenu) {
+            dashboardMenu.classList.add('menu-open');
+            dashboardMenu.querySelector('.nav-link').classList.add('active');
+        }
+    });
+</script>
+@* <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const currentUrl = window.location.pathname;
+        document.querySelectorAll('.nav-treeview a').forEach(link => {
+            if (link.getAttribute('href') === currentUrl) {
+                link.classList.add('active');
+                link.closest('.nav-item').classList.add('menu-open');
+                link.closest('.nav-item').querySelector('.nav-link').classList.add('active');
+            }
+        });
+    });
+</script>
+ *@

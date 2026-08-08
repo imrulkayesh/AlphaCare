@@ -1,0 +1,19 @@
+﻿<script>
+    function logoutModuleOpen() {
+        var imageLink = document.getElementById("imagelink");
+        var topNavbar = document.getElementById("topnavbarmenu");
+
+        if (imageLink.classList.contains("show")) {
+            imageLink.classList.remove("show");
+            imageLink.setAttribute("aria-expanded", "false");
+            topNavbar.classList.remove("show");
+            topNavbar.removeAttribute("data-bs-popper");
+
+        } else {
+            imageLink.classList.add("show");
+            imageLink.setAttribute("aria-expanded", "true");
+            topNavbar.classList.add("show");
+            topNavbar.setAttribute("data-bs-popper", "static");
+        }
+    }
+</script>

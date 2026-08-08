@@ -1,0 +1,32 @@
+﻿@model List<RetailCare.Models.CompanyModel>
+@{
+    Layout = "~/Views/Shared/_SelectCompany.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header" style="background-color:orange">
+                    <h5 class="card-title"><b>Welcome To Retail Care, <i> @ViewBag.Name</i></b> </h5>
+                </div>
+                <div class="card-body mt-3" style="padding:3%">
+                    @using (Html.BeginForm("UserDashboardDirection","Accounts", FormMethod.Post, new { @class = "form-inline" }))
+                    {
+                        <div class="">
+                            <select class="form-select" aria-label="Default select example" name="companyID">
+                                <option selected>Please Select Company</option>
+                                @foreach (var company in Model)
+                                {
+                                    <option value="@company.COMPANYID">@company.COMPANYNAME</option>
+                                }
+                            </select>
+                        </div>
+                       <div class="mt-2">
+                            <button type="submit" class="btn btn-primary" style="float: right !important;background-color:green">Procced</button>
+                       </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

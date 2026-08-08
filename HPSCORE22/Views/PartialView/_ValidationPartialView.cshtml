@@ -1,0 +1,51 @@
+﻿<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Phone Validation
+    const phone = document.getElementById("CONTACTNO");
+    const phoneError = document.getElementById("phoneError");
+
+    phone.addEventListener("input", function () {
+        debugger;
+        // Allow only numbers
+        this.value = this.value.replace(/\D/g, '');
+
+        const regex = /^01[3-9]\d{8}$/;
+
+        if (this.value.length === 0) {
+            phoneError.innerHTML = "Phone number is required.";
+        }
+        else if (!regex.test(this.value)) {
+            phoneError.innerHTML = "Enter a valid mobile number.";
+        }
+        else {
+            phoneError.innerHTML = "";
+        }
+    });
+
+    // Email Validation
+    const email = document.getElementById("EMAIL");
+    const emailError = document.getElementById("emailError");
+
+    email.addEventListener("input", function () {
+            debugger;
+        const regex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+
+        if (this.value.length === 0) {
+            emailError.innerHTML = "Email is required.";
+        }
+        else if (!regex.test(this.value)) {
+            emailError.innerHTML = "Enter a valid email address.";
+        }
+        else {
+            emailError.innerHTML = "";
+        }
+    });
+
+});
+</script>
