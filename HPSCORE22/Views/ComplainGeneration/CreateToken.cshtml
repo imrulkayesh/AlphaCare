@@ -123,7 +123,7 @@
 
                                 <div class="col-md-3">
                                     <label>Problem Name</label>
-                                    <select class="form-select"
+                                    <select class="form-select problemList"
                                             id="problemlist"
                                             name="ComplainProblemList[0].PROBLEMID">
                                     </select>
@@ -270,61 +270,113 @@
      // Data table End
 
      // Add Delete Problem Start
-    //   document.addEventListener("click", function (e) {
+    document.addEventListener("click", function (e) {
 
-    //     // Add row
-    //     if (e.target.classList.contains("addRow")) {
-
-    //         let row = e.target.closest(".problem-row");
-    //         let clone = row.cloneNode(true);
-
-    //         clone.querySelectorAll("input").forEach(x => x.value = "");
-    //         clone.querySelector("select").selectedIndex = 0;
-
-    //         document.getElementById("problemContainer").appendChild(clone);
-    //     }
-
-    //     // Remove row
-    //     if (e.target.classList.contains("removeRow")) {
-
-    //         let rows = document.querySelectorAll(".problem-row");
-
-    //         if (rows.length > 1) {
-    //             e.target.closest(".problem-row").remove();
-    //         }
-    //     }
-
-    // });
-        document.addEventListener("click", function (e) {
-
+        // ============================
         // Add Row
+        // ============================
         if (e.target.classList.contains("addRow")) {
 
             let row = e.target.closest(".problem-row");
+
+            // Get currently selected problem
+            let currentSelect = row.querySelector("select");
+            let selectedProblem = currentSelect.value;
+
+            // Check if problem is selected
+            if (!selectedProblem) {
+                alert("Please select a problem first.");
+                return;
+            }
+
+            // Clone current row
             let clone = row.cloneNode(true);
 
             // Clear values
-            clone.querySelectorAll("input").forEach(x => x.value = "");
+            clone.querySelectorAll("input").forEach(function (input) {
+
+                if (input.name.includes("QUANTITY")) {
+                    input.value = 1;
+                } else {
+                    input.value = "";
+                }
+
+            });
+
+            // Reset problem dropdown
             clone.querySelector("select").selectedIndex = 0;
 
+            // Add cloned row
             document.getElementById("problemContainer").appendChild(clone);
 
+            // Update indexes
             updateIndexes();
         }
 
+
+        // ============================
         // Remove Row
+        // ============================
         if (e.target.classList.contains("removeRow")) {
 
             let rows = document.querySelectorAll(".problem-row");
 
             if (rows.length > 1) {
+
                 e.target.closest(".problem-row").remove();
+
                 updateIndexes();
             }
         }
 
     });
 
+
+    // ==========================================
+    // Problem Change - Duplicate Check
+    // ==========================================
+    document.addEventListener("change", function (e) {
+
+        if (e.target.classList.contains("problemList")) {
+
+            let currentSelect = e.target;
+            let selectedProblem = currentSelect.value;
+
+            // Nothing selected
+            if (!selectedProblem) {
+                return;
+            }
+
+            let duplicate = false;
+
+            // Check all problem dropdowns
+            document.querySelectorAll(".problemList").forEach(function (select) {
+
+                // Don't compare with itself
+                if (select !== currentSelect &&
+                    select.value === selectedProblem) {
+
+                    duplicate = true;
+                }
+
+            });
+
+            // Duplicate found
+            if (duplicate) {
+
+                alert("This problem has already been selected. Please select another problem.");
+
+                // Reset current dropdown
+                currentSelect.selectedIndex = 0;
+            }
+        }
+
+    });
+
+
+    // ==========================================
+    // Update Model Binding Indexes
+    // ==========================================
     function updateIndexes() {
 
         document.querySelectorAll(".problem-row").forEach(function (row, index) {
