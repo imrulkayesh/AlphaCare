@@ -20,7 +20,15 @@
             {
                 <div class="row">
                  @Html.HiddenFor(m => m.ComaplainModel.TICKETID)
-                 @Html.HiddenFor(m => m.ComaplainModel.TICKETCODE)
+                @*  @Html.HiddenFor(m => m.ComaplainModel.TICKETCODE) *@
+                    @if (Model.ComaplainModel.TICKETID > 0)
+                    {
+                        <div class="col-md-4 col-sm-12 mt-1">
+                            @Html.LabelFor(m => m.ComaplainModel.TICKETCODE, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.ComaplainModel.TICKETCODE, new { @class = "form-control", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(m => m.ComaplainModel.TICKETCODE, "", new { @class = "text-danger" })
+                        </div>
+                    }
                     <div class="col-md-4 col-sm-12 mt-1">
                         @Html.LabelFor(model => model.ComaplainModel.COMPLAINDATE, new { @class = "control-label" })<span style="color:red">*</span>
                         @Html.TextBoxFor(model => model.ComaplainModel.COMPLAINDATE, "{0:yyyy-MM-dd}", new {@class = "form-control", type = "date"})
@@ -29,14 +37,14 @@
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.ComaplainModel.CUSTOMERNAME, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
-                            @Html.TextBoxFor(m => m.ComaplainModel.CUSTOMERNAME, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.ComaplainModel.CUSTOMERNAME, new { @class = "form-control", @readonly = "readonly" })
                             @Html.ValidationMessageFor(m => m.ComaplainModel.CUSTOMERNAME, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.ComaplainModel.CONTACTNO, htmlAttributes: new { @class = "form-control-label", id = "CONTACTNO" })<span style="color:red">*</span>
-                            @Html.TextBoxFor(m => m.ComaplainModel.CONTACTNO, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.ComaplainModel.CONTACTNO, new { @class = "form-control", @readonly = "readonly" })
                             @Html.ValidationMessageFor(m => m.ComaplainModel.CONTACTNO, "", new { @class = "text-danger" })
                             <span id="phoneError" class="text-danger"></span>
                         </div>
@@ -44,7 +52,7 @@
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.ComaplainModel.LOCATION, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
-                            @Html.TextAreaFor(m => m.ComaplainModel.LOCATION, new { @class = "form-control fromdetails", rows = "5", cols = "50" })
+                            @Html.TextAreaFor(m => m.ComaplainModel.LOCATION, new { @class = "form-control fromdetails", rows = "5", cols = "50", @readonly = "readonly" })
                             @Html.ValidationMessageFor(m => m.ComaplainModel.LOCATION, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -58,7 +66,7 @@
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.ComaplainModel.SHOWROOM, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
-                            @Html.TextBoxFor(m => m.ComaplainModel.SHOWROOM, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.ComaplainModel.SHOWROOM, new { @class = "form-control", @readonly = "readonly" })
                             @Html.ValidationMessageFor(m => m.ComaplainModel.SHOWROOM, "", new { @class = "text-danger" })
                         </div>
                  </div> 
@@ -79,80 +87,128 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12 col-sm-12">
-                        <div>
-                            <h6><b>Problem Details</b></h6>
-                        </div>
-                        @if (Model.ProblemListAdded != null && Model.ProblemListAdded.Count > 0)
-                        {
-							int index = 0;
-                            for (int i = 0; i < Model.ProblemListAdded.Count; i++)
+
+                        <h6><b>Problem Details</b></h6>
+
+                        <div id="problemContainer">
+
+                            @if (Model.ProblemListAdded != null && Model.ProblemListAdded.Count > 0)
                             {
-                                <div class="problem-row row mt-3">
-                                    <div class="col-md-3">
-                                        @Html.DropDownListFor(
-                                        m => m.ProblemListAdded[index].PROBLEMID,
-                                                        new SelectList(Model.ProblemList, "PROBLEMID", "PROBLEMNAME", Model.ProblemListAdded[index].PROBLEMID),
-                                                        new { @class = "form-control problemList" })
-                        </div>
+                                for (int i = 0; i < Model.ProblemListAdded.Count; i++)
+                                {
+                                    <div class="problem-row row mt-3">
 
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(
-                                                        m => m.ProblemListAdded[i].QUANTITY,
-                                                        new { @class = "form-control", type = "number" })
-                        </div>
+                                        <div class="col-md-3">
+                                            <label>Problem Name</label>
 
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(
-                                                        m => m.ProblemListAdded[i].REMARKS,
-                                                        new { @class = "form-control" })
-                        </div>
+                                            @Html.DropDownListFor(
+                                            m => m.ProblemListAdded[i].PROBLEMID,
+                                                                new SelectList(
+                                                                Model.ProblemList,
+                                                                "PROBLEMID",
+                                                                "PROBLEMNAME",
+                                                                Model.ProblemListAdded[i].PROBLEMID
+                                                                ),
+                                                                "Select Problem Name",
+                                                                new { @class = "form-control problemList" }
+                                                                )
+                            </div>
 
-                        <div class="col-md-3 d-flex align-items-end gap-2">
-                            <button type="button" class="btn btn-primary addRow">ADD+</button>
-                            <button type="button" class="btn btn-danger removeRow">Remove</button>
-                        </div>
+                            <div class="col-md-3">
+                                <label>Quantity</label>
 
-                                </div>
-                                index++;
-                            }
-                    }
-                                        else
-                    {
-                        <div id="problemContainer" style="display:none;">
+                                @Html.TextBoxFor(
+                                                                m => m.ProblemListAdded[i].QUANTITY,
+                                                                new
+                                                                {
+                                                                    @class = "form-control",
+                                                                    type = "number"
+                                                                }
+                                                                )
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Remarks</label>
+
+                                @Html.TextBoxFor(
+                                                                m => m.ProblemListAdded[i].REMARKS,
+                                                                new
+                                                                {
+                                                                    @class = "form-control"
+                                                                }
+                                                                )
+                            </div>
+
+                            <div class="col-md-3 d-flex align-items-end gap-2">
+
+                                <button type="button"
+                                        class="btn btn-primary addRow">
+                                    ADD+
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-danger removeRow">
+                                    Remove
+                                </button>
+
+                            </div>
+
+                        </div>
+                                                }
+                        }
+                                                else
+                        {
                             <div class="problem-row row mt-3">
 
                                 <div class="col-md-3">
                                     <label>Problem Name</label>
-                                    <select class="form-select problemList"
-                                            id="problemlist"
-                                            name="ComplainProblemList[0].PROBLEMID">
+
+                                    <select class="form-control problemList"
+                                            name="ProblemListAdded[0].PROBLEMID">
+
+                                        <option value="">Select Problem Name</option>
+
                                     </select>
                                 </div>
 
                                 <div class="col-md-3">
                                     <label>Quantity</label>
+
                                     <input type="number"
                                            class="form-control"
-                                           name="ComplainProblemList[0].QUANTITY" value=1>
+                                           name="ProblemListAdded[0].QUANTITY"
+                                           value="1" />
                                 </div>
 
                                 <div class="col-md-3">
                                     <label>Remarks</label>
+
                                     <input type="text"
                                            class="form-control"
-                                           name="ComplainProblemList[0].REMARKS">
+                                           name="ProblemListAdded[0].REMARKS" />
                                 </div>
 
                                 <div class="col-md-3 d-flex align-items-end gap-2">
-                                    <button type="button" class="btn btn-primary addRow">ADD+</button>
-                                    <button type="button" class="btn btn-danger removeRow">Remove</button>
+
+                                    <button type="button"
+                                            class="btn btn-primary addRow">
+                                        ADD+
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-danger removeRow">
+                                        Remove
+                                    </button>
+
                                 </div>
 
                             </div>
-                        </div>
-                    }
+                        }
+
                     </div>
+
                 </div>
+            </div>
                 if (Model.ComaplainModel.TICKETID>0)
                 {
                     <div class="mt-3 col-sm-12">
@@ -165,7 +221,6 @@
                         <button type="submit" class="btn btn-primary" style="float: right !important;background-color:green">Save</button>
                     </div>
                 }
-
             }
         </div>
     </div>
@@ -270,62 +325,123 @@
      // Data table End
 
      // Add Delete Problem Start
+    // ==========================================
+    // Add / Delete Problem
+    // ==========================================
+
     document.addEventListener("click", function (e) {
 
-        // ============================
-        // Add Row
-        // ============================
+        // ==========================================
+        // ADD ROW
+        // ==========================================
+
         if (e.target.classList.contains("addRow")) {
 
             let row = e.target.closest(".problem-row");
 
-            // Get currently selected problem
-            let currentSelect = row.querySelector("select");
+            if (!row) {
+                return;
+            }
+
+            // Current problem dropdown
+            let currentSelect = row.querySelector(".problemList");
+
+            if (!currentSelect) {
+                console.error("Problem dropdown not found.");
+                return;
+            }
+
             let selectedProblem = currentSelect.value;
 
-            // Check if problem is selected
+            // Problem must be selected
             if (!selectedProblem) {
                 alert("Please select a problem first.");
                 return;
             }
 
-            // Clone current row
+            // Clone row
             let clone = row.cloneNode(true);
 
-            // Clear values
+            // ==========================================
+            // Reset dropdown
+            // ==========================================
+
+            let clonedSelect = clone.querySelector(".problemList");
+
+            if (clonedSelect) {
+                clonedSelect.selectedIndex = 0;
+            }
+
+            // ==========================================
+            // Reset inputs
+            // ==========================================
+
             clone.querySelectorAll("input").forEach(function (input) {
 
                 if (input.name.includes("QUANTITY")) {
+
                     input.value = 1;
-                } else {
+
+                }
+                else if (input.name.includes("REMARKS")) {
+
                     input.value = "";
+
                 }
 
             });
 
-            // Reset problem dropdown
-            clone.querySelector("select").selectedIndex = 0;
+            // ==========================================
+            // Get container
+            // ==========================================
 
+            let problemContainer =
+                document.getElementById("problemContainer");
+
+            if (!problemContainer) {
+
+                console.error(
+                    "problemContainer element was not found."
+                );
+
+                return;
+            }
+
+            // ==========================================
             // Add cloned row
-            document.getElementById("problemContainer").appendChild(clone);
+            // ==========================================
 
+            problemContainer.appendChild(clone);
+
+            // ==========================================
             // Update indexes
+            // ==========================================
+
             updateIndexes();
         }
 
 
-        // ============================
-        // Remove Row
-        // ============================
+        // ==========================================
+        // REMOVE ROW
+        // ==========================================
+
         if (e.target.classList.contains("removeRow")) {
 
-            let rows = document.querySelectorAll(".problem-row");
+            let rows =
+                document.querySelectorAll(".problem-row");
 
+            // Keep at least one row
             if (rows.length > 1) {
 
-                e.target.closest(".problem-row").remove();
+                let row =
+                    e.target.closest(".problem-row");
 
-                updateIndexes();
+                if (row) {
+
+                    row.remove();
+
+                    updateIndexes();
+                }
             }
         }
 
@@ -333,109 +449,388 @@
 
 
     // ==========================================
-    // Problem Change - Duplicate Check
+    // DUPLICATE PROBLEM CHECK
     // ==========================================
+
     document.addEventListener("change", function (e) {
 
-        if (e.target.classList.contains("problemList")) {
+        if (!e.target.classList.contains("problemList")) {
+            return;
+        }
 
-            let currentSelect = e.target;
-            let selectedProblem = currentSelect.value;
+        let currentSelect = e.target;
 
-            // Nothing selected
-            if (!selectedProblem) {
-                return;
+        let selectedProblem = currentSelect.value;
+
+        if (!selectedProblem) {
+            return;
+        }
+
+        let duplicate = false;
+
+        document.querySelectorAll(".problemList").forEach(function (select) {
+
+            if (
+                select !== currentSelect &&
+                select.value === selectedProblem
+            ) {
+                duplicate = true;
             }
 
-            let duplicate = false;
+        });
 
-            // Check all problem dropdowns
-            document.querySelectorAll(".problemList").forEach(function (select) {
+        if (duplicate) {
 
-                // Don't compare with itself
-                if (select !== currentSelect &&
-                    select.value === selectedProblem) {
+            alert(
+                "This problem has already been selected. Please select another problem."
+            );
 
-                    duplicate = true;
+            currentSelect.selectedIndex = 0;
+        }
+
+    });
+
+
+    // ==========================================
+    // UPDATE MODEL BINDING INDEXES
+    // ==========================================
+
+    function updateIndexes() {
+
+        document.querySelectorAll(".problem-row")
+            .forEach(function (row, index) {
+
+                let select =
+                    row.querySelector(".problemList");
+
+                let quantity =
+                    row.querySelector("input[name*='QUANTITY']");
+
+                let remarks =
+                    row.querySelector("input[name*='REMARKS']");
+
+
+                if (select) {
+
+                    select.name =
+                        `ProblemListAdded[${index}].PROBLEMID`;
+                }
+
+
+                if (quantity) {
+
+                    quantity.name =
+                        `ProblemListAdded[${index}].QUANTITY`;
+                }
+
+
+                if (remarks) {
+
+                    remarks.name =
+                        `ProblemListAdded[${index}].REMARKS`;
                 }
 
             });
-
-            // Duplicate found
-            if (duplicate) {
-
-                alert("This problem has already been selected. Please select another problem.");
-
-                // Reset current dropdown
-                currentSelect.selectedIndex = 0;
-            }
-        }
-
-    });
-
-
-    // ==========================================
-    // Update Model Binding Indexes
-    // ==========================================
-    function updateIndexes() {
-
-        document.querySelectorAll(".problem-row").forEach(function (row, index) {
-
-            row.querySelector("select").name =
-                `ComplainProblemList[${index}].PROBLEMID`;
-
-            row.querySelector("input[name*='QUANTITY']").name =
-                `ComplainProblemList[${index}].QUANTITY`;
-
-            row.querySelector("input[name*='REMARKS']").name =
-                `ComplainProblemList[${index}].REMARKS`;
-        });
-
     }
      // Add Delete Problem End
 
      // Dependable & Ajax Code start
-       $(document).on('change', '#ProductName', function () {
+       // $(document).on('change', '#ProductName', function () {
 
-             var zoneId = $(this).val();
+       //       var zoneId = $(this).val();
 
-             $.ajax({
-                 url: '@Url.Action("GetProductWiseProductModel", "ComplainGeneration")',
-                 type: 'GET',
-                 data: { ProductID: zoneId },
-                 dataType: 'json',
-                 success: function (res) {
-                      $("#technicansname").empty().append('<option value="">Select Technician</option>');
-                     console.log(res);
-                 var ddltech = $('#technicansname');
-                     ddltech.empty();
-                     ddltech.append('<option value="">Select Technican Name</option>');
+       //       $.ajax({
+       //           url: '@Url.Action("GetProductWiseProductModel", "ComplainGeneration")',
+       //           type: 'GET',
+       //           data: { ProductID: zoneId },
+       //           dataType: 'json',
+       //           success: function (res) {
+       //                $("#technicansname").empty().append('<option value="">Select Technician</option>');
+       //               console.log(res);
+       //           var ddltech = $('#technicansname');
+       //               ddltech.empty();
+       //               ddltech.append('<option value="">Select Technican Name</option>');
 
-                         $.each(res.TechniciansList, function (i, item) {
+       //                   $.each(res.TechniciansList, function (i, item) {
 
-                             ddltech.append(
-                                 '<option value="' + item.TECHNICIANID + '">' +
-                                 item.TECHNICIANNAME +
-                                 '</option>'
-                             );
-                         });
-                  var ddltech = $('#problemlist');
-                     ddltech.empty();
-                     ddltech.append('<option value="">Select Problem Name</option>');
-                     $.each(res.ProblemDataModel, function (i, item) {
+       //                       ddltech.append(
+       //                           '<option value="' + item.TECHNICIANID + '">' +
+       //                           item.TECHNICIANNAME +
+       //                           '</option>'
+       //                       );
+       //                   });
+       //            var ddltech = $('#problemlist');
+       //               ddltech.empty();
+       //               ddltech.append('<option value="">Select Problem Name</option>');
+       //               $.each(res.ProblemDataModel, function (i, item) {
 
-                             ddltech.append(
-                                 '<option value="' + item.PROBLEMID + '">' +
-                                 item.PROBLEMNAME +
-                                 '</option>'
-                             );
-                         });
-                     document.getElementById("problemContainer").style.display = "block";
-                 },
-                 error: function (xhr) {
-                     console.log(xhr.responseText);
-                 }
-             });
-         });
+       //                       ddltech.append(
+       //                           '<option value="' + item.PROBLEMID + '">' +
+       //                           item.PROBLEMNAME +
+       //                           '</option>'
+       //                       );
+       //                   });
+       //               document.getElementById("problemContainer").style.display = "block";
+       //           },
+       //           error: function (xhr) {
+       //               console.log(xhr.responseText);
+       //           }
+       //       });
+       //   });
+           // ==========================================
+    // Dependent Dropdown & AJAX Code
+    // ==========================================
+
+    $(document).on('change', '#ProductName', function () {
+
+        var productId = $(this).val();
+
+        // ==========================================
+        // If no product selected
+        // ==========================================
+
+        if (!productId) {
+
+            $('#technicansname')
+                .empty()
+                .append('<option value="">Select Technician</option>');
+
+            $('.problemList')
+                .empty()
+                .append('<option value="">Select Problem Name</option>');
+
+            return;
+        }
+
+
+        // ==========================================
+        // AJAX Request
+        // ==========================================
+
+        $.ajax({
+
+            url: '@Url.Action("GetProductWiseProductModel", "ComplainGeneration")',
+
+            type: 'GET',
+
+            data: {
+                ProductID: productId
+            },
+
+            dataType: 'json',
+
+            beforeSend: function () {
+
+                console.log("Loading data for ProductID:", productId);
+
+                // Disable dropdowns while loading
+                $('#technicansname').prop('disabled', true);
+
+                $('.problemList').prop('disabled', true);
+            },
+
+            success: function (res) {
+
+                console.log("AJAX Response:", res);
+
+
+                // ==========================================
+                // Technician Dropdown
+                // ==========================================
+
+                var ddlTechnician =
+                    $('#technicansname');
+
+
+                // Clear existing technicians
+                ddlTechnician.empty();
+
+
+                // Default option
+                ddlTechnician.append(
+                    $('<option>', {
+                        value: '',
+                        text: 'Select Technician'
+                    })
+                );
+
+
+                // Check technician data
+                if (
+                    res &&
+                    res.TechniciansList &&
+                    res.TechniciansList.length > 0
+                ) {
+
+                    $.each(
+                        res.TechniciansList,
+                        function (i, item) {
+
+                            ddlTechnician.append(
+                                $('<option>', {
+                                    value: item.TECHNICIANID,
+                                    text: item.TECHNICIANNAME
+                                })
+                            );
+
+                        }
+                    );
+
+                }
+                else {
+
+                    console.log(
+                        "No technician found for this product."
+                    );
+
+                }
+
+
+                // ==========================================
+                // Problem Dropdown
+                // ==========================================
+
+                var problemDropdown =
+                    $('.problemList').first();
+
+
+                // Clear existing problem options
+                problemDropdown.empty();
+
+
+                // Default option
+                problemDropdown.append(
+                    $('<option>', {
+                        value: '',
+                        text: 'Select Problem Name'
+                    })
+                );
+
+
+                // Check problem data
+                if (
+                    res &&
+                    res.ProblemDataModel &&
+                    res.ProblemDataModel.length > 0
+                ) {
+
+                    $.each(
+                        res.ProblemDataModel,
+                        function (i, item) {
+
+                            problemDropdown.append(
+                                $('<option>', {
+                                    value: item.PROBLEMID,
+                                    text: item.PROBLEMNAME
+                                })
+                            );
+
+                        }
+                    );
+
+                }
+                else {
+
+                    console.log(
+                        "No problem found for this product."
+                    );
+
+                }
+
+
+                // ==========================================
+                // Enable dropdowns
+                // ==========================================
+
+                ddlTechnician.prop('disabled', false);
+
+                $('.problemList').prop('disabled', false);
+
+
+                // ==========================================
+                // Show Problem Container
+                // ==========================================
+
+                var problemContainer =
+                    document.getElementById("problemContainer");
+
+
+                if (problemContainer) {
+
+                    problemContainer.style.display = "block";
+
+                }
+                else {
+
+                    console.error(
+                        "problemContainer element not found."
+                    );
+
+                }
+
+
+                // ==========================================
+                // Update Model Binding Index
+                // ==========================================
+
+                if (typeof updateIndexes === "function") {
+
+                    updateIndexes();
+
+                }
+
+            },
+
+            error: function (xhr, status, error) {
+
+                console.error(
+                    "AJAX Error:",
+                    error
+                );
+
+                console.error(
+                    "Status:",
+                    status
+                );
+
+                console.error(
+                    "Response:",
+                    xhr.responseText
+                );
+
+
+                // Reset Technician
+                $('#technicansname')
+                    .empty()
+                    .append(
+                        '<option value="">Select Technician</option>'
+                    );
+
+
+                // Reset Problem
+                $('.problemList')
+                    .empty()
+                    .append(
+                        '<option value="">Select Problem Name</option>'
+                    );
+
+
+                // Enable dropdowns
+                $('#technicansname')
+                    .prop('disabled', false);
+
+                $('.problemList')
+                    .prop('disabled', false);
+
+
+                alert(
+                    "Unable to load technician and problem information."
+                );
+
+            }
+
+        });
+
+    });
     // Dependable & Ajax Code End
 </script>

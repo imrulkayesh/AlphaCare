@@ -22,36 +22,53 @@
                     @Html.HiddenFor(m => m.CreateNewUser.USERCODE)
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
-                            @Html.LabelFor(m => m.CreateNewUser.USERNAME, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
-                            @Html.TextBoxFor(m => m.CreateNewUser.USERNAME, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.CreateNewUser.USERNAME, "", new { @class = "text-danger" })
+                            @Html.LabelFor(m => m.CreateNewUser.USERID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.CreateNewUser.USERID, new { @class = "form-control", id = "userIDDetails" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.USERID, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
-                            @Html.LabelFor(m => m.CreateNewUser.STAFFID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.LabelFor(m => m.CreateNewUser.PASSWORD, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.CreateNewUser.PASSWORD, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.PASSWORD, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.STAFFID, htmlAttributes: new { @class = "form-control-label" })
                             @Html.TextBoxFor(m => m.CreateNewUser.STAFFID, new { @class = "form-control" })
                             @Html.ValidationMessageFor(m => m.CreateNewUser.STAFFID, "", new { @class = "text-danger" })
                         </div>
                     </div>
+
+                   @*  serialize mapping *@
+                    <div class="col-md-4 col-sm-12 mt-1">
+                        <div class="">
+                            @Html.LabelFor(m => m.CreateNewUser.USERNAME, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
+                            @Html.TextBoxFor(m => m.CreateNewUser.USERNAME, new { @class = "form-control", id = "userName" })
+                            @Html.ValidationMessageFor(m => m.CreateNewUser.USERNAME, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.CreateNewUser.EMAIL, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextBoxFor(m => m.CreateNewUser.EMAIL, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.CreateNewUser.EMAIL, new { @class = "form-control", id = "userEmail" })
                             @Html.ValidationMessageFor(m => m.CreateNewUser.EMAIL, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.CreateNewUser.CONTACTNO, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextBoxFor(m => m.CreateNewUser.CONTACTNO, new { @class = "form-control" })
+                            @Html.TextBoxFor(m => m.CreateNewUser.CONTACTNO, new { @class = "form-control", id = "userContact" })
                             @Html.ValidationMessageFor(m => m.CreateNewUser.CONTACTNO, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.CreateNewUser.ADDRESS, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextAreaFor(m => m.CreateNewUser.ADDRESS, new { @class = "form-control" })
+                            @Html.TextAreaFor(m => m.CreateNewUser.ADDRESS, new { @class = "form-control", id = "userAddress" })
                             @Html.ValidationMessageFor(m => m.CreateNewUser.ADDRESS, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -62,7 +79,7 @@
                             @Html.ValidationMessageFor(m => m.CreateNewUser.USERTYPEID, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12 mt-1">
+@*                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
                             @Html.LabelFor(m => m.CreateNewUser.DEPARTMENTID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
                             @Html.DropDownListFor(m => m.CreateNewUser.DEPARTMENTID, new SelectList(Model.DeparmentList, "DEPTID", "DEPTNAME"), "Select Class", new { @class = "form-control multieselectordropdown", id = "itemName" })
@@ -82,21 +99,9 @@
                             @Html.DropDownListFor(m => m.CreateNewUser.ZONEID, new SelectList(Model.ZoneList, "ZONEID", "ZONENAME"), "Select Zone", new { @class = "form-control multieselectordropdown", id = "itemName" })
                             @Html.ValidationMessageFor(m => m.CreateNewUser.ZONEID, "", new { @class = "text-danger" })
                         </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12 mt-1">
-                        <div class="">
-                            @Html.LabelFor(m => m.CreateNewUser.USERID, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
-                            @Html.TextBoxFor(m => m.CreateNewUser.USERID, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.CreateNewUser.USERID, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12 mt-1">
-                        <div class="">
-                            @Html.LabelFor(m => m.CreateNewUser.PASSWORD, htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
-                            @Html.TextBoxFor(m => m.CreateNewUser.PASSWORD, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.CreateNewUser.PASSWORD, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
+                    </div> *@
+   
+
                     <div class="col-md-4 col-sm-12 mt-4">
                         <div class="">
                             @Html.CheckBox(
@@ -216,4 +221,28 @@
     function confirmDelete() {
         return confirm("⚠️ Are you sure you want to delete?");
     }
+    // $(document).ready(function () {
+
+    //      $("#userIDDetails").on("change", function () {
+    //          alert($(this).val());
+    //          EditPermission($(this).val());
+
+    //      });
+
+    //  });
+    //   function EditPermission(userId) {
+
+    //     $.ajax({
+    //         url: '@Url.Action("GetUserDetails", "UserManagement")',
+    //         type: 'GET',
+    //         data: { UserID: userId },
+    //         success: function (response) {
+    //             $("#userName").val(response.data[0].USERNAME);
+    //             $("#userEmail").val(response.data[0].USERNAME);
+    //             $("#userContact").val(response.data[0].USERNAME);
+    //             $("#userAddress").val(response.data[0].USERNAME);
+    //         }
+    //     });
+
+    // }
 </script>

@@ -13,7 +13,7 @@ namespace RetailCare.Models
         [Required(ErrorMessage = "Please Enter User Name")]
         public string USERNAME { get; set; }
         [Display(Name = "Staff ID")]
-        [Required(ErrorMessage = "Please Enter Staff ID")]
+        //[Required(ErrorMessage = "Please Enter Staff ID")]
         public int STAFFID { get; set; }
         [Display(Name = "User Role")]
         [Required(ErrorMessage = "Please Select Role")]
@@ -28,11 +28,7 @@ namespace RetailCare.Models
         [Display(Name = "Address")]
         public string? ADDRESS { get; set; }
         public int COMPANYID { get; set; }
-        [Display(Name = "Department")]
-        [Required(ErrorMessage = "Please select Department")]
         public int? DEPARTMENTID { get; set; }
-        [Display(Name = "Designation")]
-        [Required(ErrorMessage = "Please select Designation")]
         public int? DESIGNATIONID { get; set; }
         public int? ZONEID { get; set; }
         public int? DEPOTID { get; set; }

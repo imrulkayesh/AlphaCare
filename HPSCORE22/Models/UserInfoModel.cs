@@ -31,6 +31,7 @@
         public string EMPLOYEE_CODE { get; set; }
         public string EMPLOYEE_NAME { get; set; }
         public string CONTACT { get; set; }
+        public string CODE { get; set; }
 
 
     }

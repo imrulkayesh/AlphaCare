@@ -52,9 +52,10 @@ namespace RetailCare.Controllers
             Complain.ComaplainModel.CUSTOMERNAME = userdetails.EMPLOYEE_NAME;
             Complain.ComaplainModel.CONTACTNO = userdetails.CONTACT;
             Complain.ComaplainModel.LOCATION = userdetails.ADDRESS;
+            Complain.ComaplainModel.SHOWROOM= userdetails.EMPLOYEE_CODE;
             return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
         }
-        public IActionResult SaveDataComplain([Bind(Prefix = "ComaplainModel")] CompalinModel ComplainData,List<ComplainProblemModel> ComplainProblemList)
+        public IActionResult SaveDataComplain([Bind(Prefix = "ComaplainModel")] CompalinModel ComplainData,List<ComplainProblemModel> ProblemListAdded)
         {
             if (ComplainData.TICKETID > 0)
             {
@@ -70,7 +71,7 @@ namespace RetailCare.Controllers
                         var DeleteProblemList = _complainRepository.DeleteProblemList(ComplainData.TICKETCODE);
                         if (DeleteProblemList)
                         {
-                            foreach (var item in ComplainProblemList)
+                            foreach (var item in ProblemListAdded)
                             {
                                 item.TICKETCODE = ComplainData.TICKETCODE;
                                 _complainRepository.InsertComplainDetails(item);
@@ -106,7 +107,7 @@ namespace RetailCare.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (ComplainProblemList.Count() > 0)
+                    if (ProblemListAdded.Count() > 0)
                     {
                         // Fetching All the Data From database 
                         var userdetails = _SessionHelper.GetUser();
@@ -120,11 +121,11 @@ namespace RetailCare.Controllers
                         ComplainData.ENTRYDATE = DateTime.Now;
                         ComplainData.ENTRYBY = _SessionHelper.GetUser().USERID;
                         ComplainData.TICKETID = NextTicketCode;
-                        ComplainData.ZONEID = 1;
+                      //  ComplainData.ZONEID = 1;
                         var InsertedData = _complainRepository.AddNewComplain(ComplainData);
                         if (InsertedData)
                         {
-                            foreach (var item in ComplainProblemList)
+                            foreach (var item in ProblemListAdded)
                             {
                                 item.TICKETCODE= ComplainData.TICKETCODE;
                                 _complainRepository.InsertComplainDetails(item);

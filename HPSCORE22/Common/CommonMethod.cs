@@ -45,7 +45,6 @@ namespace RetailCare.Common
                 BUSINESS_UNIT = session.GetString("BUSINESS_UNIT") ?? ""
 
 
-
                 // USERTYPEID = session.GetString("USERTYPEID")
             };
         }

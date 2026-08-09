@@ -6,6 +6,7 @@ namespace RetailCare.Models.CRMModels
     {
         [Key]
         public int TICKETID { get; set; }
+        [Display(Name = "Ticket Code")]
         public string? TICKETCODE { get; set; }
         // Form Input Fileds start
         [Display(Name = "Customer Name")]
@@ -27,7 +28,7 @@ namespace RetailCare.Models.CRMModels
         [Display(Name = "Assign Technician")]
         [Required(ErrorMessage = "Please select a Technician")]
         public int TECHNICIANID { get; set; }
-        [Display(Name = "Showroom No")]
+        [Display(Name = "Showroom Code")]
         [Required(ErrorMessage = "Please select  Showroom")]
         public string? SHOWROOM { get; set; }
         public int? ZONEID { get; set; }

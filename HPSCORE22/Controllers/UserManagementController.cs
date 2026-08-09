@@ -42,6 +42,11 @@ namespace RetailCare.Controllers
                 }
                 UserDetailsSubmit.MODIFIEDBY = userdetails.USERID;
                 UserDetailsSubmit.MODIFIEDDATE = DateTime.Now;
+                // Default Details start
+                UserDetailsSubmit.DEPARTMENTID = 0;
+                UserDetailsSubmit.DESIGNATIONID = 0;
+                UserDetailsSubmit.ZONEID = 0;
+                // Default Details End
                 var InsertionUserTable = _UserManagementRepository.UpdateUser(UserDetailsSubmit);
                 if(InsertionUserTable)
                 {
@@ -81,9 +86,14 @@ namespace RetailCare.Controllers
                         UserDetailsSubmit.ENTRYBY = userdetails.USERID;
                         UserDetailsSubmit.ENTRYDATE = DateTime.Now;
                         UserDetailsSubmit.COMPANYID = userdetails.COMPANYID;
+                        // Default Details start
+                        UserDetailsSubmit.DEPARTMENTID = 0;
+                        UserDetailsSubmit.DESIGNATIONID=0;
+                        UserDetailsSubmit.ZONEID=0;
+                        // Default Details End
                         var UserCompanyPermisison = new UserCampany()
                         {
-                            USERID = userdetails.USERID,
+                            USERID = UserDetailsSubmit.USERID,
                             COMPANYID = userdetails.COMPANYID,
                             ISACTIVE = (int)UserDetailsSubmit.ISACTIVE,
                             ENTRYBY = userdetails.USERID
@@ -130,6 +140,19 @@ namespace RetailCare.Controllers
             };
             return userManagementViewModel;
         }
+        // ajax code 
+        //private JsonResult GetUserDetails(string UserID)
+        //{
+        //    if (UserID == null)
+        //    {
+               
+        //    }
+        //    else
+        //    {
+
+        //    }
+        //    return Json(null);
+        //}
         // User Menu Permission 
         public IActionResult CreateUserPermission()
         {

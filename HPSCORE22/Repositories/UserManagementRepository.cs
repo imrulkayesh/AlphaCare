@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Microsoft.IdentityModel.Tokens;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using QCMS.Services;
@@ -114,53 +115,173 @@ namespace RetailCare.Repositories
 
             return ExtractData.Convert<UserInfoModel>(dt).FirstOrDefault();
         }
+        //    public int InsertUser(UserModel model)
+        //{
+        //    int userCode = 0;
+
+        //    using (OracleConnection con = new OracleConnection(_connectionString))
+        //    {
+        //         con.OpenAsync();
+
+        //        using (OracleCommand cmd = new OracleCommand("SP_INSERT_USERINFO", con))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+
+        //            cmd.Parameters.Add("P_BU_CODE", OracleDbType.Varchar2).Value = model.BU_CODE;
+        //            cmd.Parameters.Add("P_USERID", OracleDbType.Varchar2).Value = model.USERID;
+        //            cmd.Parameters.Add("P_USERNAME", OracleDbType.Varchar2).Value = model.USERNAME;
+        //            cmd.Parameters.Add("P_STAFFID", OracleDbType.Varchar2).Value = model.STAFFID;
+        //            cmd.Parameters.Add("P_USERTYPEID", OracleDbType.Int32).Value = model.USERTYPEID;
+        //            cmd.Parameters.Add("P_PASSWORD", OracleDbType.Varchar2).Value = model.PASSWORD;
+        //            cmd.Parameters.Add("P_EMAIL", OracleDbType.Varchar2).Value = model.EMAIL;
+        //            cmd.Parameters.Add("P_CONTACTNO", OracleDbType.Varchar2).Value = model.CONTACTNO;
+        //            cmd.Parameters.Add("P_ADDRESS", OracleDbType.Varchar2).Value = model.ADDRESS;
+        //            cmd.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = model.COMPANYID;
+        //            cmd.Parameters.Add("P_DEPARTMENTID", OracleDbType.Int32).Value = model.DEPARTMENTID;
+        //            cmd.Parameters.Add("P_DESIGNATIONID", OracleDbType.Int32).Value = model.DESIGNATIONID;
+        //            cmd.Parameters.Add("P_ZONEID", OracleDbType.Int32).Value = model.ZONEID;
+        //            cmd.Parameters.Add("P_DEPOTID", OracleDbType.Int32).Value = model.DEPOTID;
+        //            cmd.Parameters.Add("P_DEPOACT", OracleDbType.Varchar2).Value = model.DEPOACT;
+        //            cmd.Parameters.Add("P_ISACTIVE", OracleDbType.Int32).Value = model.ISACTIVE;
+        //            cmd.Parameters.Add("P_ENTRYBY", OracleDbType.Int32).Value = model.ENTRYBY;
+        //            cmd.Parameters.Add("P_MODIFIEDBY", OracleDbType.Int32).Value = model.MODIFIEDBY;
+
+        //            // Output Parameter
+        //            OracleParameter outParam = new OracleParameter("P_USERCODE", OracleDbType.Int32);
+        //            outParam.Direction = ParameterDirection.Output;
+        //            cmd.Parameters.Add(outParam);
+
+        //            cmd.ExecuteNonQueryAsync();
+
+        //            if (outParam.Value != DBNull.Value)
+        //            {
+        //                userCode = Convert.ToInt32(((OracleDecimal)outParam.Value).Value);
+        //            }
+        //        }
+        //    }
+
+        //    return userCode;
+        //}
         public int InsertUser(UserModel model)
-    {
-        int userCode = 0;
-
-        using (OracleConnection con = new OracleConnection(_connectionString))
         {
-             con.OpenAsync();
-
-            using (OracleCommand cmd = new OracleCommand("SP_INSERT_USERINFO", con))
+            if (model == null)
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                throw new ArgumentNullException(nameof(model));
+            }
 
-                cmd.Parameters.Add("P_BU_CODE", OracleDbType.Varchar2).Value = model.BU_CODE;
-                cmd.Parameters.Add("P_USERID", OracleDbType.Varchar2).Value = model.USERID;
-                cmd.Parameters.Add("P_USERNAME", OracleDbType.Varchar2).Value = model.USERNAME;
-                cmd.Parameters.Add("P_STAFFID", OracleDbType.Varchar2).Value = model.STAFFID;
-                cmd.Parameters.Add("P_USERTYPEID", OracleDbType.Int32).Value = model.USERTYPEID;
-                cmd.Parameters.Add("P_PASSWORD", OracleDbType.Varchar2).Value = model.PASSWORD;
-                cmd.Parameters.Add("P_EMAIL", OracleDbType.Varchar2).Value = model.EMAIL;
-                cmd.Parameters.Add("P_CONTACTNO", OracleDbType.Varchar2).Value = model.CONTACTNO;
-                cmd.Parameters.Add("P_ADDRESS", OracleDbType.Varchar2).Value = model.ADDRESS;
-                cmd.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = model.COMPANYID;
-                cmd.Parameters.Add("P_DEPARTMENTID", OracleDbType.Int32).Value = model.DEPARTMENTID;
-                cmd.Parameters.Add("P_DESIGNATIONID", OracleDbType.Int32).Value = model.DESIGNATIONID;
-                cmd.Parameters.Add("P_ZONEID", OracleDbType.Int32).Value = model.ZONEID;
-                cmd.Parameters.Add("P_DEPOTID", OracleDbType.Int32).Value = model.DEPOTID;
-                cmd.Parameters.Add("P_DEPOACT", OracleDbType.Varchar2).Value = model.DEPOACT;
-                cmd.Parameters.Add("P_ISACTIVE", OracleDbType.Int32).Value = model.ISACTIVE;
-                cmd.Parameters.Add("P_ENTRYBY", OracleDbType.Int32).Value = model.ENTRYBY;
-                cmd.Parameters.Add("P_MODIFIEDBY", OracleDbType.Int32).Value = model.MODIFIEDBY;
+            int userCode = 0;
 
-                // Output Parameter
-                OracleParameter outParam = new OracleParameter("P_USERCODE", OracleDbType.Int32);
-                outParam.Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(outParam);
+            using (OracleConnection con = new OracleConnection(_connectionString))
+            {
+                con.Open();
 
-                cmd.ExecuteNonQueryAsync();
-
-                if (outParam.Value != DBNull.Value)
+                using (OracleCommand cmd =
+                       new OracleCommand("ESERV.SP_INSERT_USERINFO", con))
                 {
-                    userCode = Convert.ToInt32(((OracleDecimal)outParam.Value).Value);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.BindByName = true;
+
+                    cmd.Parameters.Add("P_BU_CODE", OracleDbType.Varchar2).Value =
+                        (object?)model.BU_CODE ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_USERID", OracleDbType.Varchar2).Value =
+                        (object?)model.USERID ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_USERNAME", OracleDbType.Varchar2).Value =
+                        (object?)model.USERNAME ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_STAFFID", OracleDbType.Int32).Value =
+                        (object?)model.STAFFID ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_USERTYPEID", OracleDbType.Int32).Value =
+                        model.USERTYPEID;
+                           
+
+                    cmd.Parameters.Add("P_PASSWORD", OracleDbType.Varchar2).Value =
+                        (object?)model.PASSWORD ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_EMAIL", OracleDbType.Varchar2).Value =
+                        (object?)model.EMAIL ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_CONTACTNO", OracleDbType.Varchar2).Value =
+                        (object?)model.CONTACTNO ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_ADDRESS", OracleDbType.Varchar2).Value =
+                        (object?)model.ADDRESS ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value =
+                        model.COMPANYID;
+
+                    cmd.Parameters.Add("P_DEPARTMENTID", OracleDbType.Int32).Value =
+                        model.DEPARTMENTID.HasValue
+                            ? (object)model.DEPARTMENTID.Value
+                            : DBNull.Value;
+
+                    cmd.Parameters.Add("P_DESIGNATIONID", OracleDbType.Int32).Value =
+                        model.DESIGNATIONID.HasValue
+                            ? (object)model.DESIGNATIONID.Value
+                            : DBNull.Value;
+
+                    cmd.Parameters.Add("P_ZONEID", OracleDbType.Int32).Value =
+                        model.ZONEID.HasValue
+                            ? (object)model.ZONEID.Value
+                            : DBNull.Value;
+
+                    cmd.Parameters.Add("P_DEPOTID", OracleDbType.Int32).Value =
+                        model.DEPOTID.HasValue
+                            ? (object)model.DEPOTID.Value
+                            : DBNull.Value;
+
+                    cmd.Parameters.Add("P_DEPOACT", OracleDbType.Varchar2).Value =
+                        (object?)model.DEPOACT ?? DBNull.Value;
+
+                    cmd.Parameters.Add("P_ISACTIVE", OracleDbType.Int32).Value =
+                        model.ISACTIVE.HasValue
+                            ? (object)model.ISACTIVE.Value
+                            : DBNull.Value;
+
+                    cmd.Parameters.Add("P_ENTRYBY", OracleDbType.Varchar2).Value =
+     string.IsNullOrWhiteSpace(model.ENTRYBY)
+         ? DBNull.Value
+         : model.ENTRYBY;
+
+                    cmd.Parameters.Add("P_MODIFIEDBY", OracleDbType.Varchar2).Value =
+     string.IsNullOrWhiteSpace(model.MODIFIEDBY)
+         ? DBNull.Value
+         : model.MODIFIEDBY;
+
+                    OracleParameter outputParameter =
+                        new OracleParameter(
+                            "P_USERCODE",
+                            OracleDbType.Decimal)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+
+                    cmd.Parameters.Add(outputParameter);
+
+                    cmd.ExecuteNonQuery();
+
+                    if (outputParameter.Value != null &&
+                        outputParameter.Value != DBNull.Value)
+                    {
+                        if (outputParameter.Value is OracleDecimal oracleDecimal)
+                        {
+                            if (!oracleDecimal.IsNull)
+                            {
+                                userCode = oracleDecimal.ToInt32();
+                            }
+                        }
+                        else
+                        {
+                            userCode = Convert.ToInt32(outputParameter.Value);
+                        }
+                    }
                 }
             }
-        }
 
-        return userCode;
-    }
+            return userCode;
+        }
         public List<UserModel> GetAllUserList(int CompanyID)
         {
             DataTable dt = new DataTable();

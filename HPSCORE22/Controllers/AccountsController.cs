@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AlphaCare.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using QCMS.Models;
 using QCMS.Repositories;
-using AlphaCare.Services;
 using RetailCare.Common;
 using RetailCare.Models;
 using System.Security.Claims;
