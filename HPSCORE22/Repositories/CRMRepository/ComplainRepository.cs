@@ -64,7 +64,8 @@ namespace RetailCare.Repositories.CRMRepository
 
                         command.Parameters.Add("P_ZONEID", OracleDbType.Int32).Value =
                             complain.ZONEID;
-
+                        command.Parameters.Add("P_ISACTIVE", OracleDbType.Int32).Value =
+                            complain.ISACTIVE;
                         command.ExecuteNonQuery();
                     }
                 }
