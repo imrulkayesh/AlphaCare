@@ -393,7 +393,6 @@ namespace RetailCare.Repositories
                         cmd.Parameters.Add("P_DEPOACT", OracleDbType.Varchar2).Value = model.DEPOACT;
                         cmd.Parameters.Add("P_ISACTIVE", OracleDbType.Int32).Value = model.ISACTIVE;
                         cmd.Parameters.Add("P_MODIFIEDBY", OracleDbType.Int32).Value = model.MODIFIEDBY;
-
                         cmd.ExecuteNonQuery();
                     }
                 }

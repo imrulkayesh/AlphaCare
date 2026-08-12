@@ -117,11 +117,12 @@ namespace RetailCare.Controllers
                         ComplainData.TICKETID = NextTicketCode;
                         ComplainData.COMPANYID = userdetails.COMPANYID;
                         ComplainData.ISSENDFEEDBACK = 0;
-                        ComplainData.TICKETCODE = CompanyDetails.TOKENSYSNTAX + "000000" + NextTicketCode;
+                        ComplainData.TICKETCODE = CreatingSyntaxForTicket(CompanyDetails.TOKENSYSNTAX,NextTicketCode);
                         ComplainData.ENTRYDATE = DateTime.Now;
                         ComplainData.ENTRYBY = _SessionHelper.GetUser().USERID;
                         ComplainData.TICKETID = NextTicketCode;
-                      //  ComplainData.ZONEID = 1;
+                        ComplainData.ISACTIVE = 1;
+                        //  ComplainData.ZONEID = 1;
                         var InsertedData = _complainRepository.AddNewComplain(ComplainData);
                         if (InsertedData)
                         {
@@ -156,6 +157,16 @@ namespace RetailCare.Controllers
 
             }
             return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
+        }
+        private string CreatingSyntaxForTicket(string CompanyPrefix,int NextTicketCode)
+        {
+            DateTime CurrentDate = DateTime.Now; 
+            var Year = CurrentDate.Year.ToString().Substring(2, 2);
+            var Month = CurrentDate.Month.ToString().PadLeft(2, '0');
+            var Day = CurrentDate.Day.ToString().PadLeft(2, '0');
+            var NextTicket = NextTicketCode.ToString().PadLeft(6, '0');
+            string TicketCode = CompanyPrefix + Year + Month + Day + NextTicket;
+            return TicketCode;
         }
         public bool AssignTask(CompalinModel ComplainModel,int Update)
         {

@@ -41,6 +41,7 @@ namespace RetailCare.Models.CRMModels
         public DateTime? MODIFIEDDATE { get; set; }
         public string? ENTRYPC { get; set; }
         public string? MODIFIEDPC { get; set; }
+        public int? ISACTIVE { get; set; }
         // Reporting Fields
         public string? PROBLEMNAME { get; set; }
         public string? STATUSNAME { get; set; }
