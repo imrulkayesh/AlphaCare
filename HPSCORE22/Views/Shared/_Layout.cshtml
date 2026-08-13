@@ -72,7 +72,6 @@
 
     <!-- jsPDF AutoTable Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
     <!--Common Alert-->
     <partial name="~/Views/PartialView/_SweetAlert.cshtml" />
     <!--Common CSS-->
@@ -80,5 +79,14 @@
     <!--Common JS-->
     <partial name="~/Views/PartialView/_CommonJS.cshtml" />
     <partial name="~/Views/PartialView/_ValidationPartialView.cshtml" />
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
+    
+    
+    @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

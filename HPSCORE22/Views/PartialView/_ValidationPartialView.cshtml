@@ -1,4 +1,4 @@
-﻿<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+﻿@* <script src="~/Scripts/jquery-3.7.1.min.js"></script> *@
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 
@@ -29,23 +29,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Email Validation
-    const email = document.getElementById("EMAIL");
-    const emailError = document.getElementById("emailError");
+    // const email = document.getElementById("EMAIL");
+    // const emailError = document.getElementById("emailError");
 
-    email.addEventListener("input", function () {
-            debugger;
-        const regex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+    // email.addEventListener("input", function () {
+    //         debugger;
+    //     const regex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
 
-        if (this.value.length === 0) {
-            emailError.innerHTML = "Email is required.";
-        }
-        else if (!regex.test(this.value)) {
-            emailError.innerHTML = "Enter a valid email address.";
-        }
-        else {
-            emailError.innerHTML = "";
-        }
-    });
+    //     if (this.value.length === 0) {
+    //         emailError.innerHTML = "Email is required.";
+    //     }
+    //     else if (!regex.test(this.value)) {
+    //         emailError.innerHTML = "Enter a valid email address.";
+    //     }
+    //     else {
+    //         emailError.innerHTML = "";
+    //     }
+    // });
 
 });
 </script>

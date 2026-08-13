@@ -31,31 +31,31 @@ namespace RetailCare.Controllers
             ICommonMethod CommonMethod, IProblemRepository ProblemRepository, IProductRepository ProductDetails, ICommonServiceMethods CommonServiceModel,
            IItemRepository itemRepository, ITechnicianRepository TechniciansData, IAssignmentManagementRepository TaskAssing, IZoneRepository ZoneRepository)
         {
-            _complainRepository= ComplainRepository;
-            _CompanyRepository= CompanyRepository;
-            _statusrepository= Status;
-            _SessionHelper= CommonMethod;
-            _ProblemRepository= ProblemRepository;
-            _ProductDetails= ProductDetails;
-            _CommonServiceModel= CommonServiceModel;
+            _complainRepository = ComplainRepository;
+            _CompanyRepository = CompanyRepository;
+            _statusrepository = Status;
+            _SessionHelper = CommonMethod;
+            _ProblemRepository = ProblemRepository;
+            _ProductDetails = ProductDetails;
+            _CommonServiceModel = CommonServiceModel;
             _itemRepository = itemRepository;
             _TechniciansData = TechniciansData;
-            _TaskAssing= TaskAssing;
-            _ZoneRepository= ZoneRepository;
+            _TaskAssing = TaskAssing;
+            _ZoneRepository = ZoneRepository;
         }
-        
+
         public IActionResult CreateToken()
         {
             var userdetails = _SessionHelper.GetUser();
-            Complain =GetAllData();
-            Complain.ComaplainModel.COMPLAINDATE= DateTime.Now;
+            Complain = GetAllData();
+            Complain.ComaplainModel.COMPLAINDATE = DateTime.Now;
             Complain.ComaplainModel.CUSTOMERNAME = userdetails.EMPLOYEE_NAME;
             Complain.ComaplainModel.CONTACTNO = userdetails.CONTACT;
             Complain.ComaplainModel.LOCATION = userdetails.ADDRESS;
-            Complain.ComaplainModel.SHOWROOM= userdetails.EMPLOYEE_CODE;
+            Complain.ComaplainModel.SHOWROOM = userdetails.EMPLOYEE_CODE;
             return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
         }
-        public IActionResult SaveDataComplain([Bind(Prefix = "ComaplainModel")] CompalinModel ComplainData,List<ComplainProblemModel> ProblemListAdded)
+        public IActionResult SaveDataComplain([Bind(Prefix = "ComaplainModel")] CompalinModel ComplainData, List<ComplainProblemModel> ProblemListAdded)
         {
             if (ComplainData.TICKETID > 0)
             {
@@ -65,8 +65,8 @@ namespace RetailCare.Controllers
                 var InsertedData = _complainRepository.UpdateCompalin(ComplainData);
                 if (InsertedData)
                 {
-                    var UpdateAssignTable = AssignTask(ComplainData,1);
-                    if(UpdateAssignTable)
+                    var UpdateAssignTable = AssignTask(ComplainData, 1);
+                    if (UpdateAssignTable)
                     {
                         var DeleteProblemList = _complainRepository.DeleteProblemList(ComplainData.TICKETCODE);
                         if (DeleteProblemList)
@@ -117,7 +117,7 @@ namespace RetailCare.Controllers
                         ComplainData.TICKETID = NextTicketCode;
                         ComplainData.COMPANYID = userdetails.COMPANYID;
                         ComplainData.ISSENDFEEDBACK = 0;
-                        ComplainData.TICKETCODE = CreatingSyntaxForTicket(CompanyDetails.TOKENSYSNTAX,NextTicketCode);
+                        ComplainData.TICKETCODE = CreatingSyntaxForTicket(CompanyDetails.TOKENSYSNTAX, NextTicketCode);
                         ComplainData.ENTRYDATE = DateTime.Now;
                         ComplainData.ENTRYBY = _SessionHelper.GetUser().USERID;
                         ComplainData.TICKETID = NextTicketCode;
@@ -128,10 +128,10 @@ namespace RetailCare.Controllers
                         {
                             foreach (var item in ProblemListAdded)
                             {
-                                item.TICKETCODE= ComplainData.TICKETCODE;
+                                item.TICKETCODE = ComplainData.TICKETCODE;
                                 _complainRepository.InsertComplainDetails(item);
                             }
-                            var InsertAssingTable = AssignTask(ComplainData,0);
+                            var InsertAssingTable = AssignTask(ComplainData, 0);
                             if (InsertAssingTable)
                             {
                                 TempData["SuccessMSG"] = "New Ticket:" + ComplainData.TICKETCODE;
@@ -158,9 +158,9 @@ namespace RetailCare.Controllers
             }
             return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
         }
-        private string CreatingSyntaxForTicket(string CompanyPrefix,int NextTicketCode)
+        private string CreatingSyntaxForTicket(string CompanyPrefix, int NextTicketCode)
         {
-            DateTime CurrentDate = DateTime.Now; 
+            DateTime CurrentDate = DateTime.Now;
             var Year = CurrentDate.Year.ToString().Substring(2, 2);
             var Month = CurrentDate.Month.ToString().PadLeft(2, '0');
             var Day = CurrentDate.Day.ToString().PadLeft(2, '0');
@@ -168,12 +168,12 @@ namespace RetailCare.Controllers
             string TicketCode = CompanyPrefix + Year + Month + Day + NextTicket;
             return TicketCode;
         }
-        public bool AssignTask(CompalinModel ComplainModel,int Update)
+        public bool AssignTask(CompalinModel ComplainModel, int Update)
         {
             bool IsAdded = true;
             if (ComplainModel != null)
             {
-                if(Update > 0)
+                if (Update > 0)
                 {
                     try
                     {
@@ -227,7 +227,7 @@ namespace RetailCare.Controllers
                         IsAdded = false;
                     }
                 }
-                   
+
             }
             return IsAdded;
         }
@@ -268,7 +268,7 @@ namespace RetailCare.Controllers
                 var userdetails = _SessionHelper.GetUser();
                 complain.StatusList = _statusrepository.GetAllStatus(userdetails.COMPANYID).Where(x => x.ISDEFAULT == 1).ToList();
                 complain.ComaplainModel = _complainRepository.GetComplainListUsingID(id);
-                complain.ProblemListAdded= _complainRepository.GetAllPromlemDetails(complain.ComaplainModel.TICKETCODE).ToList();
+                complain.ProblemListAdded = _complainRepository.GetAllPromlemDetails(complain.ComaplainModel.TICKETCODE).ToList();
                 complain.ProblemList = _ProblemRepository.GetAllProblemList(userdetails.COMPANYID).Where(x => x.PRODUCTID == complain.ComaplainModel.PROBLEMTYPEID).ToList();
                 complain.StatusList = _statusrepository.GetAllStatus(userdetails.COMPANYID).Where(x => x.STATUSID == 1).ToList();
                 complain.TechnicianList = _TechniciansData.GetAllTechnicianData(userdetails.COMPANYID, complain.ComaplainModel.PROBLEMTYPEID);
@@ -286,25 +286,5 @@ namespace RetailCare.Controllers
             };
             return ComplainGeneration;
         }
-
-
-
-
-
-
-        //[HttpGet]
-        //public JsonResult GetAllProductClassWise(int ClassID)
-        //{
-        //    var userdetails = _SessionHelper.GetUser();
-        //    var data = _ProductDetails.GetAllProcuctList(userdetails.COMPANYID).Where(x => x.ITEMID == ClassID).ToList();
-        //    var TechnicianData = _TechniciansData.GetAllTechnicianData(userdetails.COMPANYID, ClassID);
-        //    return Json(new
-        //    {
-        //        ProductList = data,
-        //        TechniciansList= TechnicianData
-        //    });
-        //}
-
-
     }
 }
