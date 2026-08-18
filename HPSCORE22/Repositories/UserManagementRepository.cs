@@ -1,4 +1,5 @@
-﻿using Humanizer;
+﻿using AlphaCare.Models;
+using Humanizer;
 using Microsoft.IdentityModel.Tokens;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
@@ -452,7 +453,7 @@ namespace RetailCare.Repositories
 
             return ExtractData.Convert<ParentMenus>(dt).ToList();
         }
-        public bool DeletePreviousPermission(string UserID)
+        public bool DeletePreviousPermission(int UserID)
         {
             bool isDeleted = true;
             try
@@ -466,7 +467,7 @@ namespace RetailCare.Repositories
                         command.CommandType = CommandType.StoredProcedure;
                         command.BindByName = true;
                         command.CommandTimeout = 300;
-                        command.Parameters.Add("P_USERID", OracleDbType.Varchar2).Value = UserID;
+                        command.Parameters.Add("P_USERID", OracleDbType.Int32).Value = UserID;
                         command.ExecuteNonQuery();
                     }
                 }
@@ -489,7 +490,7 @@ namespace RetailCare.Repositories
                     using (OracleCommand cmd = new OracleCommand("ESERV.SP_INSERT_USERMENUPERMISSION", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add("P_USERID", OracleDbType.Varchar2).Value = UserWiseMenu.USERID;
+                        cmd.Parameters.Add("P_USERID", OracleDbType.Int32).Value = UserWiseMenu.ROLEID;
                         cmd.Parameters.Add("P_MENUID", OracleDbType.Int32).Value = UserWiseMenu.MENUID;
                         cmd.Parameters.Add("P_ACTIVE", OracleDbType.Int32).Value = UserWiseMenu.ACTIVE;
                         cmd.Parameters.Add("P_ENTRYBY", OracleDbType.Varchar2).Value = UserWiseMenu.ENTRYBY;
@@ -503,6 +504,34 @@ namespace RetailCare.Repositories
                 isDeleted = false;
             }
             return isDeleted;
+        }
+        ///role wise menu
+        public List<UserWiseMenuPer> GetAllRoleWiseMenus(int RoleID)
+        {
+            DataTable dt = new DataTable();
+
+            using (OracleConnection connection = new OracleConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (OracleCommand command = new OracleCommand("ESERV.RoleWiseGetAllMenus", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 300;
+
+                    command.Parameters.Add("p_RoleId", OracleDbType.Int32).Value = RoleID;
+
+                    command.Parameters.Add("p_Recordset", OracleDbType.RefCursor)
+                           .Direction = ParameterDirection.Output;
+
+                    using (OracleDataAdapter da = new OracleDataAdapter(command))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+
+            return ExtractData.Convert<UserWiseMenuPer>(dt).ToList();
         }
     }
 }

@@ -209,6 +209,30 @@ namespace AlphaCare.Services
                 };
             }
         }
+        public async Task<List<SelectListItem>> GetAllUserType()
+        {
+            try
+            {
+                var UserType = new List<SelectListItem>();
+                UserType = new List<SelectListItem>
+                    {
+                        new SelectListItem { Value = "", Text = "Select User" },
+                        new SelectListItem { Value = "SU", Text = "Showroom User" },
+                        new SelectListItem { Value = "SA", Text = "Super Admin" },
+                        new SelectListItem { Value = "T", Text = "Technician" }
+                    };
+
+                return UserType;
+            }
+            catch
+            {
+                return new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = "Select Business Unit" },
+                    new SelectListItem { Value = "TT", Text = "Tasty Treat" }
+                };
+            }
+        }
     }
 
     // =========================

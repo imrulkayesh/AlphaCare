@@ -140,7 +140,36 @@ namespace RetailCare.Models
         public DateTime MODIFIEDDATE { get; set; }
         public string ENTRYPC { get; set; }
         public string MODIFIEDPC { get; set; }
-
+        public int ROLEID { get; set; }
+        public bool CheckedBox { get; set; }
+    }
+    public class RoleModel
+    {
+        public int TYPEID { get; set; }
+        public string TYPECODE { get; set; }
+        [Display(Name = "Role Name")]
+        [Required(ErrorMessage = "Please Enter Role Name")]
+        public string TYPENAME { get; set; }
+        public string SERVICETYPE { get; set; }
+        public string? ENTRYBY { get; set; }
+        public string? MODIFIEDBY { get; set; }
+        public DateTime? ENTRYDATE { get; set; }
+        public DateTime? MODIFIEDDATE { get; set; }
+    }
+    public class UserWiseRolePer
+    {
+        public int UWMNUPID { get; set; }
+        [Display(Name = "User ID")]
+        [Required(ErrorMessage = "Please Select User")]
+        public string MENUID { get; set; }
+        public int ROLEID { get; set; }
+        public int ACTIVE { get; set; }
+        public string ENTRYBY { get; set; }
+        public string MODIFIEDBY { get; set; }
+        public DateTime ENTRYDATE { get; set; }
+        public DateTime MODIFIEDDATE { get; set; }
+        public string ENTRYPC { get; set; }
+        public string MODIFIEDPC { get; set; }
         public bool CheckedBox { get; set; }
     }
 }

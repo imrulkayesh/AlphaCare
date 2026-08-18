@@ -17,7 +17,8 @@ namespace RetailCare.Interface
         // User Permission
         public List<Menus> GetAllMenuList();
         public List<ParentMenus> GetAllParentsMenu();
-        public bool DeletePreviousPermission(string UserID);
+        public bool DeletePreviousPermission(int UserID);
         public bool ADDPermissionWiseMenuPermission(UserWiseMenuPer UserWiseMenu);
+        public List<UserWiseMenuPer> GetAllRoleWiseMenus(int RoleID);
     }
 }

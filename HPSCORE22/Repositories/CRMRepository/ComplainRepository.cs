@@ -92,7 +92,7 @@ namespace RetailCare.Repositories.CRMRepository
                     command.CommandTimeout = 300;
 
                     command.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = CompanyID;
-
+                  //  command.Parameters.Add("P_SHOWROOM", OracleDbType.Varchar2).Value = showroomcode;
                     command.Parameters.Add("P_RECORDSET", OracleDbType.RefCursor)
                            .Direction = ParameterDirection.Output;
 
@@ -119,6 +119,7 @@ namespace RetailCare.Repositories.CRMRepository
                     command.CommandTimeout = 300;
 
                     command.Parameters.Add("P_TICKETID", OracleDbType.Int32).Value = TickedID;
+                   // command.Parameters.Add("P_SHOWROOM", OracleDbType.Varchar2).Value = showroomcode;
 
                     command.Parameters.Add("P_RECORDSET", OracleDbType.RefCursor)
                            .Direction = ParameterDirection.Output;
@@ -235,6 +236,7 @@ namespace RetailCare.Repositories.CRMRepository
                     command.CommandTimeout = 300;
 
                     command.Parameters.Add("P_TICKETCODE", OracleDbType.Varchar2).Value = TickedID;
+
 
                     command.Parameters.Add("P_RECORDSET", OracleDbType.RefCursor)
                            .Direction = ParameterDirection.Output;

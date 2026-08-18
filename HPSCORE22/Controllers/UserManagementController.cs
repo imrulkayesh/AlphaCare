@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AlphaCare.Interface;
+using Microsoft.AspNetCore.Mvc;
 using RetailCare.Common;
 using RetailCare.Interface;
 using RetailCare.Models;
@@ -11,20 +12,21 @@ namespace RetailCare.Controllers
         private readonly IUserManagementRepository _UserManagementRepository;
         private readonly IZoneRepository _ZoneRepository;
         private readonly ICommonMethod _SessionHelper;
-        public UserManagementController(IUserManagementRepository userManagementRepository, IZoneRepository zoneRepository, ICommonMethod sessionHelper)
+        private readonly IMenuSettingManagementRepository _MenuSetup;
+        public UserManagementController(IUserManagementRepository userManagementRepository, IZoneRepository zoneRepository, ICommonMethod sessionHelper,
+        IMenuSettingManagementRepository MenuSetup)
         {
             _UserManagementRepository = userManagementRepository;
             _ZoneRepository = zoneRepository;
             _SessionHelper = sessionHelper;
+            _MenuSetup = MenuSetup;
         }
-
         public IActionResult CreateUser()
         {
             UserManagementViewModel userManagementViewModel = new UserManagementViewModel();
             userManagementViewModel = GetAllDataUserCreation();
             return View("~/Views/UserManagement/CreateUser.cshtml", userManagementViewModel);
         }
-
         [HttpPost]
         public IActionResult CreateNewUser([Bind(Prefix = "CreateNewUser")] UserModel UserDetailsSubmit)
         {
@@ -140,27 +142,15 @@ namespace RetailCare.Controllers
             };
             return userManagementViewModel;
         }
-        // ajax code 
-        //private JsonResult GetUserDetails(string UserID)
-        //{
-        //    if (UserID == null)
-        //    {
-               
-        //    }
-        //    else
-        //    {
-
-        //    }
-        //    return Json(null);
-        //}
-        // User Menu Permission 
+        
+        // Role Wise Menu Permission 
         public IActionResult CreateUserPermission()
         {
             var MenusViewModel = GetAllDataUserWiseMenu();
             return View("~/Views/UserManagement/CreateUserPermission.cshtml", MenusViewModel); 
         }
         [HttpPost]
-        public IActionResult SaveUserPermission(string userID, List<int> CheckingMenuList)
+        public IActionResult SaveUserPermission(int userID, List<int> CheckingMenuList)
         {
             var userdetails = _SessionHelper.GetUser();
             if (CheckingMenuList.Count > 0)
@@ -172,7 +162,7 @@ namespace RetailCare.Controllers
                     {
                         var UserWiseMenu = new UserWiseMenuPer()
                         {
-                            USERID = userID,
+                            ROLEID = userID,
                             MENUID=menu,
                             ACTIVE=1,
                             ENTRYDATE = DateTime.Now,
@@ -202,27 +192,90 @@ namespace RetailCare.Controllers
         }
         private UserWiseMenuPermissionViewModel GetAllDataUserWiseMenu()
         {
-            var userdetails = _SessionHelper.GetUser();
             var Menudetails = new UserWiseMenuPermissionViewModel()
             {
                 Menus= _UserManagementRepository.GetAllMenuList(),
                 ParentMenus= _UserManagementRepository.GetAllParentsMenu(),
-                UserDetails= _UserManagementRepository.GetAllUserList(userdetails.COMPANYID)
+                RoleList = _MenuSetup.GetAllRoles()
             };
             return Menudetails;
         }
-
-        // ajax code 
-        //private JsonResult GetALlUserPermission(string UserID)
-        //{
-        //    if (UserID == null)
-        //    {
-        //        return Json(null);
-        //    }
-        //    else
-        //    {
-
-        //    }
-        //}
+        public JsonResult GetALlUserPermission(int UserId)
+        {
+            var data = _UserManagementRepository.GetAllRoleWiseMenus(UserId);
+            if (data == null || !data.Any())
+            {
+                ViewData["Message"] = "No data found. Please select class.";
+                return Json(new
+                {
+                    success = false,
+                    message = "No data found. Please select class."
+                });
+            }
+            return Json(new
+            {
+                success = true,
+                data = data
+            });
+        }
+        // User Wise Menu Permission & Role Wise Menu Permission
+        public IActionResult CreateRole()
+        {
+            RolewiseMenuPermissionViewModel rolesetup = new RolewiseMenuPermissionViewModel();
+            rolesetup.RoleList = _MenuSetup.GetAllRoles();
+            return View("~/Views/UserManagement/CreateRole.cshtml", rolesetup);
+        }
+        public IActionResult AddNewRole([Bind(Prefix = "RoleDetails")] RoleModel RoleData)
+        {
+            var userdetails = _SessionHelper.GetUser();
+            if(RoleData.TYPEID>0)
+            {
+                var UpdateRole = _MenuSetup.UpdateRole(RoleData);
+                if (UpdateRole)
+                {
+                    TempData["SuccessMSG"] = "Data have been Updated";
+                    return RedirectToAction("CreateRole", "UserManagement");
+                }
+                else
+                {
+                    TempData["ERRORMSG"] = "!!! Error !!!!!";
+                    return View("~/Views/UserManagement/CreateRole.cshtml", UpdateRole);
+                }
+            }
+            else
+            {
+                if(ModelState.IsValid)
+                {
+                    var ChekcUniqueRole = _MenuSetup.GetAllRoles().Where(x=>x.TYPENAME== RoleData.TYPENAME).FirstOrDefault();
+                    if(ChekcUniqueRole != null)
+                    {
+                        var InsertRole= _MenuSetup.AddNewRole(RoleData);
+                        if(InsertRole)
+                        {
+                            TempData["SuccessMSG"] = "Data have been added";
+                            return RedirectToAction("CreateRole", "UserManagement");
+                        }
+                        else
+                        {
+                            TempData["ERRORMSG"] = "!!! Error !!!!!";
+                            return View("~/Views/UserManagement/CreateRole.cshtml", RoleData);
+                        }
+                    }
+                    else
+                    {
+                        TempData["ERRORMSG"] = "This Role Name Already Exist";
+                        return View("~/Views/UserManagement/CreateRole.cshtml", RoleData);
+                    }
+                }
+            }
+            return View("~/Views/UserManagement/CreateRole.cshtml", RoleData);
+        }
+        public IActionResult EditRoleType(int id)
+        {
+            RolewiseMenuPermissionViewModel rolesetup = new RolewiseMenuPermissionViewModel();
+            rolesetup.RoleDetails = _MenuSetup.GetAllRoles().Where(x=>x.TYPEID== id).FirstOrDefault();
+            rolesetup.RoleList = _MenuSetup.GetAllRoles();
+            return View("~/Views/UserManagement/CreateRole.cshtml", rolesetup);
+        }
     }
 }

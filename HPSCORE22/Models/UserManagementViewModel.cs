@@ -14,7 +14,13 @@
         public List<Menus> Menus { get; set; }=new List<Menus>();
         public List<ParentMenus>ParentMenus { get; set; }= new List<ParentMenus>();
         public UserWiseMenuPer UserWiseMenus { get; set; } = new UserWiseMenuPer();
-        public List<UserModel> UserDetails { get; set; } = new List<UserModel>();
+        public List<RoleModel> RoleList { get; set; } = new List<RoleModel>();
         public List<int> CheckingMenuList { get; set; } = new List<int>();
+    }
+    public class RolewiseMenuPermissionViewModel
+    {
+        public List<RoleModel> RoleList { get; set; } = new List<RoleModel>();
+        public RoleModel RoleDetails { get; set; } = new RoleModel();
+
     }
 }

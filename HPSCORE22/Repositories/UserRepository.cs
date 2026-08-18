@@ -5,6 +5,7 @@ using Oracle.ManagedDataAccess.Client;
 using QCMS.Models;
 using QCMS.Services;
 using RetailCare.Models;
+using System.Text;
 
 namespace QCMS.Repositories
 {
@@ -48,6 +49,7 @@ namespace QCMS.Repositories
         public List<UserInfoModel>? GetUserInfo(string username)
         {
             using var conn = _databaseService.GetConnection();
+            StringBuilder sb = new StringBuilder();
 
             //string sql = @"SELECT U.USER_TEXT, U.USER_NAME, U.USER_TYPE
             //FROM QCMS.UC_USERS  U WHERE UPPER(U.USER_TEXT) = :Username AND U.PASSWORD = :Password AND U.IS_ACTIVE = '1'";
@@ -57,15 +59,14 @@ namespace QCMS.Repositories
             //        WHERE U.UserId = @Username
             //        AND U.Password = @Password
             //        AND U.ISACTIVE = '1'";
-
             string sql = @"
-                SELECT U.USERID, U.USERNAME, U.USERTYPEID,UC.CompanyId,U.ZoneId, U.STAFFID FROM USERINFO U , USERCOMPANY UC
+                SELECT U.USERID, U.USERNAME, U.USERTYPEID,UC.CompanyId,U.ZoneId, U.STAFFID,U.USERTYPEID FROM USERINFO U , USERCOMPANY UC
                 WHERE U.USERID = UC.USERID
                 AND U.USERID = :Username AND U.ISACTIVE = '1'";
-            return conn.Query<UserInfoModel>(sql, new 
-            {username = username
-
-            }).ToList();
+            return conn.Query<UserInfoModel>(sql, new
+                {
+                    username = username
+                }).ToList();
 
             //return conn.QueryFirstOrDefault<UserInfoModel>(sql, new
             //{
@@ -75,7 +76,15 @@ namespace QCMS.Repositories
                 
             //});
         }
-
+        public UserInfoModel CheckUser(string username)
+        {
+            using var conn = _databaseService.GetConnection();
+            string sql = @" SELECT * from USERINFO where USERID = :Username AND U.ISACTIVE = '1'";
+            return conn.Query<UserInfoModel>(sql, new
+            {
+                username = username
+            }).FirstOrDefault();
+        }
         public async Task<string> CheckHRISAsync(string username)
         {
             using var conn = _databaseService.GetConnection();

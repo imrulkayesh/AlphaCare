@@ -1,4 +1,5 @@
-﻿using AlphaCare.Services;
+﻿using AlphaCare.Interface;
+using AlphaCare.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using QCMS.Repositories;
 using RetailCare.Common;
 using RetailCare.Models;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace AlphaCare.Controllers
 {
@@ -18,11 +20,13 @@ namespace AlphaCare.Controllers
         private readonly UserRepository _userRepository;
         private readonly ICommonMethod _SessionHelper;
         private readonly ApiService _apiService;
-        public AccountsController(UserRepository userRepository, ICommonMethod SessionHelper, ApiService apiService)
+        private readonly IMenuSettingManagementRepository _MenuSetup;
+        public AccountsController(UserRepository userRepository, ICommonMethod SessionHelper, ApiService apiService, IMenuSettingManagementRepository MenuSetup)
         {
             _userRepository = userRepository;
             _SessionHelper = SessionHelper;
             _apiService = apiService;
+            _MenuSetup = MenuSetup;
         }
 
         // =========================
@@ -89,8 +93,9 @@ namespace AlphaCare.Controllers
                     if (userDetails.Count > 0)
                     {
                         var user = userDetails.FirstOrDefault();
+                       var MenuList= _MenuSetup.GetAllRoleWiseMenu(user.USERTYPEID);
 
-
+                        HttpContext.Session.SetString("MenuList",JsonSerializer.Serialize(MenuList));
                         // Store session data
                         HttpContext.Session.SetString("USERID", userData.ID ?? "");
                         HttpContext.Session.SetString("USERNAME", userData.NAME ?? "");
@@ -135,7 +140,7 @@ namespace AlphaCare.Controllers
                         // Log to verify cookie is created
                         Console.WriteLine($"User {userData.NAME} authenticated successfully. Cookie created.");
 
-                        return Json(new { success = true, redirect = Url.Action("Index", "Home") });
+                        return Json(new { success = true, redirect = Url.Action("Index", "Home"), model = MenuList });
                     }
                     else
                     {

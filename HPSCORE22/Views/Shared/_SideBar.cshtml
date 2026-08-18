@@ -1,4 +1,16 @@
-﻿ <!--begin::Sidebar-->
+﻿@using System.Text.Json
+@using AlphaCare.Models
+
+@{
+    var menuJson = Context.Session.GetString("MenuList");
+
+    var MenuList = string.IsNullOrEmpty(menuJson)
+        ? new List<RoleWiseMenuPermission>()
+        : JsonSerializer.Deserialize<List<RoleWiseMenuPermission>>(menuJson)
+          ?? new List<RoleWiseMenuPermission>();
+}
+
+<!--begin::Sidebar-->
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="light" style="font-size: 0.875rem; color: #9EE7FF;">
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand">
@@ -15,17 +27,42 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2">
             <!--begin::Sidebar Menu-->
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
-                <li class="nav-item">
+            @*   <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUser" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Management</a></li>*@
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation"> 
+                @{
+                    var ParentMenulist = MenuList.Where(x => x.MENU_PARENT_ID == 0).ToList();
+                    if (ParentMenulist.Count>0)
+                    {
+                     foreach (var ParentMenu in ParentMenulist)
+                    {
+                        <li class="nav-item">
+                            <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>@ParentMenu.PARENTMENUNAME<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
+                                @{
+                                    var ChildMenuList = MenuList.Where(x => x.MENU_PARENT_ID == ParentMenu.PARENTMENUID).ToList();
+                                    if (ChildMenuList.Count>0)
+                                    {
+                                        <ul class="nav nav-treeview">
+                                            @foreach (var ChildMenu in ChildMenuList)
+                                            {
+                                                <li class="nav-item"><a href="@Url.Content(ChildMenu.URL)" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>@ChildMenu.TITLE</a></li>
+                                            }
+                                        </ul>
+                                    }
+                                }
+                        </li>
+                    }
+                    }
+                }
+@*                 <li class="nav-item">
                     <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>Setup<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUser" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Management</a></li>
+                      
                         <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUserPermission" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Menu Setup</a></li>
-@*                         <li class="nav-item"><a asp-area="" asp-controller="ProductManagement" asp-action="CreateNewBrand" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Brand Management</a></li>
-                        <li class="nav-item"><a asp-area="" asp-controller="ProductManagement" asp-action="CreateNewClass" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Class Management</a></li>*@
-                        @* newly added *@
-@*                         <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateNewClass" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Management</a></li>
-                        <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUserPermission" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Menu Setup</a></li>  *@
+                       <li class="nav-item"><a asp-area="" asp-controller="ProductManagement" asp-action="CreateNewBrand" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Brand Management</a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="ProductManagement" asp-action="CreateNewClass" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Class Management</a></li>
+                         newly added 
+                         <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateNewClass" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Management</a></li>
+                        <li class="nav-item"><a asp-area="" asp-controller="UserManagement" asp-action="CreateUserPermission" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>User Menu Setup</a></li>  
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -40,7 +77,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item"><a asp-area="" asp-controller="TechniciansManagement" asp-action="CreateTechnicians" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>ADD Technician</a></li>
                         <li class="nav-item"><a asp-area="" asp-controller="TechniciansManagement" asp-action="GetAllTechniciansList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Technician List</a></li>
-                        @* <li class="nav-item"><a asp-area="" asp-controller="AssignManagement" asp-action="TechnicianAssignList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Assign Technicians</a></li> *@
+                        @* <li class="nav-item"><a asp-area="" asp-controller="AssignManagement" asp-action="TechnicianAssignList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Assign Technicians</a></li> 
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -54,9 +91,9 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item"><a asp-area="" asp-controller="ReportGeneration" asp-action="ComplainReportGeneration" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Complain Report</a></li>
                         <li class="nav-item"><a asp-area="" asp-controller="ReportGeneration" asp-action="FeedbackReportGeneration" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Feedback Report</a></li>
-                        @* <li class="nav-item"><a asp-area="" asp-controller="AssignManagement" asp-action="TechnicianAssignList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Assign Technicians</a></li> *@
+                         <li class="nav-item"><a asp-area="" asp-controller="AssignManagement" asp-action="TechnicianAssignList" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>Assign Technicians</a></li>
                     </ul>
-                </li>
+                </li> *@
             </ul>
             <!--end::Sidebar Menu-->
         </nav>

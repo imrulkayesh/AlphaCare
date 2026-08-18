@@ -151,10 +151,10 @@ namespace RetailCare.Controllers
                 {
                     TempData["ERRORMSG"] = "Enter all the required Fileds";
                     Complain = GetAllData();
+                    Complain.TechnicianList = _TechniciansData.GetAllTechnicianData(ComplainData.COMPANYID, ComplainData.PROBLEMTYPEID);
                     Complain.ComaplainModel = ComplainData;
                     return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
                 }
-
             }
             return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
         }
@@ -247,7 +247,14 @@ namespace RetailCare.Controllers
         {
             var userdetails = _SessionHelper.GetUser();
             Complain = GetAllData();
-            Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID);
+            if (userdetails.USERTYPEID==1)
+            {
+                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID);
+            }
+            else 
+            {
+                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID).Where(x => x.SHOWROOM == userdetails.EMPLOYEE_CODE).ToList();
+            }
             return View("~/Views/ComplainGeneration/GetAllTicket.cshtml", Complain);
         }
         [HttpGet]

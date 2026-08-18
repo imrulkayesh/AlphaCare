@@ -42,7 +42,10 @@ namespace RetailCare.Common
                 EMPLOYEE_CODE= session.GetString("EMPLOYEE_CODE"),
                 EMPLOYEE_NAME= session.GetString("EMPLOYEE_NAME"),
                 CONTACT = session.GetString("CONTACT") ?? "",
-                BUSINESS_UNIT = session.GetString("BUSINESS_UNIT") ?? ""
+                BUSINESS_UNIT = session.GetString("BUSINESS_UNIT") ?? "",
+                TECHNICIANID = session.GetInt32("TechnicianID") ?? 0,
+                USERTYPEID = session.GetInt32("UserTypeID") ?? 0
+
 
 
                 // USERTYPEID = session.GetString("USERTYPEID")

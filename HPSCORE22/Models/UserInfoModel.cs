@@ -33,6 +33,9 @@
         public string CONTACT { get; set; }
         public string CODE { get; set; }
 
+        // For MultieUserNeed
+        public int TECHNICIANID { get; set; }
 
     }
+   
 }

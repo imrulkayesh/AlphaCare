@@ -11,7 +11,7 @@
     <div class="card frombody">
         <div class="top-border"></div>
         <div class="card-header entryfromheader">
-            <h3 class="card-title"> User Wise Menu Permission</h3>
+            <h3 class="card-title"> Role Wise Menu Permission</h3>
         </div>
         <div class="card-body">
             @using (Html.BeginForm("SaveUserPermission", "UserManagement", FormMethod.Post, new { @class = "form-floating" }))
@@ -19,12 +19,12 @@
                 <div class="row">
                     <div class="col-md-4 col-sm-12 mt-1">
                         <div class="">
-                            <label>User ID</label>
+                            <label>Role</label>
                             <select name="userID" id="UserIDDetails" class="form-control">
-                                <option value="">Select User</option>
-                                @foreach (var UserInfo in Model.UserDetails)
+                                <option value="">Select Role</option>
+                                @foreach (var UserInfo in Model.RoleList)
                                 {
-                                    <option value="@UserInfo.USERID">@UserInfo.USERNAME</option>
+                                    <option value="@UserInfo.TYPEID">@UserInfo.TYPENAME</option>
                                 }
                               
                             </select>
@@ -92,32 +92,51 @@
     $(document).ready(function () {
 
         $("#UserIDDetails").on("change", function () {
-            alert($(this).val());
-            //EditPermission($(this).val());
-
+           EditPermission($(this).val());
         });
 
     });
-
-        function EditPermission(userId) {
+    function EditPermission(userId) {
 
         $.ajax({
-            url: '@Url.Action("GetALlUserPermission", "ProductManagement")',
+            url: '@Url.Action("GetALlUserPermission", "UserManagement")',
             type: 'GET',
-            data: { UserID: userId },
+            data: { UserId: userId },
+
             success: function (response) {
-                var userModel = response.data[0];
-                $(".itemCheckbox").prop("checked", false);
+
+                console.log("Permission Response:", response);
+
+                // Uncheck all menus first
+                $(".form-check-input").prop("checked", false);
+
+                if (!response.success) {
+                    alert(response.message);
+                    return;
+                }
 
                 $.each(response.data, function (i, item) {
 
-                    if (item.Active) {
-                        $("#item_" + item.ItemId).prop("checked", true);
-                    }
+                    console.log("ItemId:", item.MENUID);
+                    console.log("Active:", item.ACTIVE);
 
+                    if (item.ACTIVE === 1) {
+
+                        $("#class_" + item.MENUID).prop("checked", true);
+
+                    }
                 });
+            },
+
+            error: function (xhr, status, error) {
+
+                console.log("AJAX ERROR");
+                console.log("Status:", status);
+                console.log("Error:", error);
+                console.log("Response:", xhr.responseText);
+
+                alert("Failed to load user permissions.");
             }
         });
-
     }
 </script>
