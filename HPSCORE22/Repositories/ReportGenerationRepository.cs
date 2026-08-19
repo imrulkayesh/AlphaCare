@@ -29,6 +29,7 @@ namespace RetailCare.Repositories
                     command.CommandType = CommandType.StoredProcedure;
                     command.BindByName = true;
                     command.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = CompanyID;
+                    command.Parameters.Add("P_STATUSID", OracleDbType.Int32).Value = FilteringValues.StatusID;
                     command.Parameters.Add("P_STARTDATE", OracleDbType.Date).Value = FilteringValues.StartDate;
                     command.Parameters.Add("P_ENDDATE", OracleDbType.Date).Value = FilteringValues.EndDate;
                     command.Parameters.Add("P_RECORDSET", OracleDbType.RefCursor).Direction = ParameterDirection.Output;

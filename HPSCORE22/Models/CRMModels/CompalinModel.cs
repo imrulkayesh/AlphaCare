@@ -22,7 +22,7 @@ namespace RetailCare.Models.CRMModels
         [Display(Name = "Problem Type")]
         public int PROBLEMTYPEID { get; set; }
         [Display(Name = "Complain Date")]
-        [DataType(DataType.Date)]
+       // [DataType(DataType.Date)]
         public DateTime? COMPLAINDATE { get; set; }
 
         [Display(Name = "Assign Technician")]
@@ -50,7 +50,11 @@ namespace RetailCare.Models.CRMModels
         public string? ZONENAME { get; set; }
         public string? TECHNICIANNAME { get; set; }
         public string? ITEMNAME { get; set; }
-
+        // New Table Column
+        public DateTime? ASSIGNDATE { get; set; }
+        public DateTime? WORKINGDATE { get; set; }
+        public int CompletedDiff { get; set; }
+        public int PendingDate { get; set; }
     }
     public class ComplainProblemModel
     {

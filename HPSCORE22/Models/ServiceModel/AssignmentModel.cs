@@ -32,6 +32,7 @@
         public string? MODIFIEDPC { get; set; }
         public int PRODUCTID { get; set; }
         public int PROBLEMID { get; set; }
+        public string SHOWROOMCODE { get; set; }
 
         // Reporting Fields
         public string? STATUSNAME { get; set; }

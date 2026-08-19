@@ -41,6 +41,9 @@ namespace RetailCare.Repositories.ServiceRepository
                         command.Parameters.Add("P_ENTRYBY", OracleDbType.Varchar2).Value = model.ENTRYBY;
                         command.Parameters.Add("P_PRODUCTID", OracleDbType.Int32).Value = model.PRODUCTID;
                         command.Parameters.Add("P_PROBLEMID", OracleDbType.Int32).Value = model.PROBLEMID;
+                        // Missing parameter
+                        command.Parameters.Add("P_SHOWROOMCODE", OracleDbType.Varchar2)
+                            .Value = model.SHOWROOMCODE;
                         // OUT Parameter
                         command.Parameters.Add("P_ASSIGNID", OracleDbType.Int32)
                                .Direction = ParameterDirection.Output;

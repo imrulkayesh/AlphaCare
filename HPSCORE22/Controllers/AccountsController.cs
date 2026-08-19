@@ -107,6 +107,7 @@ namespace AlphaCare.Controllers
                         HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
                         HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
                         HttpContext.Session.SetInt32("CompanyID", user.COMPANYID);
+                        HttpContext.Session.SetInt32("UserTypeID", user.USERTYPEID);
 
                         // =========================
                         // CREATE AUTHENTICATION COOKIE

@@ -32,7 +32,16 @@
                         }
                         <div class="col-md-3 col-sm-12 mt-1">
                             @Html.LabelFor(model => model.ComaplainModel.COMPLAINDATE, new { @class = "control-label" })<span style="color:red">*</span>
-                            @Html.TextBoxFor(model => model.ComaplainModel.COMPLAINDATE, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", @readonly = "readonly" })
+                            @Html.TextBoxFor(
+                            model => model.ComaplainModel.COMPLAINDATE,
+                                                "{0:yyyy-MM-ddTHH:mm}",
+                                                new
+                                                {
+                                                    @class = "form-control",
+                                                    type = "datetime-local",
+                                                    @readonly = "readonly"
+                                                }
+                                                )
                             @Html.ValidationMessageFor(model => model.ComaplainModel.COMPLAINDATE, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-3 col-sm-12 mt-1">
