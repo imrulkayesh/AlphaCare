@@ -26,7 +26,7 @@
                 </div>
                 <div class="col-md-3 col-sm-12">
                     @Html.LabelFor(m => m.FilteringOption.StatusID, htmlAttributes: new { @class = "form-control-label" })
-                    @Html.DropDownListFor(m => m.FilteringOption.StatusID, new SelectList(Model.StatusList, "STATUSID", "STATUSNAME"), new { @class = "form-control dropdowndesign" })
+                    @Html.DropDownListFor(m => m.FilteringOption.StatusID, new SelectList(Model.StatusList, "STATUSID", "STATUSNAME"), "Select Status", new { @class = "form-control dropdowndesign" })
                 </div>
                 <div class="col-md-3 col-sm-12 mt-3">
                     <button class="btn btn-success" type="submit">Show</button>

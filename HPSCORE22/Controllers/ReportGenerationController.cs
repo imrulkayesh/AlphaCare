@@ -34,11 +34,11 @@ namespace RetailCare.Controllers
             if (ModelState.IsValid)
             {
                 var AllComplainList = _ReportGeneration.GetComplainReport(Report.FilteringOption, UserDetails.COMPANYID).ToList();
-                if (UserDetails.USERTYPEID==1)
+                if (UserDetails.USERTYPEID==4)
                 {
-                    if(AllComplainList.Count > 0)
+                    if (AllComplainList.Count > 0)
                     {
-                        Report.ComplainList = AllComplainList;
+                        Report.ComplainList = AllComplainList.Where(x => x.SHOWROOM == UserDetails.EMPLOYEE_CODE).ToList();
                     }
                     else
                     {
@@ -47,20 +47,24 @@ namespace RetailCare.Controllers
                 }
                 else
                 {
-                    if(AllComplainList.Count > 0)
+                    if (AllComplainList.Count > 0)
                     {
-                        Report.ComplainList = AllComplainList.Where(x=>x.SHOWROOM== UserDetails.EMPLOYEE_CODE).ToList();
+                        Report.ComplainList = AllComplainList;
                     }
                     else
                     {
                         TempData["ERRORMSG"] = "Data Can not been Found";
                     }
                 }
+                Report.StatusList = _statusrepository.GetAllStatus(UserDetails.COMPANYID).ToList();
+                return View("~/Views/ReportGeneration/ComplainReportGeneration.cshtml", Report);
             }
             else
             {
+                Report.StatusList = _statusrepository.GetAllStatus(UserDetails.COMPANYID).ToList();
                 return View("~/Views/ReportGeneration/ComplainReportGeneration.cshtml", Report);
             }
+
            return View("~/Views/ReportGeneration/ComplainReportGeneration.cshtml", Report);
         }
 

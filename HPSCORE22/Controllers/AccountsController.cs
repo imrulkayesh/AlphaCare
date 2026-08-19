@@ -76,49 +76,112 @@ namespace AlphaCare.Controllers
                 {
                     return Json(new { success = false, message = "Invalid Business Unit selected" });
                 }
-
-                // Call login API
-                var loginResponse = await _apiService.LoginAsync(
-                    businessUnitData.CONN_ID,
-                    businessUnitData.SCHEMA_ID,
-                    Username,
-                    Password
-                );
-
-                if (loginResponse != null && loginResponse.status && loginResponse.result != null && loginResponse.result.Count > 0)
+                var userDetails = _userRepository.GetUserInfo(Username).FirstOrDefault();
+                if (userDetails != null)
                 {
-                    var userData = loginResponse.result.First();
-
-                    var userDetails = _userRepository.GetUserInfo(userData.ID);
-                    if (userDetails.Count > 0)
+                    if (userDetails.USERTYPEID == 4)
                     {
-                        var user = userDetails.FirstOrDefault();
-                       var MenuList= _MenuSetup.GetAllRoleWiseMenu(user.USERTYPEID);
+                        var loginResponse = await _apiService.LoginAsync(
+                       businessUnitData.CONN_ID,
+                       businessUnitData.SCHEMA_ID,
+                       Username,
+                       Password
+                        );
+                        if (loginResponse != null && loginResponse.status && loginResponse.result != null && loginResponse.result.Count > 0)
+                        {
+                            var userData = loginResponse.result.First();
+                            if (userData != null)
+                            {
+                                //  var user = userDetails.FirstOrDefault();
+                                var MenuList = _MenuSetup.GetAllRoleWiseMenu(userDetails.USERTYPEID);
 
-                        HttpContext.Session.SetString("MenuList",JsonSerializer.Serialize(MenuList));
-                        // Store session data
-                        HttpContext.Session.SetString("USERID", userData.ID ?? "");
-                        HttpContext.Session.SetString("USERNAME", userData.NAME ?? "");
-                        HttpContext.Session.SetString("EMPLOYEE_CODE", userData.CODE ?? "");
-                        HttpContext.Session.SetString("EMPLOYEE_NAME", userData.NAMES ?? "");
-                        HttpContext.Session.SetString("ADDRESS", userData.ADDRESS ?? "");
-                        HttpContext.Session.SetString("CONTACT", userData.CONTACT ?? "");
-                        HttpContext.Session.SetString("BUSINESS_UNIT", BusinessUnit);
-                        HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
-                        HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
-                        HttpContext.Session.SetInt32("CompanyID", user.COMPANYID);
-                        HttpContext.Session.SetInt32("UserTypeID", user.USERTYPEID);
+                                HttpContext.Session.SetString("MenuList", JsonSerializer.Serialize(MenuList));
+                                // Store session data
+                                HttpContext.Session.SetString("USERID", userData.ID ?? "");
+                                HttpContext.Session.SetString("USERNAME", userData.NAME ?? "");
+                                HttpContext.Session.SetString("EMPLOYEE_CODE", userData.CODE ?? "");
+                                HttpContext.Session.SetString("EMPLOYEE_NAME", userData.NAMES ?? "");
+                                HttpContext.Session.SetString("ADDRESS", userData.ADDRESS ?? "");
+                                HttpContext.Session.SetString("CONTACT", userData.CONTACT ?? "");
+                                HttpContext.Session.SetString("BUSINESS_UNIT", BusinessUnit);
+                                HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
+                                HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
+                                HttpContext.Session.SetInt32("CompanyID", userDetails.COMPANYID);
+                                HttpContext.Session.SetInt32("UserTypeID", userDetails.USERTYPEID);
 
-                        // =========================
-                        // CREATE AUTHENTICATION COOKIE
-                        // =========================
-                        var claims = new List<Claim>
+                                // =========================
+                                // CREATE AUTHENTICATION COOKIE
+                                // =========================
+                                var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name, userData.NAME ?? ""),
                             new Claim(ClaimTypes.NameIdentifier, userData.ID ?? ""),
                             new Claim("USERID", userData.ID ?? ""),
                             new Claim("EMPLOYEE_CODE", userData.CODE ?? ""),
                             new Claim("EMPLOYEE_NAME", userData.NAMES ?? ""),
+                            new Claim("BUSINESS_UNIT", BusinessUnit),
+                            new Claim("CONN_ID", businessUnitData.CONN_ID),
+                            new Claim("SCHEMA_ID", businessUnitData.SCHEMA_ID)
+                        };
+
+                                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                                var principal = new ClaimsPrincipal(identity);
+
+                                // Sign in user
+                                await HttpContext.SignInAsync(
+                                    CookieAuthenticationDefaults.AuthenticationScheme,
+                                    principal,
+                                    new AuthenticationProperties
+                                    {
+                                        IsPersistent = true,
+                                        ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                                    }
+                                );
+
+                                // Log to verify cookie is created
+                                Console.WriteLine($"User {userData.NAME} authenticated successfully. Cookie created.");
+
+                                return Json(new { success = true, redirect = Url.Action("Index", "Home"), model = MenuList });
+                            }
+                            else
+                            {
+                                return Json(new { success = false, message = "User not found" });
+                            }
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = loginResponse?.message ?? "Invalid credentials" });
+                        }
+                    }
+                    else
+                    {
+                        //  var user = userDetails.FirstOrDefault();
+                        var MenuList = _MenuSetup.GetAllRoleWiseMenu(userDetails.USERTYPEID);
+
+                        HttpContext.Session.SetString("MenuList", JsonSerializer.Serialize(MenuList));
+                        // Store session data
+                        HttpContext.Session.SetString("USERID", userDetails.USERID ?? "");
+                        HttpContext.Session.SetString("USERNAME", userDetails.USERNAME ?? "");
+                        //HttpContext.Session.SetString("EMPLOYEE_CODE", userData.CODE ?? "");
+                        //HttpContext.Session.SetString("EMPLOYEE_NAME", userData.NAMES ?? "");
+                        HttpContext.Session.SetString("ADDRESS", userDetails.ADDRESS ?? "");
+                        HttpContext.Session.SetString("CONTACT", userDetails.CONTACT ?? "");
+                        HttpContext.Session.SetString("BUSINESS_UNIT", BusinessUnit);
+                        HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
+                        HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
+                        HttpContext.Session.SetInt32("CompanyID", userDetails.COMPANYID);
+                        HttpContext.Session.SetInt32("UserTypeID", userDetails.USERTYPEID);
+
+                        // =========================
+                        // CREATE AUTHENTICATION COOKIE
+                        // =========================
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, userDetails.USERNAME ?? ""),
+                            new Claim(ClaimTypes.NameIdentifier, userDetails.USERID ?? ""),
+                            new Claim("USERID", userDetails.USERID ?? ""),
+                            //new Claim("EMPLOYEE_CODE", userDetails.CODE ?? ""),
+                            //new Claim("EMPLOYEE_NAME", userData.NAMES ?? ""),
                             new Claim("BUSINESS_UNIT", BusinessUnit),
                             new Claim("CONN_ID", businessUnitData.CONN_ID),
                             new Claim("SCHEMA_ID", businessUnitData.SCHEMA_ID)
@@ -139,19 +202,17 @@ namespace AlphaCare.Controllers
                         );
 
                         // Log to verify cookie is created
-                        Console.WriteLine($"User {userData.NAME} authenticated successfully. Cookie created.");
+                        Console.WriteLine($"User {userDetails.USERNAME} authenticated successfully. Cookie created.");
 
                         return Json(new { success = true, redirect = Url.Action("Index", "Home"), model = MenuList });
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "User not found" });
                     }
                 }
                 else
                 {
-                    return Json(new { success = false, message = loginResponse?.message ?? "Invalid credentials" });
+                    return Json(new { success = false, message = $"Login error: Contact with Admin" });
                 }
+                // Call login API
+              
             }
             catch (Exception ex)
             {

@@ -33,7 +33,7 @@
                     <!-- Optional small avatar on navbar -->
                     <img src="~/assets/img/pf1.png" class="rounded-circle me-2" style="width:32px; height:32px;" alt="User Image" onclick="logoutModuleOpen()" />
                     <span class="d-none d-md-inline fw-semibold text-dark">
-                        @Context.Session.GetString("USER_TEXT")
+                        @* @Context.Session.GetString("USERID") *@
                     </span>
                 </a>
 
@@ -41,12 +41,12 @@
                     <!-- User Header -->
                     <li class="user-header text-center p-3 text-white" style="background: linear-gradient(135deg, #667eea, skyblue); border-bottom:1px solid rgba(255,255,255,0.2);">
                         <img src="~/assets/img/pf1.png" class="rounded-circle shadow mb-2" style="width:64px; height:64px;" alt="User Image" />
-                        <p class="mb-0 fw-bold">@Context.Session.GetString("USER_NAME")</p>
+                        <p class="mb-0 fw-bold">@Context.Session.GetString("USERID")</p>
                         @* <small class="text-light">@Context.Session.GetString("DIST_NAME"):@Context.Session.GetString("DUSR_WHID")</small> *@
                         <small class="text-light d-block opacity-75">
-                            @Context.Session.GetString("DIST_NAME")
+                            @Context.Session.GetString("USERID")
                             <span class="mx-1">•</span>
-                            @Context.Session.GetString("DUSR_WHID")
+                            @Context.Session.GetString("USERID")
                         </small>
                     </li>
 

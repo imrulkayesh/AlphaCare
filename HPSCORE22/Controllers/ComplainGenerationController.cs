@@ -247,13 +247,13 @@ namespace RetailCare.Controllers
         {
             var userdetails = _SessionHelper.GetUser();
             Complain = GetAllData();
-            if (userdetails.USERTYPEID==1)
+            if (userdetails.USERTYPEID==4)
             {
-                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID);
+                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID).Where(x => x.SHOWROOM == userdetails.EMPLOYEE_CODE).ToList();
             }
             else 
             {
-                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID).Where(x => x.SHOWROOM == userdetails.EMPLOYEE_CODE).ToList();
+                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID);
             }
             return View("~/Views/ComplainGeneration/GetAllTicket.cshtml", Complain);
         }
