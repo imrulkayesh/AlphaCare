@@ -78,7 +78,7 @@ namespace RetailCare.Repositories.CRMRepository
             }
             return isSuccess;
         }
-        public List<CompalinModel> GetALlComplainList(int CompanyID)
+        public List<CompalinModel> GetALlComplainList(int CompanyID,string ShowrromCode)
         {
             DataTable dt = new DataTable();
 
@@ -92,7 +92,7 @@ namespace RetailCare.Repositories.CRMRepository
                     command.CommandTimeout = 300;
 
                     command.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = CompanyID;
-                  //  command.Parameters.Add("P_SHOWROOM", OracleDbType.Varchar2).Value = showroomcode;
+                    command.Parameters.Add("P_SHOWROOM", OracleDbType.Varchar2).Value = ShowrromCode;
                     command.Parameters.Add("P_RECORDSET", OracleDbType.RefCursor)
                            .Direction = ParameterDirection.Output;
 

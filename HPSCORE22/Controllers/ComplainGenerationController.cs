@@ -192,6 +192,7 @@ namespace RetailCare.Controllers
                             SENDFEEDBACK = 0,
                             ISASSIGN = 1,
                             PROBLEMID = ComplainModel.PROBLEMTYPEID,
+                            SHOWROOMCODE= ComplainModel.SHOWROOM
                         };
                         _TaskAssing.UpdateAssign(AssignTable);
                     }
@@ -219,6 +220,7 @@ namespace RetailCare.Controllers
                             SENDFEEDBACK = 0,
                             ISASSIGN = 1,
                             PROBLEMID = ComplainModel.PROBLEMTYPEID,
+                            SHOWROOMCODE = ComplainModel.SHOWROOM
                         };
                         _TaskAssing.InsertAssignTechnician(AssignTable);
                     }
@@ -247,14 +249,7 @@ namespace RetailCare.Controllers
         {
             var userdetails = _SessionHelper.GetUser();
             Complain = GetAllData();
-            if (userdetails.USERTYPEID==4)
-            {
-                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID).Where(x => x.SHOWROOM == userdetails.EMPLOYEE_CODE).ToList();
-            }
-            else 
-            {
-                Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID);
-            }
+            Complain.ComplainList = _complainRepository.GetALlComplainList(userdetails.COMPANYID, userdetails.EMPLOYEE_CODE).ToList();
             return View("~/Views/ComplainGeneration/GetAllTicket.cshtml", Complain);
         }
         [HttpGet]

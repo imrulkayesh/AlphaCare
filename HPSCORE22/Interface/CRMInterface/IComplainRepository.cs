@@ -5,7 +5,7 @@ namespace RetailCare.Interface.CRMInterface
     public interface IComplainRepository
     {
         public bool AddNewComplain(CompalinModel complain);
-        public List<CompalinModel> GetALlComplainList(int CompanyID);
+        public List<CompalinModel> GetALlComplainList(int CompanyID,string showroomccode);
         public CompalinModel GetComplainListUsingID(int TickedID);
         public bool UpdateCompalin(CompalinModel complain);
         public CompalinModel GetComplainUsingTickedID(string TickedID);
