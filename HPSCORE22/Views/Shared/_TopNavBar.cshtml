@@ -28,15 +28,20 @@
                 </a>
             </li>
 
-            <li class="nav-item dropdown user-menu" onclick="logoutModuleOpen()">
-                <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" id="imagelink" onclick="logoutModuleOpen()">
-                    <!-- Optional small avatar on navbar -->
-                    <img src="~/assets/img/pf1.png" class="rounded-circle me-2" style="width:32px; height:32px;" alt="User Image" onclick="logoutModuleOpen()" />
-                    <span class="d-none d-md-inline fw-semibold text-dark">
-                        @* @Context.Session.GetString("USERID") *@
-                    </span>
+            <li class="nav-item dropdown user-menu" >
+                <a asp-area=""
+                   asp-controller="Accounts"
+                   asp-action="Logout"
+                   class="btn btn-danger logout-btn">
+                    Log Out
                 </a>
-
+            @*     <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" id="imagelink" onclick="logoutModuleOpen()">
+                    <!-- Optional small avatar on navbar -->
+                    <img src="~/assets/img/pf1.png" class="rounded-circle me-2" style="width:32px; height:32px;" alt="User Image"  />
+                    <span class="d-none d-md-inline fw-semibold text-dark">
+                        @* @Context.Session.GetString("USERID") 
+                    </span>
+                </a> *@
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end shadow-lg border-0" style="min-width:200px;" id="topnavbarmenu">
                     <!-- User Header -->
                     <li class="user-header text-center p-3 text-white" style="background: linear-gradient(135deg, #667eea, skyblue); border-bottom:1px solid rgba(255,255,255,0.2);">
@@ -63,4 +68,18 @@
 
     </div>
 </nav>
+<style>
+    .logout-btn {
+        padding: 0;
+        height: 32px;
+        margin: 6px 0 0 0;
+        width: auto;
+        min-width: 65px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        text-align: center;
+    }
+</style>
 <!--end::Header-->
