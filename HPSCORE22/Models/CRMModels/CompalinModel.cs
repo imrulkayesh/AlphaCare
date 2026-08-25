@@ -50,6 +50,7 @@ namespace RetailCare.Models.CRMModels
         public string? ZONENAME { get; set; }
         public string? TECHNICIANNAME { get; set; }
         public string? ITEMNAME { get; set; }
+        public string? STAFFID { get; set; }
         // New Table Column
         public DateTime? ASSIGNDATE { get; set; }
         public DateTime? WORKINGDATE { get; set; }

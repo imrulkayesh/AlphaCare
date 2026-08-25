@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AlphaCare.Common;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using QCMS.Repositories;
 using RetailCare.Common;
@@ -8,6 +9,7 @@ using RetailCare.Interface.ServiceInterface;
 using RetailCare.Models.CRMModels;
 using RetailCare.Models.CRMViewModel;
 using RetailCare.Models.ServiceModel;
+using RetailCare.Repositories.ServiceRepository;
 using System;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -26,10 +28,13 @@ namespace RetailCare.Controllers
         private readonly ITechnicianRepository _TechniciansData;
         private readonly IAssignmentManagementRepository _TaskAssing;
         private readonly IZoneRepository _ZoneRepository;
+        private readonly IComplainSmSApi _ComplainSmSApi;
+        private readonly ITechnicianRepository _technicianRepository;
         ComplainGenerationViewModel Complain = new ComplainGenerationViewModel();
         public ComplainGenerationController(IComplainRepository ComplainRepository, ICompanyRepository CompanyRepository, IStatusRepository Status,
             ICommonMethod CommonMethod, IProblemRepository ProblemRepository, IProductRepository ProductDetails, ICommonServiceMethods CommonServiceModel,
-           IItemRepository itemRepository, ITechnicianRepository TechniciansData, IAssignmentManagementRepository TaskAssing, IZoneRepository ZoneRepository)
+           IItemRepository itemRepository, ITechnicianRepository TechniciansData, IAssignmentManagementRepository TaskAssing, IZoneRepository ZoneRepository,
+           IComplainSmSApi ComplainSmSApi, ITechnicianRepository technicianRepository)
         {
             _complainRepository = ComplainRepository;
             _CompanyRepository = CompanyRepository;
@@ -42,6 +47,8 @@ namespace RetailCare.Controllers
             _TechniciansData = TechniciansData;
             _TaskAssing = TaskAssing;
             _ZoneRepository = ZoneRepository;
+            _ComplainSmSApi = ComplainSmSApi;
+            _technicianRepository = technicianRepository;
         }
 
         public IActionResult CreateToken()
@@ -134,8 +141,21 @@ namespace RetailCare.Controllers
                             var InsertAssingTable = AssignTask(ComplainData, 0);
                             if (InsertAssingTable)
                             {
-                                TempData["SuccessMSG"] = "New Ticket:" + ComplainData.TICKETCODE;
-                                return RedirectToAction("CreateToken", "ComplainGeneration");
+                                var techniciandetails=_technicianRepository.GetAllTechniciansList(userdetails.COMPANYID).Where(x=>x.TECHNICIANID== ComplainData.TECHNICIANID).FirstOrDefault();
+                                var ProductType= _ProductDetails.GetAllProcuctList(userdetails.COMPANYID).Where(x=>x.PRODUCTID== ComplainData.PROBLEMTYPEID).FirstOrDefault();
+                                var SendSMS = _ComplainSmSApi.SendSMSAPI(ComplainData, techniciandetails.TECHNICIANNAME,techniciandetails.CONTACTNO, ProductType.PRODUCTNAME);
+                                if (SendSMS)
+                                {
+                                    TempData["SuccessMSG"] = "New Ticket:" + ComplainData.TICKETCODE;
+                                    return RedirectToAction("CreateToken", "ComplainGeneration");
+                                }
+                                else
+                                {
+                                    TempData["ERRORMSG"] = "Server Error. Please try again after some time";
+                                    Complain = GetAllData();
+                                    Complain.ComaplainModel = ComplainData;
+                                    return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
+                                }
                             }
                             else
                             {

@@ -1,3 +1,4 @@
+using AlphaCare.Common;
 using AlphaCare.Interface;
 using AlphaCare.Repositories;
 using AlphaCare.Services;
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IReportingMethods, ReportingMethods>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IUserManagementRepository, UserManagementRepository>();
 builder.Services.AddScoped<IMenuSettingManagementRepository, MenuSettingManagementRepository>();
+builder.Services.AddScoped<IComplainSmSApi, ComplainSmSApi>();
 
 
 // Add HttpClient and ApiService

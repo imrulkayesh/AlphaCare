@@ -49,7 +49,7 @@ namespace RetailCare.Repositories
             {
                 connection.Open();
 
-                using (OracleCommand command = new OracleCommand("ESERV.SP_GET_FEEDBACK_REPORT", connection))
+                using (OracleCommand command = new OracleCommand("ESERV.GET_FEEDBACK_REPORT", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.BindByName = true;
