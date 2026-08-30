@@ -62,7 +62,7 @@ namespace RetailCare.Controllers
             Complain.ComaplainModel.SHOWROOM = userdetails.EMPLOYEE_CODE;
             return View("~/Views/ComplainGeneration/CreateToken.cshtml", Complain);
         }
-        public IActionResult SaveDataComplain([Bind(Prefix = "ComaplainModel")] CompalinModel ComplainData, List<ComplainProblemModel> ProblemListAdded)
+        public async Task<IActionResult> SaveDataComplain([Bind(Prefix = "ComaplainModel")] CompalinModel ComplainData, List<ComplainProblemModel> ProblemListAdded)
         {
             if (ComplainData.TICKETID > 0)
             {
@@ -143,7 +143,7 @@ namespace RetailCare.Controllers
                             {
                                 var techniciandetails=_technicianRepository.GetAllTechniciansList(userdetails.COMPANYID).Where(x=>x.TECHNICIANID== ComplainData.TECHNICIANID).FirstOrDefault();
                                 var ProductType= _ProductDetails.GetAllProcuctList(userdetails.COMPANYID).Where(x=>x.PRODUCTID== ComplainData.PROBLEMTYPEID).FirstOrDefault();
-                                var SendSMS = _ComplainSmSApi.SendSMSAPI(ComplainData, techniciandetails.TECHNICIANNAME,techniciandetails.CONTACTNO, ProductType.PRODUCTNAME);
+                                var SendSMS = await _ComplainSmSApi.SendSMSAPI(ComplainData, techniciandetails.TECHNICIANNAME,techniciandetails.CONTACTNO, ProductType.PRODUCTNAME);
                                 if (SendSMS)
                                 {
                                     TempData["SuccessMSG"] = "New Ticket:" + ComplainData.TICKETCODE;

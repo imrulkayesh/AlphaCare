@@ -1,6 +1,7 @@
 using AlphaCare.Common;
 using AlphaCare.Interface;
 using AlphaCare.Repositories;
+using AlphaCare.Repositories.CommonRepository;
 using AlphaCare.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,6 +51,8 @@ builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IUserManagementRepository, UserManagementRepository>();
 builder.Services.AddScoped<IMenuSettingManagementRepository, MenuSettingManagementRepository>();
 builder.Services.AddScoped<IComplainSmSApi, ComplainSmSApi>();
+builder.Services.AddScoped<ICommonCoreRepository, CommonCoreRepository>();
+
 
 
 // Add HttpClient and ApiService

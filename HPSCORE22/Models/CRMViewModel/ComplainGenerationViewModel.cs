@@ -1,4 +1,5 @@
-﻿using RetailCare.Models.CRMModels;
+﻿using RetailCare.Common;
+using RetailCare.Models.CRMModels;
 using RetailCare.Models.ServiceModel;
 
 namespace RetailCare.Models.CRMViewModel
@@ -17,5 +18,9 @@ namespace RetailCare.Models.CRMViewModel
         public List<TechnicianModel> TechnicianList { get; set; } = new List<TechnicianModel>();
         public List<ZoneModel> ZoneList { get; set; }=new List<ZoneModel>();
         public List<ComplainProblemModel> ProblemListAdded { get; set; } = new List<ComplainProblemModel>();
+
+
+
+
     }
 }

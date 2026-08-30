@@ -14,12 +14,19 @@ namespace RetailCare.Models
         [Display(Name = "Status")]
         public int? StatusID { get; set; }
     }
+    public class ConstantValues
+    {
+        // Need To be changed the URL here  
+        public readonly string _ImageAPIURL = "http://pmc.prangroup.com/AlphaCareAPI/api/v1/";
+        // Need to be changed the URL here 
+    }
     public class ReportGenerationViewModel
     {
         public FilteringOption FilteringOption { get; set; } = new FilteringOption();
         public List<CompalinModel> ComplainList { get; set; } = new List<CompalinModel>();
         public List<FeedBackReportModel> FeedbackReport { get; set; } = new List<FeedBackReportModel>();
         public List<StatusModel> StatusList { get; set; } = new List<StatusModel>();
+        public ConstantValues ConstantValues { get; set; } = new ConstantValues();
     }
 
 }

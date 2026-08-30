@@ -4,24 +4,51 @@ namespace AlphaCare.Common
 {
     public interface IComplainSmSApi
     {
-        bool SendSMSAPI(CompalinModel ComplainDetails, string TechnicianName, string TechnicianNumer, string ProductType);
+        Task<bool> SendSMSAPI(
+            CompalinModel ComplainDetails,
+            string TechnicianName,
+            string TechnicianNumer,
+            string ProductType);
     }
-    public class ComplainSmSApi: IComplainSmSApi
+    public class ComplainSmSApi : IComplainSmSApi
     {
-        public bool SendSMSAPI(CompalinModel ComplainDetails,string TechnicianName,string TechnicianNumer,string ProductType)
+        private const string UserID = "487428";
+        private const string PasswordHash = "00b823eb7b959d189acbb3a2a4f80171";
+
+        public async Task<bool> SendSMSAPI(CompalinModel ComplainDetails,string TechnicianName,string TechnicianNumer, string ProductType)
         {
-            bool isSend = true;
             try
             {
-                string apiUrl = "";
                 string GeneratedSMSBody =
-                $"TID {ComplainDetails.TICKETCODE},Name:{ComplainDetails.CUSTOMERNAME},Contact:{ComplainDetails.CONTACTNO},Address:{ComplainDetails.LOCATION},Product Type:{ProductType},Technician: {TechnicianName}({TechnicianNumer})";
+                    $"TID {ComplainDetails.TICKETCODE}," +
+                    $"Name:{ComplainDetails.CUSTOMERNAME}," +
+                    $"Contact:{ComplainDetails.CONTACTNO}," +
+                    $"Address:{ComplainDetails.LOCATION}," +
+                    $"Product Type:{ProductType}," +
+                    $"Technician:{TechnicianName}({TechnicianNumer})";
+                // $"&msisdn={TechnicianNumer}" +
+                string apiUrl =
+                    $"http://sms.prangroup.com/postman/api/sendsms" +
+                    $"?userid={UserID}" +
+                    $"&password={PasswordHash}" +
+                    $"&msisdn={TechnicianNumer}" +
+                    $"&masking=28585" +
+                    $"&message={Uri.EscapeDataString(GeneratedSMSBody)}";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
             }
-            catch (Exception ex)
+            catch
             {
-                isSend= false;
+                return false;
             }
-            return isSend;
         }
     }
 }
