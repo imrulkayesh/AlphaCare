@@ -44,15 +44,11 @@
                                 <th>Location</th>
                                 <th>Showroom Code</th>
                                 <th>Product Type</th>
-                                <th>Problem Name</th>
-                                <th>Product Qty</th>
-                                <th>Complain Remark</th>
                                 <th>Assign Person</th>
                                 <th>Assign Person StaffID</th>
                                 <th>Status</th>
                                 <th>Working Date</th>
-                                <th>Remarks</th>
-                                <th>Feedback Images</th> 
+                                <th>Details</th>
                            </tr>
                         </thead>
 
@@ -70,15 +66,21 @@
                                         <td>@item.LOCATION</td>
                                         <td>@item.SHOWROOM</td>
                                         <td>@item.PRODUCTNAME</td>
-                                        <td>@item.PROBLEMNAME</td>
-                                        <td>@item.QUANTITY</td>
-                                        <td>@item.COMPLAINREMARKS</td>
                                         <td>@item.TECHNICIANNAME</td>
                                         <td>@item.STAFFID</td>
                                         <td>@item.STATUSNAME</td>
                                         <td>@item.WORKINGDATE?.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.REMARKS</td>
-                                        <td><img src="@(Model.ConstantValues._ImageAPIURL + item.IMAGEPATH)" alt="@item.TICKETCODE" width="150" height="150"></td>
+
+                                        <!-- Action column -->
+                                        <td>
+                                            <button type="button"
+                                                    class="btn btn-primary btn-sm assign-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal"
+                                                    onclick="showDetails('@item.TICKETCODE')">
+                                                <i class="fa fa-plus-circle"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                     i++;
                                 }
@@ -96,4 +98,159 @@
 
     </div>
 </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Problem Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table id="complaindetails" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>SL</th>
+                            <th>Problem Name</th>
+                            <th>Quantity</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner" id="imagedetails">
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <partial name="~/Views/PartialView/_DatatableJSCode.cshtml" />
+<style>
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: brightness(0); /* Makes the Bootstrap arrow black */
+    }
+</style>
+<script>
+    function showDetails(ticketCode) {
+        $.ajax({
+            url: '@Url.Action("GetAllComplainProblemList", "ReportGeneration")',
+            type: 'GET',
+            data: { ticketcode: ticketCode },
+            dataType: 'json',
+
+            success: function (res) {
+
+                console.log(res);
+
+                var tbody = $("#complaindetails tbody");
+                var imageBody = $("#imagedetails");
+
+                // Clear previous data
+                tbody.empty();
+                imageBody.empty();
+
+                // =========================
+                // Problem Details
+                // =========================
+                if (res.ProblemList && res.ProblemList.length > 0) {
+
+                    $.each(res.ProblemList, function (i, item) {
+
+                        var row = `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td>${item.PROBLEMNAME ?? 'N/A'}</td>
+                                <td>${item.QUANTITY ?? 'N/A'}</td>
+                                <td>${item.REMARKS ?? 'N/A'}</td>
+                            </tr>
+                        `;
+
+                        tbody.append(row);
+                    });
+
+                } else {
+
+                    tbody.append(`
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                No data found.
+                            </td>
+                        </tr>
+                    `);
+                }
+
+
+                // =========================
+                // Image Details
+                // =========================
+                if (res.ImageDetails && res.ImageDetails.length > 0) {
+
+                    $.each(res.ImageDetails, function (i, images) {
+
+                        // Remove leading slash if IMAGEPATH already starts with /
+                        var imagePath = images.IMAGEPATH || '';
+
+                        imagePath = imagePath.replace(/^\/+/, '');
+
+                        var imageUrl =
+                            'http://pmc.prangroup.com/AlphaCareAPI/' + imagePath;
+
+                        var row = `
+                            <div class="carousel-item ${i === 0 ? 'active' : ''}">
+                                <img src="${imageUrl}"
+                                     class="d-block w-100"
+                                     alt="Complaint Image"
+                                     style="max-height:200px; object-fit:contain;">
+                            </div>
+                        `;
+
+                        imageBody.append(row);
+                    });
+
+                } else {
+
+                    imageBody.append(`
+                        <div class="text-center p-3">
+                            No image found.
+                        </div>
+                    `);
+                }
+            },
+
+            error: function (xhr, status, error) {
+
+                console.log("Status:", status);
+                console.log("Error:", error);
+                console.log("Response:", xhr.responseText);
+
+                $("#complaindetails tbody").html(`
+                    <tr>
+                        <td colspan="4" class="text-center text-danger">
+                            Failed to load complaint details.
+                        </td>
+                    </tr>
+                `);
+
+                $("#imagedetails").html(`
+                    <div class="text-center text-danger p-3">
+                        Failed to load images.
+                    </div>
+                `);
+            }
+        });
+    }
+</script>

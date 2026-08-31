@@ -3,6 +3,7 @@ using RetailCare.Common;
 using RetailCare.Interface;
 using RetailCare.Interface.CRMInterface;
 using RetailCare.Models;
+using RetailCare.Repositories.CRMRepository;
 
 namespace RetailCare.Controllers
 {
@@ -12,13 +13,15 @@ namespace RetailCare.Controllers
         private readonly ICommonMethod _SessionHelper;
         public readonly IReportingMethods _ReportingMethods;
         private readonly IStatusRepository _statusrepository;
+        private readonly IComplainRepository _complainRepository;
         public ReportGenerationController(IReportGenerationRepository ReportGeneration, ICommonMethod SessionHelper, IReportingMethods reportingMethods,
-          IStatusRepository statusrepository)
+          IStatusRepository statusrepository, IComplainRepository complainRepository)
         {
             _ReportGeneration = ReportGeneration;
             _SessionHelper = SessionHelper;
             _ReportingMethods = reportingMethods;
             _statusrepository = statusrepository;
+            _complainRepository = complainRepository;
         }
         // Complain Report
         public IActionResult ComplainReportGeneration()
@@ -94,6 +97,17 @@ namespace RetailCare.Controllers
                 return View("~/Views/ReportGeneration/FeedbackReportGeneration.cshtml", Report);
             }
             return View("~/Views/ReportGeneration/FeedbackReportGeneration.cshtml", Report);
+        }
+        [HttpGet]
+        public JsonResult GetAllComplainProblemList(string ticketcode)
+        {
+            var data = _complainRepository.GetAllPromlemDetails(ticketcode).ToList();
+            var FeedackImage= _ReportGeneration.GetAllFeedbackImage(ticketcode).ToList();
+            return Json(new
+            {
+                ProblemList = data,
+                ImageDetails= FeedackImage
+            });
         }
     }
 }

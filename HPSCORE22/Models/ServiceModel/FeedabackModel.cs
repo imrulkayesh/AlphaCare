@@ -131,4 +131,12 @@
         public string? PRODUCTNAME { get; set; }
         public int? Productamount { get; set; } = 1;
     }
+    public class FeedbackImageModel
+    {
+        public int FEEDBACKIMAGEID { get; set; }
+        public string? TICKETCODE { get; set; }
+        public string? IMAGENAME { get; set; }
+        public string? IMAGEPATH { get; set; }
+        public int? FEEDBACKID { get; set; }
+    }
 }
