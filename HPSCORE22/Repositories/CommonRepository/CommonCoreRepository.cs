@@ -9,7 +9,7 @@ namespace AlphaCare.Repositories.CommonRepository
 {
     public interface ICommonCoreRepository
     {
-        public List<COMPANYSMSDETAILS> GetCompanyWiseSMSDetails(int CompanyID);
+        public COMPANYSMSDETAILS GetCompanyWiseSMSDetails(int CompanyID);
     }
     public class CommonCoreRepository: ICommonCoreRepository
     {

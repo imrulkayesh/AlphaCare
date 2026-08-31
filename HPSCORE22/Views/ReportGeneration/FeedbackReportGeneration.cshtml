@@ -52,7 +52,7 @@
                                 <th>Status</th>
                                 <th>Working Date</th>
                                 <th>Remarks</th>
-                               @*  <th>Feedback Images</th> *@
+                                <th>Feedback Images</th> 
                            </tr>
                         </thead>
 
@@ -78,14 +78,12 @@
                                         <td>@item.STATUSNAME</td>
                                         <td>@item.WORKINGDATE?.ToString("dd/MM/yyyy")</td>
                                         <td>@item.REMARKS</td>
-                                        
+                                        <td><img src="@(Model.ConstantValues._ImageAPIURL + item.IMAGEPATH)" alt="@item.TICKETCODE" width="150" height="150"></td>
                                     </tr>
                                     i++;
                                 }
                             }
-                       @*  <td><img src="/* @(Model.ConstantValues._ImageAPIURL + item.REMARKS) */" alt="Feedback Image" width="500" height="600"></td> *@
                         </tbody>
-
                     </table>
                 </div>
             </div>

@@ -19,5 +19,9 @@
         public string COMPLAINREMARKS { get; set; }
         public string PROBLEMNAME { get; set; }
 
+       // Image Path Work
+       public string IMAGENAME { get; set; }
+       public string IMAGEPATH { get; set; }
+
     }
 }

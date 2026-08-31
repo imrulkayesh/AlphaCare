@@ -17,7 +17,7 @@ namespace RetailCare.Models
     public class ConstantValues
     {
         // Need To be changed the URL here  
-        public readonly string _ImageAPIURL = "http://pmc.prangroup.com/AlphaCareAPI/api/v1/";
+        public readonly string _ImageAPIURL = "http://pmc.prangroup.com/AlphaCareAPI/";
         // Need to be changed the URL here 
     }
     public class ReportGenerationViewModel

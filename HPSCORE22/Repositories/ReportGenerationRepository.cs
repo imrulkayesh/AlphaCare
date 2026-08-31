@@ -56,7 +56,7 @@ namespace RetailCare.Repositories
                     command.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = CompanyID;
                     command.Parameters.Add("P_STARTDATE", OracleDbType.Date).Value = FilteringValues.StartDate;
                     command.Parameters.Add("P_ENDDATE", OracleDbType.Date).Value = FilteringValues.EndDate;
-                    command.Parameters.Add("P_RECORDSET", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    command.Parameters.Add("P_RESULT", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
                     using (OracleDataAdapter da = new OracleDataAdapter(command))
                     {
                         da.Fill(dt);
