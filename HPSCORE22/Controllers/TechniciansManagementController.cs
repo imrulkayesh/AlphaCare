@@ -52,6 +52,7 @@ namespace RetailCare.Controllers
                     {
                         TechniciansDetails.TechnicianDetails.ACTIVE = 0;
                     }
+                    TechniciansDetails.TechnicianDetails.COMPANYID = userdetails.COMPANYID;
                     TechniciansDetails.TechnicianDetails.MODIFIEDDATE = DateTime.Now;
                     TechniciansDetails.TechnicianDetails.MODIFIEDBY = userdetails.USERID;
                     var UpdateTechnician = _technicianRepository.UpdateTechnician(TechniciansDetails.TechnicianDetails);
@@ -106,8 +107,10 @@ namespace RetailCare.Controllers
                         {
                             TechniciansDetails.TechnicianDetails.ACTIVE = 0;
                         }
+                        TechniciansDetails.TechnicianDetails.COMPANYID = userdetails.COMPANYID;
                         TechniciansDetails.TechnicianDetails.ENTRYDATE = DateTime.Now;
                         TechniciansDetails.TechnicianDetails.ENTRYBY = userdetails.USERID;
+
                         var TechniciansID = _technicianRepository.AddTechnician(TechniciansDetails.TechnicianDetails);
                         if (TechniciansID > 0)
                         {

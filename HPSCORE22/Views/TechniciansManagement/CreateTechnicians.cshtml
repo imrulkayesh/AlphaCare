@@ -71,7 +71,7 @@
                             @Html.DropDownListFor(m => m.TechnicianDetails.COMPANYID, new SelectList(Model.CompanyList, "COMPANYID", "COMPANYNAME"), new { @class = "form-control", @readonly = "readonly" })
                         </div>
                     </div> *@
-                    <div class="col-md-3 col-sm-12">
+                    <div class="col-md-3 col-sm-12" style="margin-top:3%">
                         <div class="">
 
                             @Html.CheckBox(
@@ -90,8 +90,17 @@
                     <div class="d-md-flex d-sm-block" style="gap: 2%">
                     <h6><b>Problem Types</b></h6>
                     <div class="d-md-flex g-2">
-                        <input type="checkbox" id="AllRounder">
-                        <label for="vehicle1"> All Rounder</label><br>
+                        @Html.HiddenFor(
+                                                m => m.TechnicianDetails.ISALLROUNDER,
+                                                new { id = "isallrounderValue" }
+                                                )
+
+                        <input type="checkbox"
+                               id="AllRounder"
+                               @(Model.TechnicianDetails.ISALLROUNDER > 0 ? "checked" : "") />
+
+                        <label for="vehicle1"> All Rounder</label>
+                        <br>
                     </div>
                     </div>
                     <div class="classitems">
@@ -147,5 +156,22 @@
         } else {
             checkboxes.prop('checked', false);
 		}
+    });
+    $(document).on('click', '.checkbox', function (e) {
+
+        // When AllRounder is checked,
+        // don't allow individual checkbox changes
+        if ($('#AllRounder').is(':checked')) {
+            e.preventDefault();
+        }
+
+    });
+        $(document).on('change', '#AllRounder', function () {
+
+        if (this.checked) {
+            $('#isallrounderValue').val('1');
+        } else {
+            $('#isallrounderValue').val('0');
+        }
     });
 </script>

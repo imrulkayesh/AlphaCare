@@ -76,7 +76,8 @@ namespace RetailCare.Repositories.ServiceRepository
 
                         command.Parameters.Add("P_ENTRYBY", OracleDbType.Varchar2).Value =
                             (object?)technician.ENTRYBY ?? DBNull.Value;
-
+                        command.Parameters.Add("P_ISALLROUNDER", OracleDbType.Int32).Value =
+                            (object?)technician.ISALLROUNDER ?? DBNull.Value;
                         //command.Parameters.Add("P_ENTRYPC", OracleDbType.Varchar2).Value =
                         //    Environment.MachineName;
 
@@ -234,6 +235,8 @@ namespace RetailCare.Repositories.ServiceRepository
 
                         command.Parameters.Add("P_MODIFIEDBY", OracleDbType.Varchar2).Value =
                             (object?)technician.MODIFIEDBY ?? DBNull.Value;
+                        command.Parameters.Add("P_ISALLROUNDER", OracleDbType.Int32).Value =
+                            (object?)technician.ISALLROUNDER ?? DBNull.Value;
 
                         command.ExecuteNonQuery();
 
