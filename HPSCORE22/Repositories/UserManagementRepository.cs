@@ -309,32 +309,38 @@ namespace RetailCare.Repositories
         }
         public bool InsertUserCompany(UserCampany model)
         {
-            bool IsAdded = true;
             try
             {
                 using (OracleConnection con = new OracleConnection(_connectionString))
                 {
-                    con.OpenAsync();
+                    con.Open();
 
-                    using (OracleCommand cmd = new OracleCommand("SP_INSERT_USERCOMPANY", con))
+                    using (OracleCommand cmd = new OracleCommand("ESERV.SP_INSERT_USERCOMPANY", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
 
-                        cmd.Parameters.Add("P_USERID", OracleDbType.Varchar2).Value = model.USERID;
-                        cmd.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = model.COMPANYID;
-                        cmd.Parameters.Add("P_ISACTIVE", OracleDbType.Int32).Value = model.ISACTIVE;
-                        cmd.Parameters.Add("P_ENTRYBY", OracleDbType.Varchar2).Value = model.ENTRYBY;
+                        cmd.Parameters.Add("P_USERID", OracleDbType.Varchar2).Value =
+                            model.USERID ?? (object)DBNull.Value;
 
-                        cmd.ExecuteNonQueryAsync();
+                        cmd.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value =
+                            model.COMPANYID;
+
+                        cmd.Parameters.Add("P_ISACTIVE", OracleDbType.Int32).Value =
+                            model.ISACTIVE;
+
+                        cmd.Parameters.Add("P_ENTRYBY", OracleDbType.Varchar2).Value =
+                            model.ENTRYBY ?? (object)DBNull.Value;
+
+                        cmd.ExecuteNonQuery();
                     }
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message.ToString());
-                IsAdded =false;
+                throw new Exception("Error inserting UserCompany: " + ex.Message, ex);
             }
-            return IsAdded;
         }
         public UserModel GetUserDetailsUsingID(int UserCode)
         {
