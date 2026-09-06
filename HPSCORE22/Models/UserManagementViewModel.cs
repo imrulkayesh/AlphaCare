@@ -8,6 +8,7 @@
       public List<DepartmentModel> DeparmentList { get; set; } = new List<DepartmentModel>();
       public List<ZoneModel> ZoneList { get; set; } = new List<ZoneModel>();
      public List<UserModel>  UserList { get; set; } = new List<UserModel>();
+     public List<CompanyModel> CompanyList { get; set; } = new List<CompanyModel>();
     }
     public class UserWiseMenuPermissionViewModel
     {

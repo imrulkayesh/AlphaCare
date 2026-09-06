@@ -43,5 +43,30 @@ namespace RetailCare.Repositories
 
             return ExtractData.Convert<CompanyModel>(dt).FirstOrDefault();
         }
+        public List<CompanyModel> GetAllCompanyDetails()
+        {
+            DataTable dt = new DataTable();
+
+            using (OracleConnection connection = new OracleConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (OracleCommand command = new OracleCommand("ESERV.GetAllCompanyDetails", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+
+                    command.Parameters.Add("p_Result", OracleDbType.RefCursor)
+                           .Direction = ParameterDirection.Output;
+
+                    using (OracleDataAdapter da = new OracleDataAdapter(command))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+
+            return ExtractData.Convert<CompanyModel>(dt).ToList();
+        }
     }
 }

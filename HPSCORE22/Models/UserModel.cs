@@ -27,6 +27,8 @@ namespace RetailCare.Models
         public string? CONTACTNO { get; set; }
         [Display(Name = "Address")]
         public string? ADDRESS { get; set; }
+        [Display(Name = "Company")]
+        [Required(ErrorMessage = "Please Select Company")]
         public int COMPANYID { get; set; }
         public int? DEPARTMENTID { get; set; }
         public int? DESIGNATIONID { get; set; }

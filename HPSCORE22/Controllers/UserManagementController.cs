@@ -13,18 +13,22 @@ namespace RetailCare.Controllers
         private readonly IZoneRepository _ZoneRepository;
         private readonly ICommonMethod _SessionHelper;
         private readonly IMenuSettingManagementRepository _MenuSetup;
+        private readonly ICompanyRepository _CompanyRepository;
         public UserManagementController(IUserManagementRepository userManagementRepository, IZoneRepository zoneRepository, ICommonMethod sessionHelper,
-        IMenuSettingManagementRepository MenuSetup)
+        IMenuSettingManagementRepository MenuSetup, ICompanyRepository companyRepository)
         {
             _UserManagementRepository = userManagementRepository;
             _ZoneRepository = zoneRepository;
             _SessionHelper = sessionHelper;
             _MenuSetup = MenuSetup;
+            _CompanyRepository = companyRepository;
         }
         public IActionResult CreateUser()
         {
+            var userdetails = _SessionHelper.GetUser();
             UserManagementViewModel userManagementViewModel = new UserManagementViewModel();
             userManagementViewModel = GetAllDataUserCreation();
+            userManagementViewModel.CompanyList = userManagementViewModel.CompanyList.Where(x => x.COMPANYID == userdetails.COMPANYID).ToList();
             return View("~/Views/UserManagement/CreateUser.cshtml", userManagementViewModel);
         }
         [HttpPost]
@@ -50,10 +54,34 @@ namespace RetailCare.Controllers
                 UserDetailsSubmit.ZONEID = 0;
                 // Default Details End
                 var InsertionUserTable = _UserManagementRepository.UpdateUser(UserDetailsSubmit);
-                if(InsertionUserTable)
+                if (InsertionUserTable)
                 {
-                    TempData["SuccessMSG"] = "Data have been Updated";
-                    return RedirectToAction("CreateUser", "UserManagement");
+                    var DeletePreviousMapping = _UserManagementRepository.DeletePreviousCompany(UserDetailsSubmit.USERID);
+                    if (DeletePreviousMapping)
+                    {
+                        var UserCompanyPermisison = new UserCampany()
+                        {
+                            USERID = UserDetailsSubmit.USERID,
+                            // COMPANYID = userdetails.COMPANYID,
+                            COMPANYID = UserDetailsSubmit.COMPANYID,
+                            ISACTIVE = (int)UserDetailsSubmit.ISACTIVE,
+                            ENTRYBY = userdetails.USERID
+                        };
+                        var InsertionMapping = _UserManagementRepository.InsertUserCompany(UserCompanyPermisison);
+                        if (InsertionMapping)
+                        {
+                            TempData["SuccessMSG"] = "Data have been Updated";
+                            return RedirectToAction("CreateUser", "UserManagement");
+                        }
+                        else
+                        {
+                            TempData["ERRORMSG"] = "!!! Error !!!!!";
+                        }
+                    }
+                    else
+                    {
+                        TempData["ERRORMSG"] = "!!! Error !!!!!";
+                    } 
                 }
                 else
                 {
@@ -87,7 +115,7 @@ namespace RetailCare.Controllers
                         }
                         UserDetailsSubmit.ENTRYBY = userdetails.USERID;
                         UserDetailsSubmit.ENTRYDATE = DateTime.Now;
-                        UserDetailsSubmit.COMPANYID = userdetails.COMPANYID;
+                        //UserDetailsSubmit.COMPANYID = userdetails.COMPANYID;
                         // Default Details start
                         UserDetailsSubmit.DEPARTMENTID = 0;
                         UserDetailsSubmit.DESIGNATIONID=0;
@@ -96,7 +124,8 @@ namespace RetailCare.Controllers
                         var UserCompanyPermisison = new UserCampany()
                         {
                             USERID = UserDetailsSubmit.USERID,
-                            COMPANYID = userdetails.COMPANYID,
+                           // COMPANYID = userdetails.COMPANYID,
+                            COMPANYID= UserDetailsSubmit.COMPANYID,
                             ISACTIVE = (int)UserDetailsSubmit.ISACTIVE,
                             ENTRYBY = userdetails.USERID
                         };
@@ -127,18 +156,23 @@ namespace RetailCare.Controllers
             UserManagementViewModel userManagementViewModel = new UserManagementViewModel();
             userManagementViewModel = GetAllDataUserCreation();
             userManagementViewModel.CreateNewUser = _UserManagementRepository.GetUserDetailsUsingID(id);
+            if(userManagementViewModel.CreateNewUser.COMPANYID>0)
+            {
+                userManagementViewModel.CompanyList = userManagementViewModel.CompanyList.Where(x => x.COMPANYID == userManagementViewModel.CreateNewUser.COMPANYID).ToList();
+            }
             return View("~/Views/UserManagement/CreateUser.cshtml", userManagementViewModel);
         }
         private UserManagementViewModel GetAllDataUserCreation()
         {
             var userdetails = _SessionHelper.GetUser();
             var userManagementViewModel = new UserManagementViewModel()
-            {
-                ZoneList = _ZoneRepository.GetAllZoneDetails(),
-                DeparmentList = _UserManagementRepository.GetAllDepartment(),
-                UserTypeList = _UserManagementRepository.GetAllUserType(),
-                DesignationList = _UserManagementRepository.GetAllDesignation(),
-                UserList = _UserManagementRepository.GetAllUserList(userdetails.COMPANYID),
+                {
+                    ZoneList = _ZoneRepository.GetAllZoneDetails(),
+                    DeparmentList = _UserManagementRepository.GetAllDepartment(),
+                    UserTypeList = _UserManagementRepository.GetAllUserType(),
+                    DesignationList = _UserManagementRepository.GetAllDesignation(),
+                    UserList = _UserManagementRepository.GetAllUserList(userdetails.COMPANYID),
+                    CompanyList = _CompanyRepository.GetAllCompanyDetails()
             };
             return userManagementViewModel;
         }
@@ -274,6 +308,14 @@ namespace RetailCare.Controllers
         {
             RolewiseMenuPermissionViewModel rolesetup = new RolewiseMenuPermissionViewModel();
             rolesetup.RoleDetails = _MenuSetup.GetAllRoles().Where(x=>x.TYPEID== id).FirstOrDefault();
+            rolesetup.RoleList = _MenuSetup.GetAllRoles();
+            return View("~/Views/UserManagement/CreateRole.cshtml", rolesetup);
+        }
+
+        // Update Company 
+        public IActionResult UpdateCompany()
+        {
+            RolewiseMenuPermissionViewModel rolesetup = new RolewiseMenuPermissionViewModel();
             rolesetup.RoleList = _MenuSetup.GetAllRoles();
             return View("~/Views/UserManagement/CreateRole.cshtml", rolesetup);
         }

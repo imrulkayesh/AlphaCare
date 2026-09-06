@@ -13,6 +13,7 @@ namespace RetailCare.Interface
         public bool InsertUserCompany(UserCampany model);
         public UserModel GetUserDetailsUsingID(int UserCode);
         public bool UpdateUser(UserModel model);
+        public bool DeletePreviousCompany(string UserID);
 
         // User Permission
         public List<Menus> GetAllMenuList();
