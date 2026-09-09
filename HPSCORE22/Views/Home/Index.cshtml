@@ -1,54 +1,195 @@
-﻿@* @model List<AlphaCare.Models.RoleWiseMenuPermission> *@
+﻿@model AlphaCare.Models.Dashboard_Model.UserDashboardViewModel
 
 @{
     ViewData["Title"] = "Home Page";
 }
+@* CDN  Link Start *@
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+@* CDN  Link End *@
+<style>
+        .kpi-box {
+        min-height: 75px !important;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all .3s ease;
+        box-shadow: 0 3px 10px rgba(0,0,0,.08);
+        position: relative;
+    }
+
+    .kpi-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    }
+
+    .kpi-box .inner {
+        padding: 12px 15px;
+    }
+
+    .kpi-box h4 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        color: #fff;
+    }
+
+    .kpi-box p {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: rgba(255,255,255,.9);
+        font-weight: 500;
+    }
+
+    /* Icon Watermark */
+    .kpi-box .icon {
+        position: absolute;
+        right: 12px;
+        top: 8px;
+        font-size: 38px;
+        opacity: .18;
+        color: #fff;
+    }
+    /* card Backgroun-color  */
+    .bg-currentmonthtotal
+    {
+        background-color: green;
+    }
+    .bg-currentday
+    {
+        background-color: cornflowerblue;
+    }
+    .bg-currentMonthPending
+    {
+        background-color: orange;
+    }
+    .bg-Overdue
+    {
+        background-color: yellowgreen ;
+	}
+    .bg-Technicians
+    {
+        background-color: mediumpurple;
+    }
+    .bg-CurrentMonthSLA
+    {
+        background-color: #1400ff;
+    }
+    .bg-LastMonthSLA {
+        background-color: rebeccapurple;
+    }
+
+    .bg-SolveGrowthSLA {
+        background-color: green;
+    }
+    .bg-TotalTechnician
+        {
+        background-color: darkorange;
+	}
+    .bg-warningcolor
+    {
+        background-color: red;
+    }
+</style>
 <!--begin::App Main-->
 <main class="app-main">
     <div class="app-content-header">
         <div class="container-fluid">
-@*             <div class="row g-3 mb-3 align-items-center">
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
+             <div class="row g-3 mb-3 align-items-center">
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-currentmonthtotal">
+                        <div class="inner">
+                            <h4 id="Currentmonthtotal">0</h4>
+                            <p>Current Month – Total Tickets</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-currentMonthPending">
+                        <div class="inner">
+                            <h4 id="CurrentMonthPending">0</h4>
+                            <p>Current Month – Total Solved</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-business-time"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-currentday">
+                        <div class="inner">
+                            <h4 id="currenttotal">0</h4>
+                            <p>Today Total Ticket</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-Overdue" onclick="GetAllDetailsData(2)">
+                        <div class="inner">
+                            <h4 id="Overdue">0</h4>
+                            <p>Over Due Ticket (3+ Days) </p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-business-time"></i>
+                        </div>
+                    </div>
+                </div>    
+                <!--VS Cards-->
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-CurrentMonthSLA">
+                        <div class="inner">
+                            <h4 id="CurrentMonthSLA">0</h4>
+                            <p>Current Month Solved SLA</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-calendar-minus"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-LastMonthSLA">
+                        <div class="inner">
+                            <h4 id="LastMonthSLA">0</h4>
+                            <p>Last Month Solved SLA</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-calendar-minus"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box" id="growthwork">
+                        <div class="inner">
+                            <div class=""style="display:flex;gap:4%">
+                                <h4 id="SolveGrowthSLA">0</h4>
+                                <i class='fas fa-angle-double-down' style='font-size:24px; margin-top: 2%;' id="downarrow"></i>
+                                <i class='fas fa-angle-double-up' style='font-size:24px; margin-top: 2%;' id="uparrow"></i>
+                            </div>
+                            <p>Solved SLA Growth (Last vs This)</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="col-auto">
-                        <h1 class="app-content-headerText">Dashboard</h1>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-TotalTechnician">
+                        <div class="inner">
+                            <h4 id="TotalTechnician">0</h4>
+                            <p>Total Technicians</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
                     </div>
                 </div>
             </div>
+            @*
             <div class="row mb-3 align-items-center">
                 <div class="col-sm-12">
                     <h1>Dashboard Chart 01</h1>
@@ -58,3 +199,168 @@
     </div>
 </main>
 <!--end::App Main-->
+
+<!--Details-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    Tickets Details
+                </h1>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="table-responsive">
+                    <table id="complaindetails"
+                           class="table table-bordered table-striped table-hover w-100">
+
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Ticket ID</th>
+                                <th>Showroom Code</th>
+                                <th>Complain & Assign Date</th>
+                                <th>Customer Name</th>
+                                <th>Contact No</th>
+                                <th>Customer Address</th>
+                                <th>Product Name</th>
+                                <th>Assign Person</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+             url:'@Url.Action("GetProductWiseProductModel", "Home")',
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                $('#Currentmonthtotal').text(data.Singlecard.CurrentMonthCount);
+                $('#currenttotal').text(data.Singlecard.TodayCount);
+                $('#CurrentMonthPending').text(data.Singlecard.PendingFeedbackCount);
+                $('#Overdue').text(data.Singlecard.OldPendingCount);
+               // Due Card
+          if ((data.VsCardDetasil.THIS_MONTH_SOLVED_PERCENTAGE  -
+         data.VsCardDetasil.LAST_MONTH_SOLVED_PERCENTAGE) > 0)
+    {
+        $('#growthwork')
+            .removeClass('bg-warningcolor')
+            .addClass('bg-SolveGrowthSLA');
+
+        $('#uparrow').show();
+        $('#downarrow').hide();
+    }
+    else
+    {
+        $('#growthwork')
+            .removeClass('bg-SolveGrowthSLA')
+            .addClass('bg-warningcolor');
+
+        $('#downarrow').show();
+        $('#uparrow').hide();
+    }
+                $('#CurrentMonthSLA').text(data.VsCardDetasil.THIS_MONTH_SOLVED_PERCENTAGE +"%");
+                $('#LastMonthSLA').text(data.VsCardDetasil.LAST_MONTH_SOLVED_PERCENTAGE +"%");
+                $('#SolveGrowthSLA').text(data.VsCardDetasil.SOLVE_GROWTH_PERCENTAGE +"%");
+                $('#TotalTechnician').text(data.VsCardDetasil.ACTIVE_TECHNICIAN_COUNT);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        });
+	});
+    // Function Method
+       function GetAllDetailsData(TypeID) {
+
+        $.ajax({
+            url: '@Url.Action("GetDetailsData", "Home")',
+            type: 'GET',
+            data: {
+                typeID: TypeID
+            },
+
+            success: function (data) {
+
+                console.log("Details Data:", data);
+
+                var tbody = $("#complaindetails tbody");
+
+                // Clear previous data
+                tbody.empty();
+
+
+                // Check data
+                if (data.PendingComplainList &&
+                    data.PendingComplainList.length > 0) {
+
+                    $.each(data.PendingComplainList, function (i, item) {
+
+                        var row = `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td>${item.TICKETCODE ?? 'N/A'}</td>
+                                <td>${item.SHOWROOM ?? 'N/A'}</td>
+                                <td>${item.COMPLAINDATE ?? 'N/A'}</td>
+                                <td>${item.CUSTOMERNAME ?? 'N/A'}</td>
+                                <td>${item.CONTACTNO ?? 'N/A'}</td>
+                                <td>${item.LOCATION ?? 'N/A'}</td>
+                                <td>${item.PRODUCTNAME ?? 'N/A'}</td>
+                                <td>${item.TECHNICIANDETAILS ?? 'N/A'}</td>
+                            </tr>
+                        `;
+
+                        tbody.append(row);
+                    });
+
+                }
+                else {
+
+                    tbody.append(`
+                        <tr>
+                            <td colspan="9" class="text-center">
+                                No data found.
+                            </td>
+                        </tr>
+                    `);
+                }
+
+
+                // ==========================================
+                // Open Modal
+                // ==========================================
+                var modal = new bootstrap.Modal(
+                    document.getElementById('exampleModal')
+                );
+
+                modal.show();
+
+            },
+
+            error: function (xhr, status, error) {
+
+                console.error(
+                    'Error fetching ticket details:',
+                    error
+                );
+
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>

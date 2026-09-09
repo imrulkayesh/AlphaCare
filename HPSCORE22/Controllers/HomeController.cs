@@ -1,6 +1,10 @@
-using QCMS.Models;
+using AlphaCare.Interface.DashboardInterface;
+using AlphaCare.Models.Dashboard_Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QCMS.Models;
+using RetailCare.Common;
+using RetailCare.Models.CRMModels;
 using System.Diagnostics;
 
 namespace QCMS.Controllers
@@ -9,10 +13,13 @@ namespace QCMS.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ICommonMethod _SessionHelper;
+        private readonly IUserDashboardRepository _UserDashboard;
+        public HomeController(ILogger<HomeController> logger, ICommonMethod SessionHelper, IUserDashboardRepository UserDashboard)
         {
             _logger = logger;
+            _SessionHelper = SessionHelper;
+            _UserDashboard = UserDashboard;
         }
 
         public IActionResult Index()
@@ -22,36 +29,36 @@ namespace QCMS.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        // Top Card Design 
+        [HttpGet]
+        public JsonResult GetProductWiseProductModel()
         {
-            return View();
+            var userdetails = _SessionHelper.GetUser();
+            var CardDetails1= _UserDashboard.GetComplaintDashboard(userdetails.COMPANYID, userdetails.EMPLOYEE_CODE);
+            var CardDetails2 = _UserDashboard.GetDueComplaintDashboard(userdetails.COMPANYID, userdetails.EMPLOYEE_CODE);
+            return Json(new
+            {
+                Singlecard= CardDetails1,
+                VsCardDetasil= CardDetails2
+            });
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public JsonResult GetDetailsData(int typeID)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var userdetails = _SessionHelper.GetUser();
+            List<CompalinModel> CardDetails1 = new List<CompalinModel>();
+            if (typeID==1)
+            {
+                CardDetails1 = _UserDashboard.GetPendingComplain(userdetails.COMPANYID, userdetails.EMPLOYEE_CODE);
+            }
+            if (typeID == 2)
+            {
+                CardDetails1 = _UserDashboard.GetDueComplain(userdetails.COMPANYID, userdetails.EMPLOYEE_CODE);
+            }
+            return Json(new
+            {
+                PendingComplainList = CardDetails1
+            });
         }
-        public IActionResult Login1()
-        {
-            return View();
-        }
-        public IActionResult datatable()
-        {
-            return View();
-        }
-        public IActionResult TestAlert()
-        {
-            return View();
-        }
-        public IActionResult CustomerInfo()
-        {
-            return View();
-        }
-        public IActionResult Login()
-        {
-            return View();
-        }
-        
     }
 }

@@ -1,7 +1,9 @@
 using AlphaCare.Common;
 using AlphaCare.Interface;
+using AlphaCare.Interface.DashboardInterface;
 using AlphaCare.Repositories;
 using AlphaCare.Repositories.CommonRepository;
+using AlphaCare.Repositories.UserDashboard;
 using AlphaCare.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -52,7 +54,7 @@ builder.Services.AddScoped<IUserManagementRepository, UserManagementRepository>(
 builder.Services.AddScoped<IMenuSettingManagementRepository, MenuSettingManagementRepository>();
 builder.Services.AddScoped<IComplainSmSApi, ComplainSmSApi>();
 builder.Services.AddScoped<ICommonCoreRepository, CommonCoreRepository>();
-
+builder.Services.AddScoped<IUserDashboardRepository, UserDashboardRepository>();
 
 
 // Add HttpClient and ApiService
