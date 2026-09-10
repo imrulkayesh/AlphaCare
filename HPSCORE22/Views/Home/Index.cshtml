@@ -64,7 +64,7 @@
     }
     .bg-Overdue
     {
-        background-color: yellowgreen ;
+        background-color: red ;
 	}
     .bg-Technicians
     {
@@ -94,7 +94,7 @@
 <main class="app-main">
     <div class="app-content-header">
         <div class="container-fluid">
-             <div class="row g-3 mb-3 align-items-center">
+            <div class="row g-3 mb-3 align-items-center">
                 <div class="col-lg-3 col-md-4 col-6">
                     <div class="kpi-box bg-currentmonthtotal">
                         <div class="inner">
@@ -189,12 +189,216 @@
                     </div>
                 </div>
             </div>
-            @*
-            <div class="row mb-3 align-items-center">
-                <div class="col-sm-12">
-                    <h1>Dashboard Chart 01</h1>
+            <div class="row g-3 mb-3 mt-2">
+                <div class="col-md-6 col-sm-12">
+                    <div class="card card-danger" style="width: 100%;">
+                        <div class="card-header" style="height: 39px;text-align: center;">
+                            <h3 class="card-title">Most Frequent Problem Type – Current Month</h3>
+                        </div>
+                        <div class="card-body" style="margin-top: 5%;">
+                            <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
                 </div>
-            </div> *@
+               <div class="col-md-6 col-sm-12">
+                    <div class="card card-danger">
+                        <div class="card-header" style="height: 39px;text-align: center;">
+                            <h3 class="card-title">
+                                Ticket Status (Today)
+                            </h3>
+                        </div>
+                        <div class="card-body" style="margin-top: 5%;">
+                            <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+               </div>
+            </div>
+            <div class="row g-3 mb-3 mt-2 align-items-center">
+                <div class="col-sm-12 col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="far fa-chart-bar"></i>
+                                Ticket Solving Trend Current Month
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="line-chart"
+                                    style="min-height: 300px; height: 300px; max-height: 300px; width: 100%;">
+                            </canvas>
+                        </div>
+                        <!-- /.card-body-->
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-3 mt-2">
+                <div class="col-md-6 col-sm-12">
+                    <div class="card card-danger">
+                        <div class="card-header" style="height: 39px;text-align: center;">
+                            <h3 class="card-title">Top 5 Technicians – Current Month</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>Name</th>
+                                        <th>StaffID</th>
+                                        <th>Current Tickets Solved</th>
+                                        <th>Previous Tickets Solved</th>
+                                        <th>Solve Growth by Count</th>
+                                        <th>Solve Growth by Ratio</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @{
+                                        int i = 1;
+                                        @foreach (var item in Model.Top10TechnicianList)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.TECHNICIANNAME</td>
+                                                <td>@item.STAFFID</td>
+                                                <td>@item.CURRENT_MONTH_SOLVE</td>
+                                                <td>@item.PREVIOUS_MONTH_SOLVE</td>
+                                                <td>@item.SOLVE_GROWTH</td>
+                                                <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="card card-danger">
+                        <div class="card-header" style="height: 39px;text-align: center;">
+                            <h3 class="card-title">Lowest 5 Technicians – Current Month</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>Name</th>
+                                        <th>StaffID</th>
+                                        <th>Current Tickets Solved</th>
+                                        <th>Previous Tickets Solved</th>
+                                        <th>Solve Growth by Count</th>
+                                        <th>Solve Growth by Ratio</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @{
+                                        int j = 1;
+                                        @foreach (var item in Model.Lowest10TechnicianList)
+                                        {
+                                            <tr>
+                                                <td>@j</td>
+                                                <td>@item.TECHNICIANNAME</td>
+                                                <td>@item.STAFFID</td>
+                                                <td>@item.CURRENT_MONTH_SOLVE</td>
+                                                <td>@item.PREVIOUS_MONTH_SOLVE</td>
+                                                <td>@item.SOLVE_GROWTH</td>
+                                                <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
+                                            </tr>
+                                            j++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-3 mt-2">
+                <div class="col-md-6 col-sm-12">
+                    <div class="card card-danger">
+                        <div class="card-header" style="height: 39px;text-align: center;">
+                            <h3 class="card-title">Top 5 Showroom – Current Month</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>Showroom Code</th>
+                                        <th>Showroom</th>
+                                        <th>Total Complain</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @{
+                                        int k = 1;
+                                        @foreach (var item in Model.Top5Showroom)
+                                        {
+                                            <tr>
+                                                <td>@k</td>
+                                                <td>@item.TECHNICIANNAME</td>
+                                                <td>@item.STAFFID</td>
+                                                <td>@item.CURRENT_MONTH_SOLVE</td>
+                                            </tr>
+                                            k++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+              @*   <div class="col-md-6 col-sm-12">
+                    <div class="card card-danger">
+                        <div class="card-header" style="height: 39px;text-align: center;">
+                            <h3 class="card-title">Lowest 5 Technicians – Current Month</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>Name</th>
+                                        <th>StaffID</th>
+                                        <th>Current Tickets Solved</th>
+                                        <th>Previous Tickets Solved</th>
+                                        <th>Solve Growth by Count</th>
+                                        <th>Solve Growth by Ratio</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @{
+                                        int j = 1;
+                                        @foreach (var item in Model.Lowest10TechnicianList)
+                                        {
+                                            <tr>
+                                                <td>@j</td>
+                                                <td>@item.TECHNICIANNAME</td>
+                                                <td>@item.STAFFID</td>
+                                                <td>@item.CURRENT_MONTH_SOLVE</td>
+                                                <td>@item.PREVIOUS_MONTH_SOLVE</td>
+                                                <td>@item.SOLVE_GROWTH</td>
+                                                <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
+                                            </tr>
+                                            j++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div> *@
+            </div>
         </div>
     </div>
 </main>
@@ -244,6 +448,8 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script>
     $(document).ready(function () {
         $.ajax({
@@ -284,6 +490,388 @@
                 console.error('Error fetching dashboard data:', error);
             }
         });
+        $.ajax({
+        url: '@Url.Action("GetTop5ProblemType", "Home")',
+        type: 'GET',
+
+        success: function (data) {
+
+            console.log("Top 5 Problem Type:", data);
+           var problemTypeData = data.ProblemTypeData;
+           console.log("Problem Type Data:", problemTypeData);
+         if (!problemTypeData || problemTypeData.length === 0) {
+            console.log("No problem type data found.");
+            return;
+          }
+            var labels = [];
+            var currentMonthValues = [];
+            var previousMonthValues = [];
+
+            $.each(problemTypeData, function (index, item) {
+
+                // Problem Type name
+                labels.push(item.CurrentMonthLabel);
+
+                // Current month count
+                currentMonthValues.push(item.CurrentMonthValue);
+
+                // Previous month count
+                previousMonthValues.push(item.PreviousMonthValue);
+            });
+
+
+            // ==========================================
+            // Chart Data
+            // ==========================================
+
+            var barChartData = {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+                        label: 'Current Month',
+
+                        backgroundColor: 'rgba(60,141,188,0.9)',
+                        borderColor: 'rgba(60,141,188,0.8)',
+
+                        borderWidth: 1,
+
+                        data: currentMonthValues
+                    },
+
+                    {
+                        label: 'Previous Month',
+
+                        backgroundColor: 'rgba(210,214,222,1)',
+                        borderColor: 'rgba(210,214,222,1)',
+
+                        borderWidth: 1,
+
+                        data: previousMonthValues
+                    }
+
+                ]
+            };
+
+
+            // ==========================================
+            // Chart Options
+            // ==========================================
+
+               var barChartOptions = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        scales: {
+
+            y: {
+                beginAtZero: true,
+
+                ticks: {
+                    precision: 0
+                }
+            }
+
+        }
+
+    };
+
+
+            // ==========================================
+            // Create Chart
+            // ==========================================
+
+            var barChartCanvas = $('#barChart')
+                .get(0)
+                .getContext('2d');
+
+
+            new Chart(barChartCanvas, {
+
+                type: 'bar',
+
+                data: barChartData,
+
+                options: barChartOptions
+
+            });
+
+        },
+
+        error: function (xhr, status, error) {
+
+            console.error(
+                'Error fetching Top 5 Problem Type:',
+                error
+            );
+
+            console.error(xhr.responseText);
+        }
+    });
+        $.ajax({
+        url: '@Url.Action("GetCurrentDayStatus", "Home")',
+        type: 'GET',
+
+        success: function (data) {
+
+            console.log("Current Day Ticket Status:", data);
+
+            // ==========================================
+            // Dynamic Values
+            // ==========================================
+
+            var solve = Number(data.Singlecard.TotalSolve || 0);
+            var unsolve = Number(data.Singlecard.TotalUnsolved || 0);
+            var cancel = Number(data.Singlecard.ToalCancelled || 0);
+            // ==========================================
+            // Donut Chart
+            // ==========================================
+            var donutChartCanvas = $('#donutChart')
+                .get(0)
+                .getContext('2d');
+            var donutData = {
+
+                labels: [
+                    'Solved',
+                    'Unsolved',
+                    'Cancelled'
+                ],
+
+                datasets: [
+                    {
+                        data: [
+                            solve,
+                            unsolve,
+                            cancel
+                        ],
+
+                        backgroundColor: [
+                            '#00a65a',
+                            '#f39c12',
+                            '#f56954'
+                        ]
+                    }
+                ]
+            };
+
+
+          var donutOptions = {
+
+        maintainAspectRatio: false,
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+                display: true
+            }
+
+        }
+
+    };
+
+
+            // Destroy previous chart if it already exists
+            if (window.ticketStatusChart) {
+                window.ticketStatusChart.destroy();
+            }
+
+
+            window.ticketStatusChart = new Chart(
+                donutChartCanvas,
+                {
+                    type: 'doughnut',
+                    data: donutData,
+                    options: donutOptions
+                }
+            );
+
+        },
+
+        error: function (xhr, status, error) {
+
+            console.error(
+                'Error fetching Current Day Ticket Status:',
+                error
+            );
+
+            console.error(xhr.responseText);
+        }
+    });
+        $.ajax({
+        url: '@Url.Action("GetCurrentTimeTrand", "Home")',
+        type: 'GET',
+
+        success: function (data) {
+
+            console.log("Current Time Trend:", data);
+
+            var trendData = data.TimeTrendData;
+
+            if (!trendData || trendData.length === 0) {
+                console.log("No trend data found.");
+                return;
+            }
+
+            var labels = [];
+            var totalComplain = [];
+            var totalSolve = [];
+
+            $.each(trendData, function (index, item) {
+
+                labels.push(item.ReportedDate);
+
+                totalComplain.push(
+                    Number(item.TotalTickets || 0)
+                );
+
+                totalSolve.push(
+                    Number(item.SolvedTickets || 0)
+                );
+
+            });
+
+            console.log("Labels:", labels);
+            console.log("Total Complain:", totalComplain);
+            console.log("Total Solve:", totalSolve);
+
+
+            // Destroy old chart if already created
+            if (window.ticketTrendChart) {
+                window.ticketTrendChart.destroy();
+            }
+
+
+            var lineChartCanvas = document
+                .getElementById('line-chart')
+                .getContext('2d');
+
+
+            window.ticketTrendChart = new Chart(
+                lineChartCanvas,
+                {
+                    type: 'line',
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+                                label: 'Total Complain',
+
+                                data: totalComplain,
+
+                                borderColor: '#3c8dbc',
+
+                                backgroundColor: 'rgba(60,141,188,0.1)',
+
+                                borderWidth: 2,
+
+                                fill: false,
+
+                                tension: 0.3,
+
+                                pointRadius: 4,
+
+                                pointHoverRadius: 6
+                            },
+
+                            {
+                                label: 'Total Solve',
+
+                                data: totalSolve,
+
+                                borderColor: '#00a65a',
+
+                                backgroundColor: 'rgba(0,166,90,0.1)',
+
+                                borderWidth: 2,
+
+                                fill: false,
+
+                                tension: 0.3,
+
+                                pointRadius: 4,
+
+                                pointHoverRadius: 6
+                            }
+
+                        ]
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+
+                        plugins: {
+
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+
+                            tooltip: {
+                                enabled: true
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Reported Date'
+                                }
+                            },
+
+                            y: {
+                                beginAtZero: true,
+
+                                title: {
+                                    display: true,
+                                    text: 'Ticket Count'
+                                },
+
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        },
+
+        error: function (xhr, status, error) {
+
+            console.error(
+                'Error fetching Current Time Trend:',
+                error
+            );
+
+            console.error(xhr.responseText);
+
+        }
+    });
 	});
     // Function Method
        function GetAllDetailsData(TypeID) {
