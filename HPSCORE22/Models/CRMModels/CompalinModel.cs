@@ -57,7 +57,7 @@ namespace RetailCare.Models.CRMModels
         public int CompletedDiff { get; set; }
         public int PendingDate { get; set; }
 
-        public string TECHNICIANDETAILS { get; set; }
+        public string? TECHNICIANDETAILS { get; set; }
     }
     public class ComplainProblemModel
     {

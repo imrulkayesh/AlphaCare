@@ -89,6 +89,14 @@
     {
         background-color: red;
     }
+   /*  only for tables */
+   th
+   {
+        height: 20px !important;
+   }
+    td {
+        height: 20px;
+    }
 </style>
 <!--begin::App Main-->
 <main class="app-main">
@@ -195,7 +203,7 @@
                         <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
                             <h3 class="card-title" style="font-size: 14px;">Most Frequent Problem Type – Current Month</h3>
                         </div>
-                        <div class="card-body" style="margin-top: 5%;">
+                        <div class="card-body" style="margin-top: 1%;">
                             <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                         </div>
                         <!-- /.card-body -->
@@ -208,7 +216,7 @@
                                 Ticket Status (Today)
                             </h3>
                         </div>
-                        <div class="card-body" style="margin-top: 5%;">
+                        <div class="card-body" style="margin-top: 1%;">
                             <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                         </div>
                         <!-- /.card-body -->
@@ -220,7 +228,7 @@
                 <div class="row g-3 mb-3 mt-2 align-items-center">
                     <div class="col-sm-12 col-md-12">
                         <div class="card card-primary card-outline">
-                            <div class="card-header">
+                            <div class="card-header" style="height: 37px;text-align: center;padding: 1%;">
                                 <h3 class="card-title">
                                     <i class="far fa-chart-bar"></i>
                                     Ticket Solving Trend Current Month
@@ -452,6 +460,15 @@
         </div>
     </div>
 </div>
+<style>
+    th {
+        height: 20px !important;
+    }
+
+    td {
+        height: 0px;
+    }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script>
