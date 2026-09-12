@@ -1,7 +1,10 @@
-﻿namespace AlphaCare.Models.Dashboard_Model
+﻿using RetailCare.Models;
+
+namespace AlphaCare.Models.Dashboard_Model
 {
     public class UserDashboardViewModel
     {
+        public UserInfoModel Userinformation { get; set; }=new UserInfoModel();
         public SummaryCardModel SummaryCards { get; set; }=new SummaryCardModel();
         public DueSummaryCardModel DueSummaryCards { get; set; }=new DueSummaryCardModel();
         public List<Top10TechnicianModel> Top10TechnicianList { get; set; }=new List<Top10TechnicianModel>();
@@ -22,8 +25,6 @@
         public double SOLVE_GROWTH_PERCENTAGE { get; set; }
         public double ACTIVE_TECHNICIAN_COUNT { get; set; }
     }
-    
-    // Pie Chart & Table Design 
     public class Top10TechnicianModel
     {
         public string? TECHNICIANNAME { get; set; }

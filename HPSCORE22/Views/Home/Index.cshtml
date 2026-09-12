@@ -192,8 +192,8 @@
             <div class="row g-3 mb-3 mt-2">
                 <div class="col-md-6 col-sm-12">
                     <div class="card card-danger" style="width: 100%;">
-                        <div class="card-header" style="height: 39px;text-align: center;">
-                            <h3 class="card-title">Most Frequent Problem Type – Current Month</h3>
+                        <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
+                            <h3 class="card-title" style="font-size: 14px;">Most Frequent Problem Type – Current Month</h3>
                         </div>
                         <div class="card-body" style="margin-top: 5%;">
                             <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
@@ -203,8 +203,8 @@
                 </div>
                <div class="col-md-6 col-sm-12">
                     <div class="card card-danger">
-                        <div class="card-header" style="height: 39px;text-align: center;">
-                            <h3 class="card-title">
+                        <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
+                            <h3 class="card-title" style="font-size: 14px;">
                                 Ticket Status (Today)
                             </h3>
                         </div>
@@ -215,88 +215,170 @@
                     </div>
                </div>
             </div>
-            <div class="row g-3 mb-3 mt-2 align-items-center">
-                <div class="col-sm-12 col-md-12">
-                    <div class="card card-primary card-outline">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="far fa-chart-bar"></i>
-                                Ticket Solving Trend Current Month
-                            </h3>
+            @if (Model.Userinformation.USERTYPEID == 1 || Model.Userinformation.USERTYPEID == 5)
+            {
+                <div class="row g-3 mb-3 mt-2 align-items-center">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="far fa-chart-bar"></i>
+                                    Ticket Solving Trend Current Month
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="line-chart"
+                                        style="min-height: 300px; height: 300px; max-height: 300px; width: 100%;">
+                                </canvas>
+                            </div>
+                            <!-- /.card-body-->
                         </div>
-                        <div class="card-body">
-                            <canvas id="line-chart"
-                                    style="min-height: 300px; height: 300px; max-height: 300px; width: 100%;">
-                            </canvas>
-                        </div>
-                        <!-- /.card-body-->
                     </div>
                 </div>
-            </div>
-            <div class="row g-3 mb-3 mt-2">
-                <div class="col-md-6 col-sm-12">
-                    <div class="card card-danger">
-                        <div class="card-header" style="height: 39px;text-align: center;">
-                            <h3 class="card-title">Top 5 Technicians – Current Month</h3>
-                        </div>
-                        <div class="card-body">
-                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>SL</th>
-                                        <th>Name</th>
-                                        <th>StaffID</th>
-                                        <th>Current Tickets Solved</th>
-                                        <th>Previous Tickets Solved</th>
-                                        <th>Solve Growth by Count</th>
-                                        <th>Solve Growth by Ratio</th>
-                                    </tr>
-                                </thead>
+                <div class="row g-3 mb-3 mt-2">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card card-danger">
+                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
+                                <h3 class="card-title" style="font-size: 14px;">Top 5 Technicians – Current Month</h3>
+                            </div>
+                            <div class="card-body">
+                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Name</th>
+                                            <th>StaffID</th>
+                                            <th>Current Solved</th>
+                                            <th>Previous Solved</th>
+                                            <th>Solve Growth</th>
+                                            <th>Solve Ratio </th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody>
-                                    @{
-                                        int i = 1;
-                                        @foreach (var item in Model.Top10TechnicianList)
-                                        {
-                                            <tr>
-                                                <td>@i</td>
-                                                <td>@item.TECHNICIANNAME</td>
-                                                <td>@item.STAFFID</td>
-                                                <td>@item.CURRENT_MONTH_SOLVE</td>
-                                                <td>@item.PREVIOUS_MONTH_SOLVE</td>
-                                                <td>@item.SOLVE_GROWTH</td>
-                                                <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
-                                            </tr>
-                                            i++;
+                                    <tbody>
+                                        @{
+                                            int i = 1;
+                                            @foreach (var item in Model.Top10TechnicianList)
+                                            {
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>@item.TECHNICIANNAME</td>
+                                                    <td>@item.STAFFID</td>
+                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
+                                                    <td>@item.PREVIOUS_MONTH_SOLVE</td>
+                                                    <td>@item.SOLVE_GROWTH</td>
+                                                    <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
+                                                </tr>
+                                                i++;
+                                            }
                                         }
-                                    }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card-body -->
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card card-danger">
+                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
+                                <h3 class="card-title" style="font-size: 14px;">Lowest 5 Technicians – Current Month</h3>
+                            </div>
+                            <div class="card-body">
+                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Name</th>
+                                            <th>StaffID</th>
+                                            <th>Current Solved</th>
+                                            <th>Previous Solved</th>
+                                            <th>Solve Growth </th>
+                                            <th>Solve Ratio </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @{
+                                            int j = 1;
+                                            @foreach (var item in Model.Lowest10TechnicianList)
+                                            {
+                                                <tr>
+                                                    <td>@j</td>
+                                                    <td>@item.TECHNICIANNAME</td>
+                                                    <td>@item.STAFFID</td>
+                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
+                                                    <td>@item.PREVIOUS_MONTH_SOLVE</td>
+                                                    <td>@item.SOLVE_GROWTH</td>
+                                                    <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
+                                                </tr>
+                                                j++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12">
-                    <div class="card card-danger">
-                        <div class="card-header" style="height: 39px;text-align: center;">
-                            <h3 class="card-title">Lowest 5 Technicians – Current Month</h3>
-                        </div>
-                        <div class="card-body">
-                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>SL</th>
-                                        <th>Name</th>
-                                        <th>StaffID</th>
-                                        <th>Current Tickets Solved</th>
-                                        <th>Previous Tickets Solved</th>
-                                        <th>Solve Growth by Count</th>
-                                        <th>Solve Growth by Ratio</th>
-                                    </tr>
-                                </thead>
+                <div class="row g-3 mb-3 mt-2">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card card-danger">
+                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
+                                <h3 class="card-title" style="font-size: 14px;">Top 5 Showroom – Current Month</h3>
+                            </div>
+                            <div class="card-body">
+                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody>
-                                    @{
+                                    <tbody>
+                                        @{
+                                            int k = 1;
+                                            @foreach (var item in Model.Top5Showroom)
+                                            {
+                                                <tr>
+                                                    <td>@k</td>
+                                                    <td>@item.TECHNICIANNAME</td>
+                                                    <td>@item.STAFFID</td>
+                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
+                                                </tr>
+                                                k++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                  @*   <div class="col-md-6 col-sm-12">
+                        <div class="card card-danger">
+                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
+                                <h3 class="card-title" style="font-size: 14px;">Last 30 Days Problem & Service Analysis (Top Five)</h3>
+                            </div>
+                            <div class="card-body">
+                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Problem Name</th>
+                                            <th>StaffID</th>
+                                            <th>Current Tickets Solved</th>
+                                            <th>Previous Tickets Solved</th>
+                                            <th>Solve Growth by Count</th>
+                                            <th>Solve Growth by Ratio</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @*         @{
                                         int j = 1;
                                         @foreach (var item in Model.Lowest10TechnicianList)
                                         {
@@ -311,94 +393,16 @@
                                             </tr>
                                             j++;
                                         }
-                                    }
-                                </tbody>
-                            </table>
+                                    } *@
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card-body -->
-                    </div>
+                    </div> *@
                 </div>
-            </div>
-            <div class="row g-3 mb-3 mt-2">
-                <div class="col-md-6 col-sm-12">
-                    <div class="card card-danger">
-                        <div class="card-header" style="height: 39px;text-align: center;">
-                            <h3 class="card-title">Top 5 Showroom – Current Month</h3>
-                        </div>
-                        <div class="card-body">
-                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>SL</th>
-                                        <th>Showroom Code</th>
-                                        <th>Showroom</th>
-                                        <th>Total Complain</th>
-                                    </tr>
-                                </thead>
+            }
 
-                                <tbody>
-                                    @{
-                                        int k = 1;
-                                        @foreach (var item in Model.Top5Showroom)
-                                        {
-                                            <tr>
-                                                <td>@k</td>
-                                                <td>@item.TECHNICIANNAME</td>
-                                                <td>@item.STAFFID</td>
-                                                <td>@item.CURRENT_MONTH_SOLVE</td>
-                                            </tr>
-                                            k++;
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                </div>
-              @*   <div class="col-md-6 col-sm-12">
-                    <div class="card card-danger">
-                        <div class="card-header" style="height: 39px;text-align: center;">
-                            <h3 class="card-title">Lowest 5 Technicians – Current Month</h3>
-                        </div>
-                        <div class="card-body">
-                            <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>SL</th>
-                                        <th>Name</th>
-                                        <th>StaffID</th>
-                                        <th>Current Tickets Solved</th>
-                                        <th>Previous Tickets Solved</th>
-                                        <th>Solve Growth by Count</th>
-                                        <th>Solve Growth by Ratio</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @{
-                                        int j = 1;
-                                        @foreach (var item in Model.Lowest10TechnicianList)
-                                        {
-                                            <tr>
-                                                <td>@j</td>
-                                                <td>@item.TECHNICIANNAME</td>
-                                                <td>@item.STAFFID</td>
-                                                <td>@item.CURRENT_MONTH_SOLVE</td>
-                                                <td>@item.PREVIOUS_MONTH_SOLVE</td>
-                                                <td>@item.SOLVE_GROWTH</td>
-                                                <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
-                                            </tr>
-                                            j++;
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                </div> *@
-            </div>
         </div>
     </div>
 </main>

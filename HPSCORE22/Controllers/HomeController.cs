@@ -44,6 +44,7 @@ namespace QCMS.Controllers
                 await GetLow10TechnicianSolve();
             UserDashboard.Top5Showroom =
                      await GetTop5Showroom();
+            UserDashboard.Userinformation = _SessionHelper.GetUser();
             return View(
                 "~/Views/Home/Index.cshtml",
                 UserDashboard
