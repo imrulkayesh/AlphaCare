@@ -55,7 +55,7 @@ builder.Services.AddScoped<IMenuSettingManagementRepository, MenuSettingManageme
 builder.Services.AddScoped<IComplainSmSApi, ComplainSmSApi>();
 builder.Services.AddScoped<ICommonCoreRepository, CommonCoreRepository>();
 builder.Services.AddScoped<IUserDashboardRepository, UserDashboardRepository>();
-
+builder.Services.AddScoped<ISetupRepository, SetupRepository>();
 
 // Add HttpClient and ApiService
 builder.Services.AddHttpClient<ApiService>(client =>
