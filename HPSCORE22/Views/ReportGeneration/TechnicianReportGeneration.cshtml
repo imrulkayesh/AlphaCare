@@ -1,0 +1,229 @@
+﻿@model RetailCare.Models.ReportGenerationViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="~/Views/PartialView/_DataTableCSS.cshtml" />
+
+<div class="card">
+    <div class="top-border"></div>
+    <div class="card-header entryfromheader">
+        <h3 class="card-title">
+            Technician-wise Total Solved Tickets
+        </h3>
+    </div>
+    <div class="card-body">
+
+        @using (Html.BeginForm("TechnicianReportGenerationReport", "ReportGeneration", FormMethod.Post, new { @class = "form-inline" }))
+        {
+            <div class="row" style="padding: 1%;margin-left: 7%;">
+                <div class="col-md-3 col-sm-12">
+                    @Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "control-label" })<span style="color:red">*</span>
+                    @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "startdate"})
+                    @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    @Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "control-label" })<span style="color:red">*</span>
+                    @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new {id="enddate", @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    @Html.LabelFor(m => m.FilteringOption.TechnicianID, htmlAttributes: new { @class = "form-control-label" })
+                    @Html.DropDownListFor(m => m.FilteringOption.TechnicianID, new SelectList(Model.TechnicianList, "TECHNICIANID", "TECHNICIANNAME"), "Select Status", new { @class = "form-control dropdowndesign" })
+                </div>
+                <div class="col-md-3 col-sm-12 mt-3">
+                    <button class="btn btn-success" type="submit">Show</button>
+                </div>
+            </div>
+        }
+
+        @if (Model.TechniciansListReport.Count > 0)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="locationTable" class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>SL</th>
+                                <th>Technician Name</th>
+                                <th>Staff ID</th>
+                                <th>Contact No</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Total Complain</th>
+                                <th>Total Solved</th>
+                                <th>Total Canceled</th>
+                                <th>Total Pending</th>
+                              @*   <th>Details</th> *@
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int i = 1;
+                                @foreach (var item in Model.TechniciansListReport)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.TECHNICIANNAME</td>
+                                        <td>@item.STAFFID</td>
+                                        <td>@item.CONTACTNO</td>
+                                        <td>@item.EMAIL</td>
+                                        <td>@item.ADDRESS</td>
+                                        <td>
+                                            <a href="#" 
+                                               onclick="GetAllDetailsData('@item.TECHNICIANID','0')">@item.TOTALCREATEDTICKET</a>
+                                        </td>
+                                        <td>
+                                            <a href="#" 
+                                                onclick="GetAllDetailsData('@item.TECHNICIANID','2')">@item.TOTALSOLVED</a>
+                                        </td>
+                                        <td>
+                                            <a href="#" 
+                                               onclick="GetAllDetailsData('@item.TECHNICIANID','3')">@item.TOTALCANCLE</a>
+                                        </td>
+                                        <td>
+                                            <a href="#" 
+                                              onclick="GetAllDetailsData('@item.TECHNICIANID','1')">@item.TOTALUNSOLVED</a>
+                                        </td>
+                                        <!-- Action column -->
+                                        <!-- <td>
+                                        //     <button type="button"
+                                        //             class="btn btn-primary btn-sm assign-btn"
+                                        //             data-bs-toggle="modal"
+                                        //             data-bs-target="#exampleModal"
+                                        //             onclick="GetAllDetailsData('@item.TECHNICIANID',)">
+                                        //         <i class="fa fa-plus-circle"></i>
+                                        //     </button>
+                                        </td>
+                                        -->
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    Tickets Details
+                </h1>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close" id="closemodel">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="complainDetailsTable"
+                           class="complaindetails table table-bordered table-striped table-hover w-100">
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Ticket ID</th>
+                                <th>Showroom Code</th>
+                                <th>Complain & Assign Date</th>
+                                <th>Customer Name</th>
+                                <th>Contact No</th>
+                                <th>Customer Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="~/Views/PartialView/_DatatableJSCode.cshtml" />
+<script>
+    function GetAllDetailsData(TypeID,status) {
+        var startdate=$('#startdate').val();
+        var enddate=$('#enddate').val();
+        $.ajax({
+            url: '@Url.Action("GetTechniansdetails", "ReportGeneration")',
+            type: 'GET',
+            data: {
+                technician: TypeID,
+                statusID:status,
+				startdate: startdate,
+				enddate: enddate
+            },
+
+            success: function (data) {
+
+                console.log("Details Data:", data);
+                var tbody = $(".complaindetails tbody");
+
+                // Clear previous data
+                tbody.empty();
+
+
+                // Check data
+                if (data.ProblemList &&
+                    data.ProblemList.length > 0) {
+
+                    $.each(data.ProblemList, function (i, item) {
+                        var date = item.COMPLAINDATE.split('T')[0];
+                        var row = `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td>${item.TICKETCODE ?? 'N/A'}</td>
+                                <td>${item.SHOWROOM ?? 'N/A'}</td>
+                                <td>${ date ?? 'N/A'}</td>
+                                <td>${item.CUSTOMERNAME ?? 'N/A'}</td>
+                                <td>${item.CONTACTNO ?? 'N/A'}</td>
+                                <td>${item.LOCATION ?? 'N/A'}</td>
+                               
+                            </tr>
+                        `;
+
+                        tbody.append(row);
+                    });
+
+                }
+                else {
+
+                    tbody.append(`
+                        <tr>
+                            <td colspan="9" class="text-center">
+                                No data found.
+                            </td>
+                        </tr>
+                    `);
+                }
+
+
+                // ==========================================
+                // Open Modal
+                // ==========================================
+                    var modalElement = document.getElementById('exampleModal');
+                var modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                 modal.show();
+
+            },
+
+            error: function (xhr, status, error) {
+
+                console.error(
+                    'Error fetching ticket details:',
+                    error
+                );
+
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>

@@ -97,6 +97,55 @@ namespace RetailCare.Repositories
             }
             return ExtractData.Convert<FeedbackImageModel>(dt).ToList();
         }
+        public List<TechnicianModel> GetAllTechTotalSolveData(FilteringOption FilteringValues, int CompanyID)
+        {
+            DataTable dt = new DataTable();
 
+            using (OracleConnection connection = new OracleConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (OracleCommand command = new OracleCommand("ESERV.SP_GET_TECHNICIAN_TICKET_SUMMARY", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.BindByName = true;
+                    command.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = CompanyID;
+                    command.Parameters.Add("P_TECHID", OracleDbType.Int32).Value = FilteringValues.TechnicianID;
+                    command.Parameters.Add("P_START_DATE", OracleDbType.Date).Value = FilteringValues.StartDate;
+                    command.Parameters.Add("P_END_DATE", OracleDbType.Date).Value = FilteringValues.EndDate;
+                    command.Parameters.Add("P_RESULT", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    using (OracleDataAdapter da = new OracleDataAdapter(command))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+            return ExtractData.Convert<TechnicianModel>(dt).ToList();
+        }
+        public List<CompalinModel> GetAllSolveDataTechWise(int techid,int CompanyID, DateTime StartDate, DateTime EndDate)
+        {
+            DataTable dt = new DataTable();
+
+            using (OracleConnection connection = new OracleConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (OracleCommand command = new OracleCommand("ESERV.SP_GET_COMPLAIN_BY_TECHNICIAN", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.BindByName = true;
+                    command.Parameters.Add("P_COMPANYID", OracleDbType.Int32).Value = CompanyID;
+                    command.Parameters.Add("P_TECHNICIANID ", OracleDbType.Int32).Value = techid;
+                    command.Parameters.Add("P_START_DATE", OracleDbType.Date).Value = StartDate;
+                    command.Parameters.Add("P_END_DATE", OracleDbType.Date).Value = EndDate;
+                    command.Parameters.Add("P_RESULT", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    using (OracleDataAdapter da = new OracleDataAdapter(command))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+            return ExtractData.Convert<CompalinModel>(dt).ToList();
+        }
     }
 }

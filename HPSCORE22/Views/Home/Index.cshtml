@@ -97,6 +97,14 @@
     td {
         height: 20px;
     }
+    .bg-Averagesolving
+    {
+		background-color: #ff00ff;
+    }
+    .bg-Ideatech
+    {
+        background-color: mediumvioletred;
+    }
 </style>
 <!--begin::App Main-->
 <main class="app-main">
@@ -196,12 +204,35 @@
                         </div>
                     </div>
                 </div>
+                <!--New Cards-->
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-Averagesolving">
+                        <div class="inner">
+                            <h4 id="currentavrg">0</h4>
+                            <p>Current Month – Avrg Solving Time</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-clock-o"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="kpi-box bg-Ideatech">
+                        <div class="inner">
+                            <h4 id="idaltech">0</h4>
+                            <p>Ideal Technicians</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row g-3 mb-3 mt-2">
                 <div class="col-md-6 col-sm-12">
                     <div class="card card-danger" style="width: 100%;">
-                        <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
-                            <h3 class="card-title" style="font-size: 14px;">Most Frequent Problem Type – Current Month</h3>
+                        <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
+                            <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Most Frequent Problem Type – Current Month</h3>
                         </div>
                         <div class="card-body" style="margin-top: 1%;">
                             <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
@@ -211,8 +242,8 @@
                 </div>
                <div class="col-md-6 col-sm-12">
                     <div class="card card-danger">
-                        <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
-                            <h3 class="card-title" style="font-size: 14px;">
+                        <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
+                            <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">
                                 Ticket Status (Today)
                             </h3>
                         </div>
@@ -228,8 +259,8 @@
                 <div class="row g-3 mb-3 mt-2 align-items-center">
                     <div class="col-sm-12 col-md-12">
                         <div class="card card-primary card-outline">
-                            <div class="card-header" style="height: 37px;text-align: center;padding: 1%;">
-                                <h3 class="card-title">
+                            <div class="card-header" style="height: 30px;text-align: center;">
+                                <h3 class="card-title" style="font-size: 14px;">
                                     <i class="far fa-chart-bar"></i>
                                     Ticket Solving Trend Current Month
                                 </h3>
@@ -246,8 +277,8 @@
                 <div class="row g-3 mb-3 mt-2">
                     <div class="col-md-6 col-sm-12">
                         <div class="card card-danger">
-                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
-                                <h3 class="card-title" style="font-size: 14px;">Top 5 Technicians – Current Month</h3>
+                            <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
+                                <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Top 5 Technicians – Current Month</h3>
                             </div>
                             <div class="card-body">
                                 <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
@@ -288,52 +319,8 @@
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="card card-danger">
-                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
-                                <h3 class="card-title" style="font-size: 14px;">Lowest 5 Technicians – Current Month</h3>
-                            </div>
-                            <div class="card-body">
-                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>SL</th>
-                                            <th>Name</th>
-                                            <th>StaffID</th>
-                                            <th>Current Solved</th>
-                                            <th>Previous Solved</th>
-                                            <th>Solve Growth </th>
-                                            <th>Solve Ratio </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @{
-                                            int j = 1;
-                                            @foreach (var item in Model.Lowest10TechnicianList)
-                                            {
-                                                <tr>
-                                                    <td>@j</td>
-                                                    <td>@item.TECHNICIANNAME</td>
-                                                    <td>@item.STAFFID</td>
-                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
-                                                    <td>@item.PREVIOUS_MONTH_SOLVE</td>
-                                                    <td>@item.SOLVE_GROWTH</td>
-                                                    <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
-                                                </tr>
-                                                j++;
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                    </div>
-                </div>
-                <div class="row g-3 mb-3 mt-2">
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card card-danger">
-                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
-                                <h3 class="card-title" style="font-size: 14px;">Top 5 Showroom – Current Month</h3>
+                            <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
+                                <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Top 5 Showroom – Current Month</h3>
                             </div>
                             <div class="card-body">
                                 <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
@@ -366,42 +353,42 @@
                             <!-- /.card-body -->
                         </div>
                     </div>
-                  @*   <div class="col-md-6 col-sm-12">
+                    @* <div class="col-md-6 col-sm-12">
                         <div class="card card-danger">
-                            <div class="card-header" style="height: 28px;text-align: center;padding: 1%;">
-                                <h3 class="card-title" style="font-size: 14px;">Last 30 Days Problem & Service Analysis (Top Five)</h3>
+                            <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
+                                <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Lowest 5 Technicians – Current Month</h3>
                             </div>
                             <div class="card-body">
                                 <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>SL</th>
-                                            <th>Problem Name</th>
+                                            <th>Name</th>
                                             <th>StaffID</th>
-                                            <th>Current Tickets Solved</th>
-                                            <th>Previous Tickets Solved</th>
-                                            <th>Solve Growth by Count</th>
-                                            <th>Solve Growth by Ratio</th>
+                                            <th>Current Solved</th>
+                                            <th>Previous Solved</th>
+                                            <th>Solve Growth </th>
+                                            <th>Solve Ratio </th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
-                                        @*         @{
-                                        int j = 1;
-                                        @foreach (var item in Model.Lowest10TechnicianList)
-                                        {
-                                            <tr>
-                                                <td>@j</td>
-                                                <td>@item.TECHNICIANNAME</td>
-                                                <td>@item.STAFFID</td>
-                                                <td>@item.CURRENT_MONTH_SOLVE</td>
-                                                <td>@item.PREVIOUS_MONTH_SOLVE</td>
-                                                <td>@item.SOLVE_GROWTH</td>
-                                                <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
-                                            </tr>
-                                            j++;
+                                        @{
+                                            int j = 1;
+                                            @foreach (var item in Model.Lowest10TechnicianList)
+                                            {
+                                                <tr>
+                                                    <td>@j</td>
+                                                    <td>@item.TECHNICIANNAME</td>
+                                                    <td>@item.STAFFID</td>
+                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
+                                                    <td>@item.PREVIOUS_MONTH_SOLVE</td>
+                                                    <td>@item.SOLVE_GROWTH</td>
+                                                    <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
+                                                </tr>
+                                                j++;
+                                            }
                                         }
-                                    } 
                                     </tbody>
                                 </table>
                             </div>

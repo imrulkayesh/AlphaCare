@@ -68,5 +68,6 @@ namespace RetailCare.Repositories
 
             return ExtractData.Convert<CompanyModel>(dt).ToList();
         }
+         
     }
 }

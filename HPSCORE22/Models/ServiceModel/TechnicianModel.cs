@@ -43,6 +43,11 @@ namespace RetailCare.Models.ServiceModel
         // Reporting Items
         public string? STATUS { get; set; }
         public string? ZONENAME { get; set; }
+        public int? TOTALSOLVED { get; set; }
+        public int? TOTALCANCLE { get; set; }
+        public int? TOTALCREATEDTICKET { get; set; }
+        public int? TOTALUNSOLVED { get; set; }
+
     }
     public class TECHNICIANSASSIGNPRODUCT
     {

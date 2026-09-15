@@ -1,21 +1,18 @@
-﻿using RetailCare.Models.CRMModels;
+﻿using AlphaCare.Repositories;
+using RetailCare.Models.CRMModels;
 
 namespace AlphaCare.Common
 {
     public interface IComplainSmSApi
     {
-        Task<bool> SendSMSAPI(
-            CompalinModel ComplainDetails,
-            string TechnicianName,
-            string TechnicianNumer,
-            string ProductType);
+        Task<bool> SendSMSAPI( CompalinModel ComplainDetails,string TechnicianName,string TechnicianNumer, string ProductType, SMSSendingModel SMSSeending);
     }
     public class ComplainSmSApi : IComplainSmSApi
     {
-        private const string UserID = "487428";
-        private const string PasswordHash = "00b823eb7b959d189acbb3a2a4f80171";
+        //private const string UserID = "487428";
+        //private const string PasswordHash = "00b823eb7b959d189acbb3a2a4f80171";
 
-        public async Task<bool> SendSMSAPI(CompalinModel ComplainDetails,string TechnicianName,string TechnicianNumer, string ProductType)
+        public async Task<bool> SendSMSAPI(CompalinModel ComplainDetails,string TechnicianName,string TechnicianNumer, string ProductType, SMSSendingModel SMSSeending)
         {
             try
             {
@@ -29,10 +26,10 @@ namespace AlphaCare.Common
                 // $"&msisdn={TechnicianNumer}" +
                 string apiUrl =
                     $"http://sms.prangroup.com/postman/api/sendsms" +
-                    $"?userid={UserID}" +
-                    $"&password={PasswordHash}" +
+                    $"?userid={SMSSeending.SMSUSERID}" +
+                    $"&password={SMSSeending.SMSMD5HASHPASSWORD}" +
                     $"&msisdn={TechnicianNumer}" +
-                    $"&masking=28585" +
+                    $"&masking={SMSSeending.SMSMASKING}" +
                     $"&message={Uri.EscapeDataString(GeneratedSMSBody)}";
 
                 using (HttpClient client = new HttpClient())

@@ -2,7 +2,10 @@
 using RetailCare.Common;
 using RetailCare.Interface;
 using RetailCare.Interface.CRMInterface;
+using RetailCare.Interface.ServiceInterface;
 using RetailCare.Models;
+using RetailCare.Models.CRMModels;
+using RetailCare.Models.ServiceViewModel;
 using RetailCare.Repositories.CRMRepository;
 
 namespace RetailCare.Controllers
@@ -14,14 +17,16 @@ namespace RetailCare.Controllers
         public readonly IReportingMethods _ReportingMethods;
         private readonly IStatusRepository _statusrepository;
         private readonly IComplainRepository _complainRepository;
+        public readonly ITechnicianRepository _technicianRepository;
         public ReportGenerationController(IReportGenerationRepository ReportGeneration, ICommonMethod SessionHelper, IReportingMethods reportingMethods,
-          IStatusRepository statusrepository, IComplainRepository complainRepository)
+          IStatusRepository statusrepository, IComplainRepository complainRepository, ITechnicianRepository technicianRepository)
         {
             _ReportGeneration = ReportGeneration;
             _SessionHelper = SessionHelper;
             _ReportingMethods = reportingMethods;
             _statusrepository = statusrepository;
             _complainRepository = complainRepository;
+            _technicianRepository = technicianRepository;
         }
         // Complain Report
         public IActionResult ComplainReportGeneration()
@@ -108,6 +113,58 @@ namespace RetailCare.Controllers
                 ProblemList = data,
                 ImageDetails= FeedackImage
             });
+        }
+
+        // Technician Report
+        public IActionResult TechnicianReportGeneration()
+        {
+            ReportGenerationViewModel ReportData = new ReportGenerationViewModel();
+            var userdetails = _SessionHelper.GetUser();
+            ReportData.TechnicianList= _technicianRepository.GetAllTechniciansList(userdetails.COMPANYID);
+            return View("~/Views/ReportGeneration/TechnicianReportGeneration.cshtml", ReportData);
+        }
+        public IActionResult TechnicianReportGenerationReport(ReportGenerationViewModel Report)
+        {
+            var UserDetails = _SessionHelper.GetUser();
+            if (ModelState.IsValid)
+            {
+                var filtereddata = _ReportGeneration.GetAllTechTotalSolveData(Report.FilteringOption, UserDetails.COMPANYID).ToList();
+                if (filtereddata.Count > 0)
+                {
+                    Report.TechniciansListReport = filtereddata;
+                }
+                else
+                {
+                    TempData["ERRORMSG"] = "Data Can not been Found";
+                }
+                var userdetails = _SessionHelper.GetUser();
+                Report.TechnicianList = _technicianRepository.GetAllTechniciansList(userdetails.COMPANYID);
+            }
+            else
+            {
+                return View("~/Views/ReportGeneration/TechnicianReportGeneration.cshtml", Report);
+            }
+            return View("~/Views/ReportGeneration/TechnicianReportGeneration.cshtml", Report);
+        }
+        [HttpGet]
+        public JsonResult GetTechniansdetails(int technician,int statusID,string startdate,string enddate)
+        {
+            var userdetails = _SessionHelper.GetUser();
+            List<CompalinModel> Complaintlist= new List<CompalinModel>();
+            DateTime startdatetime=Convert.ToDateTime(startdate);
+            DateTime enddatetime=Convert.ToDateTime(enddate);
+            if (statusID==0)
+            {
+                Complaintlist = _ReportGeneration.GetAllSolveDataTechWise(technician, userdetails.COMPANYID, startdatetime, enddatetime).ToList();
+            }
+            else
+            {
+                Complaintlist = _ReportGeneration.GetAllSolveDataTechWise(technician, userdetails.COMPANYID, startdatetime, enddatetime).Where(x=>x.STATUSID== statusID).ToList();
+            }
+           return Json(new
+           {
+             ProblemList = Complaintlist,
+           });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AlphaCare.Common;
+using AlphaCare.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using QCMS.Repositories;
@@ -30,11 +31,12 @@ namespace RetailCare.Controllers
         private readonly IZoneRepository _ZoneRepository;
         private readonly IComplainSmSApi _ComplainSmSApi;
         private readonly ITechnicianRepository _technicianRepository;
+        private readonly ISetupRepository _SetupRepository;
         ComplainGenerationViewModel Complain = new ComplainGenerationViewModel();
         public ComplainGenerationController(IComplainRepository ComplainRepository, ICompanyRepository CompanyRepository, IStatusRepository Status,
             ICommonMethod CommonMethod, IProblemRepository ProblemRepository, IProductRepository ProductDetails, ICommonServiceMethods CommonServiceModel,
            IItemRepository itemRepository, ITechnicianRepository TechniciansData, IAssignmentManagementRepository TaskAssing, IZoneRepository ZoneRepository,
-           IComplainSmSApi ComplainSmSApi, ITechnicianRepository technicianRepository)
+           IComplainSmSApi ComplainSmSApi, ITechnicianRepository technicianRepository, ISetupRepository SetupRepository)
         {
             _complainRepository = ComplainRepository;
             _CompanyRepository = CompanyRepository;
@@ -49,6 +51,7 @@ namespace RetailCare.Controllers
             _ZoneRepository = ZoneRepository;
             _ComplainSmSApi = ComplainSmSApi;
             _technicianRepository = technicianRepository;
+            _SetupRepository = SetupRepository;
         }
 
         public IActionResult CreateToken()
@@ -143,7 +146,8 @@ namespace RetailCare.Controllers
                             {
                                 var techniciandetails=_technicianRepository.GetAllTechniciansList(userdetails.COMPANYID).Where(x=>x.TECHNICIANID== ComplainData.TECHNICIANID).FirstOrDefault();
                                 var ProductType= _ProductDetails.GetAllProcuctList(userdetails.COMPANYID).Where(x=>x.PRODUCTID== ComplainData.PROBLEMTYPEID).FirstOrDefault();
-                                var SendSMS = await _ComplainSmSApi.SendSMSAPI(ComplainData, techniciandetails.TECHNICIANNAME,techniciandetails.CONTACTNO, ProductType.PRODUCTNAME);
+                                var CompanySMSDetails= _SetupRepository.GetCompanySMSApiDetals(userdetails.COMPANYID);
+                                var SendSMS = await _ComplainSmSApi.SendSMSAPI(ComplainData, techniciandetails.TECHNICIANNAME,techniciandetails.CONTACTNO, ProductType.PRODUCTNAME, CompanySMSDetails);
                                 if (SendSMS)
                                 {
                                     TempData["SuccessMSG"] = "New Ticket:" + ComplainData.TICKETCODE;
