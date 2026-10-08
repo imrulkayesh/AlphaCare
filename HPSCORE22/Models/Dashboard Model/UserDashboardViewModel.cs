@@ -17,6 +17,7 @@ namespace AlphaCare.Models.Dashboard_Model
         public int TodayCount { get; set; }
         public int PendingFeedbackCount { get; set; }
         public int OldPendingCount { get; set; }
+        public int CANCLE_FEEDBACK_COUNT { get; set; }
     }
     public class DueSummaryCardModel
     {

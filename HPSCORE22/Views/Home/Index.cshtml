@@ -105,50 +105,66 @@
     {
         background-color: mediumvioletred;
     }
+
+    .kpi-box p {
+        font-weight: 500 !important;
+        font-size: 12px !important;
+    }
 </style>
 <!--begin::App Main-->
 <main class="app-main">
     <div class="app-content-header">
         <div class="container-fluid">
-            <div class="row g-3 mb-3 align-items-center">
-                <div class="col-lg-3 col-md-4 col-6">
+            <div class="row g-2 mb-3 align-items-center">
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-currentmonthtotal">
                         <div class="inner">
                             <h4 id="Currentmonthtotal">0</h4>
-                            <p>Current Month – Total Tickets</p>
+                            <p class="cardtext"><b>Total Ticket-This M.</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-briefcase"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-currentMonthPending">
                         <div class="inner">
                             <h4 id="CurrentMonthPending">0</h4>
-                            <p>Current Month – Total Solved</p>
+                            <p class="cardtext"><b> Solved Ticket- This M.</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-business-time"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
+                    <div class="kpi-box bg-Averagesolving">
+                        <div class="inner">
+                            <h4 id="currentavrg">0</h4>
+                            <p class="cardtext"><b>Total Cancle – This M.</b></p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-clock-o"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-currentday">
                         <div class="inner">
                             <h4 id="currenttotal">0</h4>
-                            <p>Today Total Ticket</p>
+                            <p class="cardtext"><b>Today Total Ticket</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-edit"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-Overdue" onclick="GetAllDetailsData(2)">
                         <div class="inner">
                             <h4 id="Overdue">0</h4>
-                            <p>Over Due Ticket (3+ Days) </p>
+                            <p class="cardtext"><b>Overdue (3+ Days)</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-business-time"></i>
@@ -156,29 +172,29 @@
                     </div>
                 </div>    
                 <!--VS Cards-->
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-CurrentMonthSLA">
                         <div class="inner">
                             <h4 id="CurrentMonthSLA">0</h4>
-                            <p>Current Month Solved SLA</p>
+                            <p class="cardtext"><b>Solved SLA – This M.</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-calendar-minus"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-LastMonthSLA">
                         <div class="inner">
                             <h4 id="LastMonthSLA">0</h4>
-                            <p>Last Month Solved SLA</p>
+                            <p class="cardtext"><b>Solved SLA – Last M.</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-calendar-minus"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box" id="growthwork">
                         <div class="inner">
                             <div class=""style="display:flex;gap:4%">
@@ -186,14 +202,14 @@
                                 <i class='fas fa-angle-double-down' style='font-size:24px; margin-top: 2%;' id="downarrow"></i>
                                 <i class='fas fa-angle-double-up' style='font-size:24px; margin-top: 2%;' id="uparrow"></i>
                             </div>
-                            <p>Solved SLA Growth (Last vs This)</p>
+                            <p class="cardtext"><b>SLA – Last vs This M.</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-chart-line"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-6">
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-TotalTechnician">
                         <div class="inner">
                             <h4 id="TotalTechnician">0</h4>
@@ -205,22 +221,22 @@
                     </div>
                 </div>
                 <!--New Cards-->
-                <div class="col-lg-3 col-md-4 col-6">
+              @*   <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-Averagesolving">
                         <div class="inner">
                             <h4 id="currentavrg">0</h4>
-                            <p>Current Month – Avrg Solving Time</p>
+                            <p class="cardtext"><b>Avg. Solving Time – M.</b></p>
                         </div>
                         <div class="icon">
                             <i class="fa fa-clock-o"></i>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-6">
+                </div> *@
+                <div class="col-lg-2 col-md-4 col-6">
                     <div class="kpi-box bg-Ideatech">
                         <div class="inner">
                             <h4 id="idaltech">0</h4>
-                            <p>Ideal Technicians</p>
+                            <p class="cardtext"><b>Ideal Technicians</b></p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-user-cog"></i>
@@ -469,6 +485,8 @@
                 $('#currenttotal').text(data.Singlecard.TodayCount);
                 $('#CurrentMonthPending').text(data.Singlecard.PendingFeedbackCount);
                 $('#Overdue').text(data.Singlecard.OldPendingCount);
+                $('#currentavrg').text(data.Singlecard.CANCLE_FEEDBACK_COUNT);
+                
                // Due Card
           if ((data.VsCardDetasil.THIS_MONTH_SOLVED_PERCENTAGE  -
          data.VsCardDetasil.LAST_MONTH_SOLVED_PERCENTAGE) > 0)

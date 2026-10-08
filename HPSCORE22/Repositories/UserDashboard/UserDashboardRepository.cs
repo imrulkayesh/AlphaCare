@@ -55,6 +55,8 @@ namespace AlphaCare.Repositories.UserDashboard
 
                             model.OldPendingCount =
                                 Convert.ToInt32(reader["OLD_PENDING_COUNT"]);
+                            model.CANCLE_FEEDBACK_COUNT =
+                                     Convert.ToInt32(reader["CANCLE_FEEDBACK_COUNT"]);
                         }
                     }
                 }
