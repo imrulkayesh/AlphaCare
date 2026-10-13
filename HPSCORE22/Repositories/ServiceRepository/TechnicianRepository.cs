@@ -360,5 +360,33 @@ namespace RetailCare.Repositories.ServiceRepository
 
             return ExtractData.Convert<TechnicianModel>(dt).FirstOrDefault();
         }
+        public TechnicianModel CheckingTechnicianName(int CompanyID,string StaffID)
+        {
+            DataTable dt = new DataTable();
+
+            using (OracleConnection connection = new OracleConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (OracleCommand command = new OracleCommand("ESERV.GetSingleTechnicianCheck", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandTimeout = 300;
+
+                    command.Parameters.Add("p_CompanyID", OracleDbType.Int32).Value = CompanyID;
+                    command.Parameters.Add("p_TECHNICIANID", OracleDbType.Varchar2).Value = StaffID;
+
+                    command.Parameters.Add("p_Result", OracleDbType.RefCursor)
+                           .Direction = ParameterDirection.Output;
+
+                    using (OracleDataAdapter da = new OracleDataAdapter(command))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+
+            return ExtractData.Convert<TechnicianModel>(dt).FirstOrDefault();
+        }
     }
 }

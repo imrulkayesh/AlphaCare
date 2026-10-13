@@ -13,5 +13,6 @@ namespace RetailCare.Interface.ServiceInterface
         public TechnicianModel GetSingleTechnicians(int CompanyID, int TechniciansID);
         public List<TECHNICIANSASSIGNPRODUCT> GetTechniciansAssignClassList(int TechniciansID);
         public TechnicianModel GetSingleTechnicianUsingStaffID(int StaffID);
+        public TechnicianModel CheckingTechnicianName(int CompanyID, string StaffID);
     }
 }

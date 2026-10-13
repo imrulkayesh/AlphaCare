@@ -95,41 +95,61 @@ namespace RetailCare.Controllers
             }
             else
             {
-                if(ModelState.IsValid)
+                var checkingpoint= _technicianRepository.CheckingTechnicianName(userdetails.COMPANYID, TechniciansDetails.TechnicianDetails.STAFFID.ToString());
+                if(checkingpoint != null)
                 {
-                    if(TechniciansDetails.CheckingClassNameList.Count()>0)
+                    TempData["ERRORMSG"] = "Already Exist";
+                    Technicians = GetAllData();
+                    Technicians.TechnicianDetails = TechniciansDetails.TechnicianDetails;
+                    Technicians.CheckingClassNameList = TechniciansDetails.CheckingClassNameList;
+                    return View("~/Views/TechniciansManagement/CreateTechnicians.cshtml", Technicians);
+                }
+                else
+                {
+                    if (ModelState.IsValid)
                     {
-                        if (TechniciansDetails.TechnicianDetails.CheckedBox==true)
+                        if (TechniciansDetails.CheckingClassNameList.Count() > 0)
                         {
-                            TechniciansDetails.TechnicianDetails.ACTIVE = 1;
-                        }
-                        else
-                        {
-                            TechniciansDetails.TechnicianDetails.ACTIVE = 0;
-                        }
-                        TechniciansDetails.TechnicianDetails.COMPANYID = userdetails.COMPANYID;
-                        TechniciansDetails.TechnicianDetails.ENTRYDATE = DateTime.Now;
-                        TechniciansDetails.TechnicianDetails.ENTRYBY = userdetails.USERID;
-
-                        var TechniciansID = _technicianRepository.AddTechnician(TechniciansDetails.TechnicianDetails);
-                        if (TechniciansID > 0)
-                        {
-                            foreach (var ClassName in TechniciansDetails.CheckingClassNameList)
+                            if (TechniciansDetails.TechnicianDetails.CheckedBox == true)
                             {
-                                var TechniciansClass = new TECHNICIANSASSIGNPRODUCT()
-                                {
-                                    TECHNICIANID = TechniciansID,
-                                    PRODUCTID = ClassName,
-                                    ACTIVE=1
-                                };
-                                _technicianRepository.AddAssignClass(TechniciansClass);
+                                TechniciansDetails.TechnicianDetails.ACTIVE = 1;
                             }
-                            TempData["SuccessMSG"] = "Technicins have been added";
-                            return RedirectToAction("CreateTechnicians", "TechniciansManagement");
+                            else
+                            {
+                                TechniciansDetails.TechnicianDetails.ACTIVE = 0;
+                            }
+                            TechniciansDetails.TechnicianDetails.COMPANYID = userdetails.COMPANYID;
+                            TechniciansDetails.TechnicianDetails.ENTRYDATE = DateTime.Now;
+                            TechniciansDetails.TechnicianDetails.ENTRYBY = userdetails.USERID;
+
+                            var TechniciansID = _technicianRepository.AddTechnician(TechniciansDetails.TechnicianDetails);
+                            if (TechniciansID > 0)
+                            {
+                                foreach (var ClassName in TechniciansDetails.CheckingClassNameList)
+                                {
+                                    var TechniciansClass = new TECHNICIANSASSIGNPRODUCT()
+                                    {
+                                        TECHNICIANID = TechniciansID,
+                                        PRODUCTID = ClassName,
+                                        ACTIVE = 1
+                                    };
+                                    _technicianRepository.AddAssignClass(TechniciansClass);
+                                }
+                                TempData["SuccessMSG"] = "Technicins have been added";
+                                return RedirectToAction("CreateTechnicians", "TechniciansManagement");
+                            }
+                            else
+                            {
+                                TempData["ERRORMSG"] = "Server Error. Please try again after some time";
+                                Technicians = GetAllData();
+                                Technicians.TechnicianDetails = TechniciansDetails.TechnicianDetails;
+                                Technicians.CheckingClassNameList = TechniciansDetails.CheckingClassNameList;
+                                return View("~/Views/TechniciansManagement/CreateTechnicians.cshtml", Technicians);
+                            }
                         }
                         else
                         {
-                            TempData["ERRORMSG"] = "Server Error. Please try again after some time";
+                            TempData["ERRORMSG"] = "Please Select at Least 1 Class";
                             Technicians = GetAllData();
                             Technicians.TechnicianDetails = TechniciansDetails.TechnicianDetails;
                             Technicians.CheckingClassNameList = TechniciansDetails.CheckingClassNameList;
@@ -138,20 +158,12 @@ namespace RetailCare.Controllers
                     }
                     else
                     {
-                        TempData["ERRORMSG"] = "Please Select at Least 1 Class";
+                        TempData["ERRORMSG"] = "Server Error. Please try again after some time";
                         Technicians = GetAllData();
                         Technicians.TechnicianDetails = TechniciansDetails.TechnicianDetails;
                         Technicians.CheckingClassNameList = TechniciansDetails.CheckingClassNameList;
                         return View("~/Views/TechniciansManagement/CreateTechnicians.cshtml", Technicians);
                     }
-                }
-                else
-                {
-                    TempData["ERRORMSG"] = "Server Error. Please try again after some time";
-                    Technicians = GetAllData();
-                    Technicians.TechnicianDetails = TechniciansDetails.TechnicianDetails;
-                    Technicians.CheckingClassNameList = TechniciansDetails.CheckingClassNameList;
-                    return View("~/Views/TechniciansManagement/CreateTechnicians.cshtml", Technicians);
                 }
             }
             return RedirectToAction("CreateTechnicians", "TechniciansManagement");
