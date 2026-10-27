@@ -76,100 +76,26 @@ namespace AlphaCare.Controllers
                 {
                     return Json(new { success = false, message = "Invalid Business Unit selected" });
                 }
-                var userDetails = _userRepository.GetUserInfo(Username).FirstOrDefault();
-                if (userDetails != null)
+                var userDetailsDB = _userRepository.GetUserInfo(Username);
+                if (userDetailsDB != null)
                 {
-                    if (userDetails.USERTYPEID == 4)
+                    if(userDetailsDB.Count()>1)
                     {
-                        var loginResponse = await _apiService.LoginAsync(
-                       businessUnitData.CONN_ID,
-                       businessUnitData.SCHEMA_ID,
-                       Username,
-                       Password
-                        );
-                        if (loginResponse != null && loginResponse.status && loginResponse.result != null && loginResponse.result.Count > 0)
-                        {
-                            var userData = loginResponse.result.First();
-                            if (userData != null)
-                            {
-                                //  var user = userDetails.FirstOrDefault();
-                                var MenuList = _MenuSetup.GetAllRoleWiseMenu(userDetails.USERTYPEID);
 
-                                HttpContext.Session.SetString("MenuList", JsonSerializer.Serialize(MenuList));
-                                // Store session data
-                                HttpContext.Session.SetString("USERID", userData.ID ?? "");
-                                HttpContext.Session.SetString("USERNAME", userData.NAME ?? "");
-                                HttpContext.Session.SetString("EMPLOYEE_CODE", userData.CODE ?? "");
-                                HttpContext.Session.SetString("EMPLOYEE_NAME", userData.NAMES ?? "");
-                                HttpContext.Session.SetString("ADDRESS", userData.ADDRESS ?? "");
-                                HttpContext.Session.SetString("CONTACT", userData.CONTACT ?? "");
-                                HttpContext.Session.SetString("BUSINESS_UNIT", BusinessUnit);
-                                HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
-                                HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
-                                HttpContext.Session.SetInt32("CompanyID", userDetails.COMPANYID);
-                                HttpContext.Session.SetInt32("UserTypeID", userDetails.USERTYPEID);
-
-                                // =========================
-                                // CREATE AUTHENTICATION COOKIE
-                                // =========================
-                                var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, userData.NAME ?? ""),
-                            new Claim(ClaimTypes.NameIdentifier, userData.ID ?? ""),
-                            new Claim("USERID", userData.ID ?? ""),
-                            new Claim("EMPLOYEE_CODE", userData.CODE ?? ""),
-                            new Claim("EMPLOYEE_NAME", userData.NAMES ?? ""),
-                            new Claim("BUSINESS_UNIT", BusinessUnit),
-                            new Claim("CONN_ID", businessUnitData.CONN_ID),
-                            new Claim("SCHEMA_ID", businessUnitData.SCHEMA_ID)
-                        };
-
-                                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                                var principal = new ClaimsPrincipal(identity);
-
-                                // Sign in user
-                                await HttpContext.SignInAsync(
-                                    CookieAuthenticationDefaults.AuthenticationScheme,
-                                    principal,
-                                    new AuthenticationProperties
-                                    {
-                                        IsPersistent = true,
-                                        ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
-                                    }
-                                );
-
-                                // Log to verify cookie is created
-                                Console.WriteLine($"User {userData.NAME} authenticated successfully. Cookie created.");
-
-                                return Json(new { success = true, redirect = Url.Action("Index", "Home"), model = MenuList });
-                            }
-                            else
-                            {
-                                return Json(new { success = false, message = "User not found" });
-                            }
-                        }
-                        else
-                        {
-                            return Json(new { success = false, message = loginResponse?.message ?? "Invalid credentials" });
-                        }
-                    }
-                    else
-                    {
-                        //  var user = userDetails.FirstOrDefault();
+                        var userDetails = userDetailsDB.FirstOrDefault();
                         var MenuList = _MenuSetup.GetAllRoleWiseMenu(userDetails.USERTYPEID);
 
                         HttpContext.Session.SetString("MenuList", JsonSerializer.Serialize(MenuList));
                         // Store session data
                         HttpContext.Session.SetString("USERID", userDetails.USERID ?? "");
                         HttpContext.Session.SetString("USERNAME", userDetails.USERNAME ?? "");
-                        //HttpContext.Session.SetString("EMPLOYEE_CODE", userData.CODE ?? "");
-                        //HttpContext.Session.SetString("EMPLOYEE_NAME", userData.NAMES ?? "");
+
                         HttpContext.Session.SetString("ADDRESS", userDetails.ADDRESS ?? "");
                         HttpContext.Session.SetString("CONTACT", userDetails.CONTACT ?? "");
                         HttpContext.Session.SetString("BUSINESS_UNIT", BusinessUnit);
                         HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
                         HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
-                        HttpContext.Session.SetInt32("CompanyID", userDetails.COMPANYID);
+                       // HttpContext.Session.SetInt32("CompanyID", userDetails.COMPANYID);
                         HttpContext.Session.SetInt32("UserTypeID", userDetails.USERTYPEID);
 
                         // =========================
@@ -204,7 +130,134 @@ namespace AlphaCare.Controllers
                         // Log to verify cookie is created
                         Console.WriteLine($"User {userDetails.USERNAME} authenticated successfully. Cookie created.");
 
-                        return Json(new { success = true, redirect = Url.Action("Index", "Home"), model = MenuList });
+                        return Json(new { success = true, redirect = Url.Action("SelectCompanyPage", "Accounts"), model = MenuList });
+                    }
+                    else
+                    {
+                        var userDetails = userDetailsDB.FirstOrDefault();
+                        if (userDetails.USERTYPEID == 4)
+                        {
+                            var loginResponse = await _apiService.LoginAsync(businessUnitData.CONN_ID,businessUnitData.SCHEMA_ID,Username,Password );
+                            if (loginResponse != null && loginResponse.status && loginResponse.result != null && loginResponse.result.Count > 0)
+                            {
+                                var userData = loginResponse.result.First();
+                                if (userData != null)
+                                {
+                                    //  var user = userDetails.FirstOrDefault();
+                                    var MenuList = _MenuSetup.GetAllRoleWiseMenu(userDetails.USERTYPEID);
+
+                                    HttpContext.Session.SetString("MenuList", JsonSerializer.Serialize(MenuList));
+                                    // Store session data
+                                    HttpContext.Session.SetString("USERID", userData.ID ?? "");
+                                    HttpContext.Session.SetString("USERNAME", userData.NAME ?? "");
+                                    HttpContext.Session.SetString("EMPLOYEE_CODE", userData.CODE ?? "");
+                                    HttpContext.Session.SetString("EMPLOYEE_NAME", userData.NAMES ?? "");
+                                    HttpContext.Session.SetString("ADDRESS", userData.ADDRESS ?? "");
+                                    HttpContext.Session.SetString("CONTACT", userData.CONTACT ?? "");
+                                    HttpContext.Session.SetString("BUSINESS_UNIT", BusinessUnit);
+                                    HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
+                                    HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
+                                    HttpContext.Session.SetInt32("CompanyID", userDetails.COMPANYID);
+                                    HttpContext.Session.SetInt32("UserTypeID", userDetails.USERTYPEID);
+
+                                    // =========================
+                                    // CREATE AUTHENTICATION COOKIE
+                                    // =========================
+                                    var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, userData.NAME ?? ""),
+                            new Claim(ClaimTypes.NameIdentifier, userData.ID ?? ""),
+                            new Claim("USERID", userData.ID ?? ""),
+                            new Claim("EMPLOYEE_CODE", userData.CODE ?? ""),
+                            new Claim("EMPLOYEE_NAME", userData.NAMES ?? ""),
+                            new Claim("BUSINESS_UNIT", BusinessUnit),
+                            new Claim("CONN_ID", businessUnitData.CONN_ID),
+                            new Claim("SCHEMA_ID", businessUnitData.SCHEMA_ID)
+                        };
+
+                                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                                    var principal = new ClaimsPrincipal(identity);
+
+                                    // Sign in user
+                                    await HttpContext.SignInAsync(
+                                        CookieAuthenticationDefaults.AuthenticationScheme,
+                                        principal,
+                                        new AuthenticationProperties
+                                        {
+                                            IsPersistent = true,
+                                            ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                                        }
+                                    );
+
+                                    // Log to verify cookie is created
+                                    Console.WriteLine($"User {userData.NAME} authenticated successfully. Cookie created.");
+
+                                    return Json(new { success = true, redirect = Url.Action("Index", "Home"), model = MenuList });
+                                }
+                                else
+                                {
+                                    return Json(new { success = false, message = "User not found" });
+                                }
+                            }
+                            else
+                            {
+                                return Json(new { success = false, message = loginResponse?.message ?? "Invalid credentials" });
+                            }
+                        }
+                        else
+                        {
+                            //  var user = userDetails.FirstOrDefault();
+                            var MenuList = _MenuSetup.GetAllRoleWiseMenu(userDetails.USERTYPEID);
+
+                            HttpContext.Session.SetString("MenuList", JsonSerializer.Serialize(MenuList));
+                            // Store session data
+                            HttpContext.Session.SetString("USERID", userDetails.USERID ?? "");
+                            HttpContext.Session.SetString("USERNAME", userDetails.USERNAME ?? "");
+                            //HttpContext.Session.SetString("EMPLOYEE_CODE", userData.CODE ?? "");
+                            //HttpContext.Session.SetString("EMPLOYEE_NAME", userData.NAMES ?? "");
+                            HttpContext.Session.SetString("ADDRESS", userDetails.ADDRESS ?? "");
+                            HttpContext.Session.SetString("CONTACT", userDetails.CONTACT ?? "");
+                            HttpContext.Session.SetString("BUSINESS_UNIT", BusinessUnit);
+                            HttpContext.Session.SetString("CONN_ID", businessUnitData.CONN_ID);
+                            HttpContext.Session.SetString("SCHEMA_ID", businessUnitData.SCHEMA_ID);
+                            HttpContext.Session.SetInt32("CompanyID", userDetails.COMPANYID);
+                            HttpContext.Session.SetInt32("UserTypeID", userDetails.USERTYPEID);
+
+                            // =========================
+                            // CREATE AUTHENTICATION COOKIE
+                            // =========================
+                            var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, userDetails.USERNAME ?? ""),
+                            new Claim(ClaimTypes.NameIdentifier, userDetails.USERID ?? ""),
+                            new Claim("USERID", userDetails.USERID ?? ""),
+                            //new Claim("EMPLOYEE_CODE", userDetails.CODE ?? ""),
+                            //new Claim("EMPLOYEE_NAME", userData.NAMES ?? ""),
+                            new Claim("BUSINESS_UNIT", BusinessUnit),
+                            new Claim("CONN_ID", businessUnitData.CONN_ID),
+                            new Claim("SCHEMA_ID", businessUnitData.SCHEMA_ID)
+                        };
+
+                            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                            var principal = new ClaimsPrincipal(identity);
+
+                            // Sign in user
+                            await HttpContext.SignInAsync(
+                                CookieAuthenticationDefaults.AuthenticationScheme,
+                                principal,
+                                new AuthenticationProperties
+                                {
+                                    IsPersistent = true,
+                                    ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                                }
+                            );
+
+                            // Log to verify cookie is created
+                            Console.WriteLine($"User {userDetails.USERNAME} authenticated successfully. Cookie created.");
+
+                            return Json(new { success = true, redirect = Url.Action("Index", "Home"), model = MenuList });
+                        }
+
                     }
                 }
                 else
@@ -219,7 +272,21 @@ namespace AlphaCare.Controllers
                 return Json(new { success = false, message = $"Login error: {ex.Message}" });
             }
         }
+        // Newly added Code 21.7.26
+        public async Task<IActionResult> SelectCompanyPage()
+        {
+            var loginUserDetails = _SessionHelper.GetUser();
+            ViewBag.Name = loginUserDetails.USERID;
+            List<CompanyModel> companyDetails = await _userRepository.GetCompany(loginUserDetails.USERID);
+            return View("~/Views/Accounts/SelectCompanyPage.cshtml", companyDetails);
+        }
 
+        [HttpPost]
+        public IActionResult UserDashboardDirection(int companyID)
+        {
+            HttpContext.Session.SetInt32("CompanyID", companyID);
+            return RedirectToAction("Index", "Home");
+        }
         // =========================
         // LOGOUT
         // =========================
@@ -240,20 +307,6 @@ namespace AlphaCare.Controllers
         public IActionResult Denied()
         {
             return View();
-        }
-
-        // Newly added Code 21.7.26
-        public async Task<IActionResult> SelectCompanyPage()
-        {
-            var loginUserDetails = _SessionHelper.GetUser();
-            ViewBag.Name = loginUserDetails.USERID;
-            List<CompanyModel> companyDetails = await _userRepository.GetCompany(loginUserDetails.USERID);
-            return View("~/Views/Accounts/SelectCompanyPage.cshtml", companyDetails);
-        }
-        public IActionResult UserDashboardDirection(int companyID)
-        {
-            HttpContext.Session.SetInt32("CompanyID", companyID);
-            return View("~/Views/Home/Index.cshtml");
         }
     }
 }
