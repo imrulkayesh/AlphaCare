@@ -1,6 +1,6 @@
 ﻿@using System.Text.Json
 @using AlphaCare.Models
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 @{
     var menuJson = Context.Session.GetString("MenuList");
 
@@ -35,7 +35,7 @@
                      foreach (var ParentMenu in ParentMenulist)
                     {
                         <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="nav-icon fa-solid fa-house"></i>@ParentMenu.PARENTMENUNAME<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
+                            <a href="#" class="nav-link"><i class="nav-icon fa-solid @ParentMenu.PAGEICON"></i>@ParentMenu.PARENTMENUNAME<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
                                 @{
                                     var ChildMenuList = MenuList.Where(x => x.MENU_PARENT_ID == ParentMenu.PARENTMENUID).ToList();
                                     if (ChildMenuList.Count>0)
@@ -43,7 +43,7 @@
                                         <ul class="nav nav-treeview">
                                             @foreach (var ChildMenu in ChildMenuList)
                                             {
-                                                <li class="nav-item"><a href="@Url.Content(ChildMenu.URL)" class="nav-link"><i class="nav-icon fa-solid fa-circle-dot"></i>@ChildMenu.TITLE</a></li>
+                                                <li class="nav-item"><a href="@Url.Content(ChildMenu.URL)" class="nav-link"><i class="nav-icon fa-solid @ChildMenu.PAGEICON"></i>@ChildMenu.TITLE</a></li>
                                             }
                                         </ul>
                                     }
