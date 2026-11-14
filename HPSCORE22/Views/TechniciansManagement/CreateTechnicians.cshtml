@@ -1,144 +1,154 @@
 ﻿@model RetailCare.Models.ServiceViewModel.TechnicianViewModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
-<!-- ADD JQUERY -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Bootstrap 5 + Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/AlphaCare/assets/css/SetupCss.css" asp-append-version="true" />
 
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-      rel="stylesheet" />
-<div class="row">
-    <div class="card">
-        <div class="top-border"></div>
-        <div class="card-header entryfromheader">
-            <h3 class="card-title"> Add New Technicinas</h3>
+<div class="container-fluid px-3">
+    @using (Html.BeginForm("SaveTechnicianData", "TechniciansManagement", FormMethod.Post, new { @class = "form-card", id = "technicianForm" }))
+    {
+        @Html.HiddenFor(m => m.TechnicianDetails.TECHNICIANID)
+        <!-- ===================== 01 PERSONAL ===================== -->
+        <div class="form-section">
+            <div class="section-head">
+                <span class="section-num">01</span>
+                <div>
+                    <h2 class="section-title">Add New Technicinas</h2>
+                    <p class="section-sub">Basic identification, company staff tag, and direct communications.</p>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-3">
+                    @Html.LabelFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "form-label" })
+                    <div class="input-icon">
+                        <i class="bi bi-tag"></i>
+                        @Html.TextBoxFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "form-control" })
+                    </div>           
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    @Html.LabelFor(m => m.TechnicianDetails.TECHNICIANNAME, htmlAttributes: new { @class = "form-label" })<span class="req">*</span>
+                    <div class="input-icon">
+                        <i class="bi bi-person"></i>
+                        @Html.TextBoxFor(m => m.TechnicianDetails.TECHNICIANNAME, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.TechnicianDetails.TECHNICIANNAME, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    @Html.LabelFor(m => m.TechnicianDetails.STAFFID, htmlAttributes: new { @class = "form-label" })<span class="req">*</span>
+                    <div class="input-icon">
+                        <i class="bi bi-person-badge"></i>
+                        @Html.TextBoxFor(m => m.TechnicianDetails.STAFFID, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.TechnicianDetails.STAFFID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    @Html.LabelFor(m => m.TechnicianDetails.CONTACTNO, htmlAttributes: new { @class = "form-label" }) <span class="req">*</span>
+                    <div class="input-icon">
+                        <i class="bi bi-telephone"></i>
+                        @Html.TextBoxFor(m => m.TechnicianDetails.CONTACTNO, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.TechnicianDetails.CONTACTNO, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    @Html.LabelFor(m => m.TechnicianDetails.EMAIL, htmlAttributes: new { @class = "form-labell" })
+                    <div class="input-icon">
+                        <i class="bi bi-envelope"></i>
+                        @Html.TextBoxFor(m => m.TechnicianDetails.EMAIL, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    @Html.LabelFor(m => m.TechnicianDetails.ADDRESS, htmlAttributes: new { @class = "form-label" })
+                    <div class="input-icon">
+                        <i class="bi bi-geo-alt"></i>
+                        @Html.TextBoxFor(m => m.TechnicianDetails.ADDRESS, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.TechnicianDetails.ADDRESS, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    @Html.LabelFor(m => m.TechnicianDetails.ZONEID, htmlAttributes: new { @class = "form-label" })
+                    <div class="input-icon">
+                        <i class="bi bi-buildings"></i>
+                        @Html.DropDownListFor(m => m.TechnicianDetails.ZONEID, new SelectList(Model.ZoneList, "ZONEID", "ZONENAME"), "Select Zone Name", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.TechnicianDetails.ZONEID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="status-box">
+
+                        @Html.CheckBox(
+                        "TechnicianDetails.CheckedBox",
+                                        true, // checked by default
+                                        new
+                                        {
+                                            id = "isActive",
+                                            @class = "form-check-input"
+                                        })
+                        <label for="isActive" class="mb-0" style="cursor:pointer">Is Active</label>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            @using (Html.BeginForm("SaveTechnicianData", "TechniciansManagement", FormMethod.Post, new { @class = "form-inline" }))
+        <!-- ===================== 02 SKILLS ===================== -->
+        <div class="form-section ">
+            <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
+                <div class="section-head mb-0">
+                    <span class="section-num">02</span>
+                    <div>
+                        <h2 class="section-title">
+                        Problem Types
+                        </h2>
+                        <p class="section-sub">Select specific machinery and tasks the technician is authorized to repair.</p>
+                    </div>
+                </div>
+
+                <label class="all-rounder" for="allRounder">
+                @Html.HiddenFor(
+                                m => m.TechnicianDetails.ISALLROUNDER,
+                                new { id = "allRounder", @class = "form-check-input" }
+                                )
+                <input type="checkbox"
+                       id="AllRounder"
+                       @(Model.TechnicianDetails.ISALLROUNDER > 0 ? "checked" : "") />
+                    All Rounder <small>(Select All Skills)</small>
+                </label>
+            </div>
+
+        <div class="row g-2 classitems" id="">
+            @foreach (var item in Model.ProductList)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input checkbox"
+                               type="checkbox"
+                               name="CheckingClassNameList"
+                               value="@item.PRODUCTID"
+                               id="class_@item.PRODUCTID"
+                               @(Model.CheckingClassNameList != null &&
+                                                      Model.CheckingClassNameList.Contains(item.PRODUCTID) ? "checked" : "") />
+
+                <label class="form-control-label" for="class_@item.ITEMID">
+                    @item.PRODUCTNAME
+                </label>
+            </div>
+                        }
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2" style="padding: 1%;float: right;">
+            @if(Model.TechnicianDetails.TECHNICIANID>0)
             {
-                <div class="row">
-                    @Html.HiddenFor(m => m.TechnicianDetails.TECHNICIANID)
-                    <div class="col-md-3 col-sm-12">
-                        @Html.LabelFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "control-label" })
-                        @Html.TextBoxFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "form-control"})
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <div class="">
-                            @Html.LabelFor(m => m.TechnicianDetails.TECHNICIANNAME, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextBoxFor(m => m.TechnicianDetails.TECHNICIANNAME, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.TechnicianDetails.TECHNICIANNAME, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <div class="">
-                            @Html.LabelFor(m => m.TechnicianDetails.STAFFID, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextBoxFor(m => m.TechnicianDetails.STAFFID, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.TechnicianDetails.STAFFID, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <div class="">
-                            @Html.LabelFor(m => m.TechnicianDetails.CONTACTNO, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextBoxFor(m => m.TechnicianDetails.CONTACTNO, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.TechnicianDetails.CONTACTNO, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <div class="">
-                            @Html.LabelFor(m => m.TechnicianDetails.EMAIL, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextBoxFor(m => m.TechnicianDetails.EMAIL, new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <div class="">
-                            @Html.LabelFor(m => m.TechnicianDetails.ADDRESS, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.TextBoxFor(m => m.TechnicianDetails.ADDRESS, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.TechnicianDetails.ADDRESS, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-                        <div class="">
-                            @Html.LabelFor(m => m.TechnicianDetails.ZONEID, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.DropDownListFor(m => m.TechnicianDetails.ZONEID, new SelectList(Model.ZoneList, "ZONEID", "ZONENAME"), "Select Zone Name", new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.TechnicianDetails.ZONEID, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-@*                     <div class="col-md-3 col-sm-12">
-                        <div class="">
-                            @Html.LabelFor(m => m.TechnicianDetails.COMPANYID, htmlAttributes: new { @class = "form-control-label" })
-                            @Html.DropDownListFor(m => m.TechnicianDetails.COMPANYID, new SelectList(Model.CompanyList, "COMPANYID", "COMPANYNAME"), new { @class = "form-control", @readonly = "readonly" })
-                        </div>
-                    </div> *@
-                    <div class="col-md-3 col-sm-12" style="margin-top:3%">
-                        <div class="">
-
-                            @Html.CheckBox(
-                            "TechnicianDetails.CheckedBox",
-                                                true, // checked by default
-                                                new
-                                                {
-                                                    id = "chkActive",
-                                                    @class = "form-check-input"
-                                                })
-                        <label class="assignlable">Is Active</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="d-md-flex d-sm-block" style="gap: 2%">
-                    <h6><b>Problem Types</b></h6>
-                    <div class="d-md-flex g-2">
-                        @Html.HiddenFor(
-                                                m => m.TechnicianDetails.ISALLROUNDER,
-                                                new { id = "isallrounderValue" }
-                                                )
-
-                        <input type="checkbox"
-                               id="AllRounder"
-                               @(Model.TechnicianDetails.ISALLROUNDER > 0 ? "checked" : "") />
-
-                        <label for="vehicle1"> All Rounder</label>
-                        <br>
-                    </div>
-                    </div>
-                    <div class="classitems">
-                    @foreach (var item in Model.ProductList)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input checkbox"
-                                       type="checkbox"
-                                       name="CheckingClassNameList"
-                                       value="@item.PRODUCTID"
-                                       id="class_@item.PRODUCTID"
-                                       @(Model.CheckingClassNameList != null &&
-                                                                      Model.CheckingClassNameList.Contains(item.PRODUCTID) ? "checked" : "") />
-
-                        <label class="form-control-label" for="class_@item.ITEMID">
-                            @item.PRODUCTNAME
-                        </label>
-                    </div>
-                                        }
-                    </div>
-                </div>
-                if (Model.TechnicianDetails.TECHNICIANID > 0)
-                {
-                    <div class="mt-3 col-sm-12">
-                        <button type="submit" class="btn btn-primary" style="float: right !important; background-color:red">Update</button>
-                    </div>
-                }
-                else
-                {
-                    <div class="mt-3 col-sm-12">
-                        <button type="submit" class="btn btn-primary" style="float: right !important;background-color:green">Save</button>
-                    </div>
-                }
-
+                <button type="submit" class="btn btn-danger"><i class="bi bi-check2 me-1"></i> Update<br>Technician</button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-success"><i class="bi bi-check2 me-1"></i> Save<br>Technician</button>
             }
         </div>
-    </div>
+    }
 </div>
+
 <style>
     .classitems {
         display: grid;
@@ -146,6 +156,9 @@
         gap: 2%;
     }
 
+    .req {
+        color: red;
+    }
 </style>
 <script>
     $(document).on('change', '#AllRounder', function () {

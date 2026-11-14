@@ -1,92 +1,102 @@
 ﻿@model RetailCare.Models.UserWiseMenuPermissionViewModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 <!-- JS -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap 5 + Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/AlphaCare/assets/css/SetupCss.css" asp-append-version="true" />
 
-
-<div class="row">
-    <div class="card frombody">
-        <div class="top-border"></div>
-        <div class="card-header entryfromheader">
-            <h3 class="card-title"> Role Wise Menu Permission</h3>
-        </div>
-        <div class="card-body">
-            @using (Html.BeginForm("SaveUserPermission", "UserManagement", FormMethod.Post, new { @class = "form-floating" }))
-            {
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 mt-1">
-                        <div class="">
-                            <label>Role</label>
-                            <select name="userID" id="UserIDDetails" class="form-control">
-                                <option value="">Select Role</option>
-                                @foreach (var UserInfo in Model.RoleList)
-                                {
-                                    <option value="@UserInfo.TYPEID">@UserInfo.TYPENAME</option>
-                                }
-                              
-                            </select>
-                        </div>
-                    </div>
-@*                     <div class="col-md-4 col-sm-12 mt-1">
-                        <div class="">
-                            @Html.LabelFor(m => m.UserWiseMenus., htmlAttributes: new { @class = "form-control-label" })<span style="color:red">*</span>
-                            @Html.DropDownListFor(m => m.CreateNewUser.DEPARTMENTID, new SelectList(Model.DeparmentList, "DEPTID", "DEPTNAME"), "Select Class", new { @class = "form-control multieselectordropdown", id = "itemName" })
-                            @Html.ValidationMessageFor(m => m.CreateNewUser.DEPARTMENTID, "", new { @class = "text-danger" })
-                        </div>
-                    </div> *@
-                    <div class="col-md-4 col-sm-12 mt-4">
-                        <div class="">
-                            @Html.CheckBox(
-                            "UserWiseMenus.CheckedBox",
-                                                true, // checked by default
-                                                new
-                                                {
-                                                    id = "chkActive",
-                                                    @class = "form-check-input"
-                                                })
-                        <label class="assignlable">Is Active</label>
-                    </div>
+<div class="container-fluid px-3">
+    @using (Html.BeginForm("SaveUserPermission", "UserManagement", FormMethod.Post, new { @class = "form-card", id = "technicianForm" }))
+    {
+        <!-- ===================== 01 PERSONAL ===================== -->
+        <div class="form-section">
+            <div class="section-head">
+                <span class="section-num">01</span>
+                <div>
+                    <h2 class="section-title">Role Wise Menu Permission</h2><br />
+                    <p class="section-sub">Basic identification, company staff tag, and direct communications.</p>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="">
-                    <h6>Menu Name</h6>
-                </div>
-                <div class="classitems">
-                    @foreach (var item in Model.Menus)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="CheckingMenuList"
-                                       value="@item.MENUID"
-                                       id="class_@item.MENUID"
-                                       @(Model.CheckingMenuList != null && Model.CheckingMenuList.Contains(item.MENUID) ? "checked" : "") />
 
-                                <label class="form-control-label" for="class_@item.MENUID">
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <label class="form-label">Role</label>
+                    <select name="userID" id="UserIDDetails" class="form-control">
+                        <option value="">Select Role</option>
+                        @foreach (var UserInfo in Model.RoleList)
+                        {
+                            <option value="@UserInfo.TYPEID">@UserInfo.TYPENAME</option>
+                        }
+
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="status-box mt-4">
+                        @Html.CheckBox(
+                        "UserWiseMenus.CheckedBox",
+                                        true, // checked by default
+                                        new
+                                        {
+                                            id = "chkActive",
+                                            @class = "form-check-input"
+                                        })
+                    <label for="isActive" class="mb-0" style="cursor:pointer">Is Active</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ===================== 02 SKILLS ===================== -->
+    <div class="form-section ">
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
+            <div class="section-head mb-0">
+                <span class="section-num">02</span>
+                <div>
+                    <h2 class="section-title">
+                       Menu List
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-2 classitems" id="">
+            @foreach (var item in Model.Menus)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="CheckingMenuList"
+                               value="@item.MENUID"
+                               id="class_@item.MENUID"
+                               @(Model.CheckingMenuList != null && Model.CheckingMenuList.Contains(item.MENUID) ? "checked" : "") />
+
+                        <label class="form-control-label" for="class_@item.MENUID">
                             @item.TITLE
                         </label>
                     </div>
-                                        }
-                    </div>
-                </div>
-            <div class="mt-3 col-sm-12">
-                <button type="submit" class="btn btn-primary" style="float: right !important; background-color:green">Save</button>
+                }
             </div>
-            }
         </div>
-    </div>
+        <div class="d-flex flex-wrap gap-2" style="padding: 1%;float: right;">
+            <button type="submit" class="btn btn-success"><i class="bi bi-check2 me-1"></i> Save</button>
+        </div>
+    }
 </div>
+
 <style>
     .classitems {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         gap: 2%;
     }
 
+    .req {
+        color: red;
+    }
 </style>
 <script>
     $(document).ready(function () {

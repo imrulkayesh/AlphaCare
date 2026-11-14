@@ -1,0 +1,340 @@
+﻿
+:root {
+    --brand: #0f8a5f;
+    --brand-dark: #0b6e4c;
+    --brand-soft: #e8f7f0;
+    --brand-border: #9fd8bf;
+    --border: #e3e8ef;
+    --muted: #6b7686;
+}
+
+body {
+    background: #f3f5f8;
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+/* ---------- Card ---------- */
+.form-card {
+    max-width: 960px;
+    margin: 32px auto;
+    background: #fff;
+    border-radius: 14px;
+    border-top: 4px solid var(--brand);
+    box-shadow: 0 6px 24px rgba(15, 23, 42, .08);
+    overflow: hidden;
+}
+
+.form-section {
+    padding: 22px 26px;
+}
+
+    .form-section + .form-section {
+        border-top: 1px solid var(--border);
+    }
+
+/* ---------- Section heading ---------- */
+.section-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.section-num {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--brand-soft);
+    color: var(--brand);
+    border: 1px solid var(--brand-border);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.section-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 2px 0 0;
+}
+
+.skill-count {
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    background: #eef1f5;
+    color: #4b5563;
+    padding: 2px 7px;
+    border-radius: 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+/* ---------- Inputs ---------- */
+.form-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 5px;
+}
+
+    .form-label .req {
+        color: #e11d48;
+    }
+
+.input-icon {
+    position: relative;
+}
+
+    .input-icon > i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9aa5b4;
+        font-size: 14px;
+        pointer-events: none;
+    }
+
+    .input-icon .form-control,
+    .input-icon .form-select {
+        padding-left: 33px;
+    }
+
+.form-control, .form-select {
+    font-size: 13px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background-color: #f8fafc;
+}
+
+    .form-control::placeholder {
+        color: #a3adbb;
+    }
+
+    .form-control:focus, .form-select:focus {
+        background-color: #fff;
+        border-color: var(--brand);
+        box-shadow: 0 0 0 .2rem rgba(15, 138, 95, .15);
+    }
+
+/* ---------- Operational status box ---------- */
+.status-box {
+    height: 40px;
+    border: 1px solid var(--brand-border);
+    background: var(--brand-soft);
+    border-radius: 8px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+    .status-box .form-check-input {
+        margin: 0;
+        cursor: pointer;
+    }
+
+        .status-box .form-check-input:checked {
+            background-color: var(--brand);
+            border-color: var(--brand);
+        }
+
+.status-badge {
+    background: #b7ecd3;
+    color: var(--brand-dark);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+    .status-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--brand);
+    }
+
+    .status-badge.off {
+        background: #f1f3f6;
+        color: #6b7280;
+    }
+
+        .status-badge.off::before {
+            background: #9ca3af;
+        }
+
+/* ---------- All-rounder toggle ---------- */
+.all-rounder {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+}
+
+    .all-rounder small {
+        font-weight: 400;
+        color: var(--muted);
+        font-size: 10.5px;
+    }
+
+    .all-rounder .form-check-input {
+        margin: 0;
+        cursor: pointer;
+    }
+
+        .all-rounder .form-check-input:checked,
+        .all-rounder .form-check-input:indeterminate {
+            background-color: var(--brand);
+            border-color: var(--brand);
+        }
+
+/* ---------- Skill cards ---------- */
+.skill-card {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: .15s ease;
+    margin: 0;
+    width: 100%;
+}
+
+    .skill-card:hover {
+        border-color: var(--brand-border);
+        background: #fafdfc;
+    }
+
+    .skill-card .form-check-input {
+        margin: 0;
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+    }
+
+        .skill-card .form-check-input:checked {
+            background-color: var(--brand);
+            border-color: var(--brand);
+        }
+
+    .skill-card:has(input:checked) {
+        background: var(--brand-soft);
+        border-color: var(--brand);
+        color: #064e36;
+        box-shadow: 0 1px 4px rgba(15, 138, 95, .15);
+    }
+
+/* ---------- Footer ---------- */
+.form-footer {
+    background: #f8fafc;
+    border-top: 1px solid var(--border);
+    padding: 16px 26px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.footer-note {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 360px;
+}
+
+    .footer-note i {
+        color: var(--brand);
+        font-size: 13px;
+    }
+
+.btn-reset, .btn-add, .btn-save {
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 16px;
+    line-height: 1.25;
+}
+
+.btn-reset {
+    background: #fff;
+    border: 1px solid var(--border);
+    color: #374151;
+}
+
+    .btn-reset:hover {
+        background: #f1f4f8;
+    }
+
+.btn-add {
+    background: var(--brand-soft);
+    border: 1px solid var(--brand-border);
+    color: var(--brand-dark);
+}
+
+    .btn-add:hover {
+        background: #d6f1e5;
+        color: var(--brand-dark);
+    }
+
+.btn-save {
+    background: var(--brand);
+    border: 1px solid var(--brand);
+    color: #fff;
+}
+
+    .btn-save:hover {
+        background: var(--brand-dark);
+        color: #fff;
+    }
+
+@media (max-width: 576px) {
+    .form-section {
+        padding: 18px 16px;
+    }
+
+    .form-footer {
+        padding: 14px 16px;
+    }
+
+        .form-footer .btn {
+            flex: 1 1 100%;
+        }
+}

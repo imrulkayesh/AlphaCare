@@ -1,0 +1,371 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+<!--Excel File Manage-->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --border: #e5e7eb;
+    }
+
+    .complain-page {
+        font-size: 13px;
+    }
+
+        .complain-page .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+        }
+
+        .complain-page .panel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(15,23,42,.06);
+        }
+
+    .hr-soft {
+        border-color: var(--border);
+        opacity: 1;
+    }
+
+    /* Header */
+    .page-title {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -.01em;
+    }
+
+    .badge-audit {
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #a7f3d0;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 20px;
+        padding: 3px 10px;
+    }
+
+        .badge-audit::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+    .badge-ver {
+        background: #f3f4f6;
+        color: #4b5563;
+        border: 1px solid var(--border);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        border-radius: 6px;
+        padding: 3px 8px;
+    }
+
+    /* KPI cards */
+    .kpi {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        height: 100%;
+        background: #fff;
+    }
+
+        .kpi .label {
+            font-size: 11.5px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .kpi .value {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .kpi .note {
+            font-size: 11.5px;
+            margin-top: 2px;
+            color: #9ca3af;
+        }
+
+        .kpi .chip {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 5px;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+
+        .kpi.warn {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+            .kpi.warn .label, .kpi.warn .value {
+                color: #b45309;
+            }
+
+            .kpi.warn .note {
+                color: #d97706;
+            }
+
+        .kpi.info .value {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .kpi.info .unit {
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .kpi.info .chip {
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .kpi.good {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+
+            .kpi.good .label {
+                color: #047857;
+            }
+
+            .kpi.good .value {
+                color: #059669;
+                font-family: 'JetBrains Mono', monospace;
+            }
+
+            .kpi.good .note {
+                color: #10b981;
+            }
+
+    /* Buttons / inputs */
+    .btn-apply {
+        background: var(--primary);
+        color: #fff;
+        font-weight: 600;
+        font-size: 13px;
+        border-radius: 8px;
+        padding: 9px 18px;
+        border: 0;
+    }
+
+        .btn-apply:hover {
+            background: #1d4ed8;
+            color: #fff;
+        }
+
+    .btn-export {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 7px 14px;
+        color: #374151;
+    }
+
+        .btn-export:hover {
+            background: #f9fafb;
+        }
+
+        .btn-export .bi-file-earmark-excel {
+            color: #16a34a;
+        }
+
+        .btn-export .bi-file-earmark-pdf {
+            color: #dc2626;
+        }
+
+    .complain-page .form-control,
+    .complain-page .form-select {
+        font-size: 13px;
+        border-radius: 8px;
+        border-color: var(--border);
+        background-color: #f9fafb;
+    }
+
+    .search-box {
+        position: relative;
+        max-width: 320px;
+    }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .search-box input {
+            padding-left: 34px;
+        }
+
+    .show-select {
+        width: auto;
+        padding-right: 28px;
+    }
+
+    .items-chip {
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-weight: 500;
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+    /* Hide DataTables' own button bar (we trigger it from custom buttons) */
+    .complain-page .dt-buttons {
+        display: none;
+    }
+
+    /* Table */
+    .table-ticket {
+        margin: 0;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+        .table-ticket thead th {
+            background: #f9fafb !important;
+            color: #4b5563 !important;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-ticket tbody td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+    .ticket-id {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11.5px;
+        color: #1d4ed8;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        border-radius: 6px;
+        padding: 3px 8px;
+    }
+
+    .cust-name {
+        font-weight: 600;
+    }
+
+    .phone {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12.5px;
+    }
+
+        .phone i {
+            color: #9ca3af;
+            margin-right: 6px;
+        }
+
+    .pill {
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 20px;
+        padding: 3px 10px;
+        border: 1px solid;
+        display: inline-block;
+    }
+
+        .pill.blue {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+        .pill.green {
+            background: #ecfdf5;
+            color: #059669;
+            border-color: #a7f3d0;
+        }
+
+        .pill.amber {
+            background: #fffbeb;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+
+        .pill.red {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+    /* DataTables footer: info + pagination */
+    .complain-page div.dataTables_wrapper {
+        padding: 0;
+    }
+
+    .complain-page .dataTables_info {
+        padding: 14px 16px;
+        font-size: 12.5px;
+        color: #4b5563;
+        float: left;
+    }
+
+    .complain-page .dataTables_paginate {
+        padding: 10px 16px;
+        float: right;
+    }
+
+        .complain-page .dataTables_paginate .paginate_button {
+            border: 0 !important;
+            border-radius: 6px !important;
+            padding: 4px 10px !important;
+            font-size: 12.5px;
+            color: #4b5563 !important;
+            background: transparent !important;
+        }
+
+            .complain-page .dataTables_paginate .paginate_button.current {
+                background: var(--primary) !important;
+                color: #fff !important;
+                border-radius: 999px !important;
+                font-weight: 600;
+            }
+
+            .complain-page .dataTables_paginate .paginate_button.previous,
+            .complain-page .dataTables_paginate .paginate_button.next {
+                border: 1px solid var(--border) !important;
+                background: #fff !important;
+            }
+
+            .complain-page .dataTables_paginate .paginate_button.disabled {
+                color: #9ca3af !important;
+            }
+
+    .complain-page .dataTables_wrapper::after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+</style>

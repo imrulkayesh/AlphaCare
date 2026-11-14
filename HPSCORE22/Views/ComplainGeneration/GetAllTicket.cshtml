@@ -1,80 +1,496 @@
 ﻿@model RetailCare.Models.CRMViewModel.ComplainGenerationViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // ---- Summary chips ----
+    // Total comes from the list. Wire the other three to your own status field, e.g.
+    //   int pending = Model.ComplainList.Count(x => x.STATUS == "Pending");
+    int total = Model.ComplainList.Count();
+    int pending = 0;
+    int inProgress = 0;
+    int resolved = 0;
+
+    // ---- Product filter options (built from the data) ----
+    var products = Model.ComplainList
+                        .Select(x => x.PRODUCTNAME)
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .Distinct()
+                        .OrderBy(x => x)
+                        .ToList();
+
+    // ---- Region filter options (matched against the Location / Address text) ----
+    var regions = new[] { "Dhaka", "Sylhet", "Chattogram", "Habiganj", "Barishal", "Khulna", "Rajshahi" };
 }
-<!-- ADD JQUERY -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-      rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-<div class="row mt-3">
-    <div class="card">
-        <div class="top-border"></div>
-        <div class="card-header entryfromheader">
-            <h3 class="card-title">Generate & Assign Ticket List</h3>
+<style>
+    .tk-page {
+        font-family: 'Inter', sans-serif;
+        color: #1e293b;
+    }
+
+    /* ---------- Page header ---------- */
+    .tk-title {
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: -.02em;
+        margin: 0;
+    }
+
+    .tk-live {
+        display: inline-block;
+        background: #eaf2ff;
+        color: #1d4ed8;
+        border: 1px solid #bcd3ff;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 3px 12px;
+        border-radius: 999px;
+        vertical-align: middle;
+        margin-left: 10px;
+    }
+
+    .tk-sub {
+        color: #64748b;
+        font-size: 17px;
+        margin: 8px 0 0;
+        max-width: 620px;
+    }
+
+    .tk-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #dfe5ef;
+        border-radius: 10px;
+        padding: 8px 16px;
+        font-size: 14.5px;
+        color: #475569;
+    }
+
+        .tk-chip b {
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .tk-chip .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .tk-chip.total .dot {
+            background: #94a3b8;
+        }
+
+        .tk-chip.pending {
+            background: #fffbeb;
+            border-color: #fde7a6;
+            color: #b45309;
+        }
+
+            .tk-chip.pending .dot {
+                background: #f59e0b;
+            }
+
+            .tk-chip.pending b {
+                color: #7c2d12;
+            }
+
+        .tk-chip.progress {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+            .tk-chip.progress .dot {
+                background: #3b82f6;
+            }
+
+            .tk-chip.progress b {
+                color: #1e3a8a;
+            }
+
+        .tk-chip.resolved {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #047857;
+        }
+
+            .tk-chip.resolved .dot {
+                background: #10b981;
+            }
+
+            .tk-chip.resolved b {
+                color: #064e3b;
+            }
+
+    /* ---------- Cards ---------- */
+    .tk-card {
+        background: #fff;
+        border: 1px solid #e5e9f2;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(16,24,40,.06);
+    }
+
+    .tk-toolbar {
+        padding: 20px;
+    }
+
+    .tk-search {
+        position: relative;
+        width: 100%;
+        max-width: 460px;
+    }
+
+        .tk-search input {
+            height: 48px;
+            padding: 0 38px 0 44px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+        }
+
+            .tk-search input:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+            }
+
+        .tk-search .fa-magnifying-glass {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .tk-search .tk-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 0;
+            background: none;
+            color: #64748b;
+            display: none;
+        }
+
+    .tk-select {
+        height: 42px;
+        border-radius: 10px;
+        border: 1px solid #d5dbe7;
+        font-size: 14.5px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.05);
+    }
+
+    .tk-btn-export {
+        height: 42px;
+        border: 1px solid #d5dbe7;
+        background: #fff;
+        border-radius: 10px;
+        padding: 0 18px;
+        font-weight: 500;
+        box-shadow: 0 1px 2px rgba(16,24,40,.05);
+    }
+
+        .tk-btn-export:hover {
+            background: #f8fafc;
+        }
+
+    .tk-btn-new {
+        height: 42px;
+        background: #2563eb;
+        border: 0;
+        color: #fff;
+        border-radius: 10px;
+        padding: 0 20px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        box-shadow: 0 1px 2px rgba(37,99,235,.35);
+    }
+
+        .tk-btn-new:hover {
+            background: #1d4ed8;
+            color: #fff;
+        }
+
+    .tk-show {
+        color: #64748b;
+        font-size: 14.5px;
+    }
+
+        .tk-show select {
+            width: auto;
+            height: 38px;
+            border-radius: 8px;
+        }
+
+    /* ---------- Table ---------- */
+    .tk-table-wrap {
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    #locationTable {
+        margin: 0;
+    }
+
+        #locationTable thead th {
+            background: #111c2e;
+            color: #fff;
+            font-size: 12.5px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 22px 16px;
+            border: 0;
+            white-space: nowrap;
+        }
+
+        #locationTable tbody td {
+            padding: 18px 16px;
+            font-size: 14.5px;
+            vertical-align: middle;
+            border-color: #e8ecf3;
+        }
+
+        #locationTable tbody tr:hover > td {
+            background: #f8faff;
+        }
+
+    .sl {
+        color: #94a3b8;
+    }
+
+    .ticket-id {
+        font-family: Consolas, 'Courier New', monospace;
+        color: #1d4ed8;
+        font-weight: 600;
+    }
+
+    .copy-btn {
+        background: none;
+        border: 0;
+        padding: 0 0 0 8px;
+        color: #64748b;
+        cursor: pointer;
+    }
+
+        .copy-btn:hover {
+            color: #1d4ed8;
+        }
+
+    .customer {
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .phone {
+        font-family: Consolas, 'Courier New', monospace;
+        white-space: nowrap;
+    }
+
+        .phone i {
+            color: #64748b;
+            margin-right: 6px;
+            font-size: 12px;
+        }
+
+    .location {
+        color: #475569;
+        min-width: 230px;
+    }
+
+    .badge-product {
+        background: #e6efff;
+        color: #1d4ed8;
+        font-weight: 600;
+        font-size: 12px;
+        padding: 5px 12px;
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    /* ---------- Footer / pagination ---------- */
+    .tk-footer {
+        padding: 18px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        border-top: 1px solid #e8ecf3;
+    }
+
+        .tk-footer .dataTables_info {
+            padding: 0;
+            color: #475569;
+            font-size: 14.5px;
+        }
+
+        .tk-footer .dataTables_paginate {
+            padding: 0;
+            margin: 0;
+        }
+
+        .tk-footer .pagination {
+            margin: 0;
+            box-shadow: 0 1px 2px rgba(16,24,40,.05);
+        }
+
+        .tk-footer .page-link {
+            color: #1e293b;
+            padding: 9px 16px;
+            border-color: #d5dbe7;
+        }
+
+        .tk-footer .page-item:first-child .page-link {
+            border-radius: 10px 0 0 10px;
+        }
+
+        .tk-footer .page-item:last-child .page-link {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .tk-footer .page-item.active .page-link {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .tk-footer .page-item.disabled .page-link {
+            background: #f1f5f9;
+            color: #94a3b8;
+        }
+</style>
+
+<div class="tk-page container-fluid mt-3">
+
+    <!-- ================= Header ================= -->
+
+    <!-- ================= Toolbar ================= -->
+    <div class="tk-card tk-toolbar">
+        <div class="d-flex flex-wrap  align-items-start gap-3 mb-2">
+            <div>
+                <h1 class="tk-title">Generate &amp; Assign Ticket List</h1>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="tk-chip total"><span class="dot"></span>Total: <b>@total.ToString("N0")</b></span>
+                @*  <span class="tk-chip pending"><span class="dot"></span>Pending: <b>@pending.ToString("N0")</b></span>
+            <span class="tk-chip progress"><span class="dot"></span>In Progress: <b>@inProgress.ToString("N0")</b></span>
+            <span class="tk-chip resolved"><span class="dot"></span>Resolved: <b>@resolved.ToString("N0")</b></span> *@
+            </div>
         </div>
-        <div class="card-body">
-            <table id="locationTable" class="table table-hover align-middle">
-                <thead class="table-dark">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+            <div class="flex-grow-1" style="display:flex;">
+                <div class="tk-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="tkSearch" class="form-control" placeholder="Search Ticket ID, Customer, Location or Tech" />
+                    <button type="button" id="tkClear" class="tk-clear" aria-label="Clear">&times;</button>
+                </div>
+                <div class="tk-show d-flex align-items-center gap-2">
+                    <span>Show</span>
+                    <select id="tkPageSize" class="form-select form-select-sm">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>entries</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= Table ================= -->
+    <div class="tk-card tk-table-wrap">
+        <div class="table-responsive">
+            <table id="locationTable" class="table table-hover align-middle w-100">
+                <thead>
                     <tr>
                         <th>SL</th>
                         <th>Ticket ID</th>
-                        <th>Complain Date</th>
+                        <th>Complain<br />Date</th>
                         <th>Customer Name</th>
                         <th>Contact No</th>
-                        <th>Location</th>
-                        <th>Product Name</th>
+                        <th>Location / Address</th>
+                        <th class="text-center">Product</th>
                         <th>Technician Name</th>
-                        <th>Problem Details</th>
-                        <th>Action</th>
+                        <th class="text-center">Problem Details</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @{
                         int i = 1;
-                        @foreach (var item in Model.ComplainList)
-                        {
-                            <tr>
-                                <td>@i</td>
-                                <td>@item.TICKETCODE</td>
-                                <td>@item.COMPLAINDATE?.ToString("dd/MM/yyyy")</td>
-                                <td>@item.CUSTOMERNAME</td>
-                                <td>@item.CONTACTNO</td>
-                                <td>@item.LOCATION</td>
-                                <td>@item.PRODUCTNAME</td>
-                                <td>@item.TECHNICIANNAME</td>
-                                <td class="text-center">
-                                    <button type="button"
-                                            class="btn btn-primary btn-sm assign-btn"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal" onclick="ProblemDetails('@item.TICKETCODE')">
-                                        <i class="fa fa-plus-circle"></i>
-                                    </button>
-                                </td>
-                                <td class="text-center">
-                                    <a asp-action="EditCompplain"
-                                       asp-controller="ComplainGeneration"
-                                       asp-route-id="@item.TICKETID"
-                                       class="btn btn-primary btn-sm assign-btn">
-                                        <i class="fas fa-arrow-alt-circle-right"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            i++;
-                        }
+                    }
+                    @foreach (var item in Model.ComplainList)
+                    {
+                        var dateOrder = item.COMPLAINDATE?.ToString("yyyyMMdd");
+                        var dateShow = item.COMPLAINDATE?.ToString("dd/MM/yyyy");
+
+                        <tr>
+                            <td class="sl">@i</td>
+
+                            <td style="display: flex;">
+                                <span class="ticket-id">@item.TICKETCODE</span>
+                                <button type="button" class="copy-btn" data-copy="@item.TICKETCODE" title="Copy Ticket ID">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </td>
+
+                            <td data-order="@dateOrder">@dateShow</td>
+
+                            <td class="customer">@item.CUSTOMERNAME</td>
+
+                            <td class="phone"><i class="fa-solid fa-phone"></i>@item.CONTACTNO</td>
+
+                            <td class="location">@item.LOCATION</td>
+
+                            <td class="text-center"><span class="badge-product">@item.PRODUCTNAME</span></td>
+
+                            <td>@item.TECHNICIANNAME</td>
+
+                            <td class="text-center">
+                                <button type="button"
+                                        class="btn btn-primary btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
+                                        onclick="ProblemDetails('@item.TICKETCODE')">
+                                    <i class="fa fa-plus-circle"></i>
+                                </button>
+                            </td>
+
+                            <td class="text-center">
+                                <a asp-action="EditCompplain"
+                                   asp-controller="ComplainGeneration"
+                                   asp-route-id="@item.TICKETID"
+                                   class="btn btn-primary btn-sm">
+                                    <i class="fas fa-arrow-alt-circle-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        i++;
                     }
                 </tbody>
             </table>
         </div>
+
+        <!-- DataTables moves "info" and "pagination" into this footer -->
+        <div class="tk-footer" id="tkFooter"></div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- ================= Modal ================= -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -92,8 +508,7 @@
                             <th>Remarks</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
             <div class="modal-footer">
@@ -102,74 +517,126 @@
         </div>
     </div>
 </div>
-<!-- JS -->
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!--Data Table-->
+<!-- ================= JS (jQuery loaded once) ================= -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
-    // Data table start
     $(document).ready(function () {
-        $('#locationTable').DataTable({
+
+        // ---------- DataTable ----------
+        var table = $('#locationTable').DataTable({
             pageLength: 10,
-            lengthMenu: [5, 10, 25, 50],
             ordering: true,
-            searching: true,
-            paging: true,
-            info: true,
+            order: [],
             autoWidth: false,
-            responsive: true, // ✅ better UI
+            pagingType: 'simple_numbers',          // Previous 1 2 3 4 5 ... 133 Next
+            dom: 'rt<"d-none"ip>',                 // built-in search/length are replaced by the custom toolbar
 
             language: {
-                search: "🔍 Search:",
-                lengthMenu: "Show _MENU_ entries",
-                zeroRecords: "No matching locations found",
-                info: "Showing _START_ to _END_ of _TOTAL_ locations",
-                infoEmpty: "No data available"
+                zeroRecords: 'No matching tickets found',
+                info: 'Showing <b>_START_</b> to <b>_END_</b> of <b>_TOTAL_</b> locations (tickets)',
+                infoEmpty: 'No data available',
+                infoFiltered: '',
+                paginate: { previous: 'Previous', next: 'Next' }
             },
 
             columnDefs: [
-                { orderable: false, targets: 5 } // action column
-            ]
+                { orderable: false, targets: [0, 8, 9] }      // SL, Problem Details, Action
+            ],
+
+            // keep SL numbers right after sort / search / paging
+            drawCallback: function () {
+                var api = this.api();
+                var start = api.page.info().start;
+                api.column(0, { page: 'current' }).nodes().each(function (cell, idx) {
+                    cell.innerHTML = start + idx + 1;
+                });
+            }
+        });
+
+        // move DataTables' info + pagination into our footer
+        var wrapper = $('#locationTable_wrapper');
+        wrapper.find('.dataTables_info').appendTo('#tkFooter');
+        wrapper.find('.dataTables_paginate').appendTo('#tkFooter');
+
+        // ---------- Toolbar: search ----------
+        $('#tkSearch').on('input', function () {
+            table.search(this.value).draw();
+            $('#tkClear').toggle(this.value.length > 0);
+        });
+        $('#tkClear').on('click', function () {
+            $('#tkSearch').val('').focus();
+            table.search('').draw();
+            $(this).hide();
+        });
+
+        // ---------- Toolbar: page size ----------
+        $('#tkPageSize').on('change', function () {
+            table.page.len(parseInt(this.value, 10)).draw();
+        });
+
+        // ---------- Toolbar: product filter (Product column = 6) ----------
+        function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        $('#tkProduct').on('change', function () {
+            var v = this.value;
+            table.column(6).search(v ? '^' + escapeRegex(v) + '$' : '', true, false).draw();
+        });
+
+        // ---------- Toolbar: region filter (matches Location / Address column = 5) ----------
+        $('#tkRegion').on('change', function () {
+            table.column(5).search(this.value, false, true).draw();
+        });
+
+        // ---------- Export (CSV of filtered rows, opens in Excel) ----------
+        $('#tkExport').on('click', function () {
+            var headers = ['SL', 'Ticket ID', 'Complain Date', 'Customer Name', 'Contact No', 'Location / Address', 'Product', 'Technician Name'];
+            var lines = [headers];
+
+            table.rows({ search: 'applied', order: 'applied' }).nodes().each(function (tr, idx) {
+                var cells = $(tr).children('td');
+                var row = [idx + 1];
+                for (var c = 1; c <= 7; c++) {
+                    row.push($(cells[c]).text().replace(/\s+/g, ' ').trim());
+                }
+                lines.push(row);
+            });
+
+            var csv = lines.map(function (r) {
+                return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+            }).join('\r\n');
+
+            var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ticket-list.csv';
+            a.click();
+            URL.revokeObjectURL(a.href);
         });
     });
-    function confirmDelete() {
-        return confirm("⚠️ Are you sure you want to delete?");
-    }
-     // Data table End
 
-     // Add Delete Problem Start
-      document.addEventListener("click", function (e) {
-
-        // Add row
-        if (e.target.classList.contains("addRow")) {
-
-            let row = e.target.closest(".problem-row");
-            let clone = row.cloneNode(true);
-
-            clone.querySelectorAll("input").forEach(x => x.value = "");
-            clone.querySelector("select").selectedIndex = 0;
-
-            document.getElementById("problemContainer").appendChild(clone);
-        }
-
-        // Remove row
-        if (e.target.classList.contains("removeRow")) {
-
-            let rows = document.querySelectorAll(".problem-row");
-
-            if (rows.length > 1) {
-                e.target.closest(".problem-row").remove();
-            }
-        }
-
+    // ---------- Copy Ticket ID ----------
+    $(document).on('click', '.copy-btn', function () {
+        var btn = this;
+        navigator.clipboard.writeText(btn.dataset.copy).then(function () {
+            btn.style.color = '#16a34a';
+            setTimeout(function () { btn.style.color = ''; }, 900);
+        });
     });
-     // Add Delete Problem End
 
-     // Dependable & Ajax Code start
-       function ProblemDetails(ticketcode) {
+    // ---------- Problem Details (AJAX) ----------
+    function escapeHtml(s) {
+        return String(s ?? '').replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function ProblemDetails(ticketcode) {
+        var tbody = $('#complaindetails tbody');
+        tbody.html('<tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>');
 
         $.ajax({
             url: '@Url.Action("GetAllComplainProblemList", "ComplainGeneration")',
@@ -177,42 +644,32 @@
             data: { ticketcode: ticketcode },
             dataType: 'json',
             success: function (res) {
-
-                console.log(res);
-
-                var tbody = $("#complaindetails tbody");
                 tbody.empty();
 
                 if (res.ProblemList && res.ProblemList.length > 0) {
-
                     $.each(res.ProblemList, function (i, item) {
-
-                        var row = `
+                        tbody.append(`
                             <tr>
                                 <td>${i + 1}</td>
-                                <td>${item.PROBLEMNAME}</td>
-                                <td>${item.QUANTITY}</td>
-                               <td>${item.REMARKS ?? 'N/A'}</td>
-                            </tr>`;
-
-                        tbody.append(row);
+                                <td>${escapeHtml(item.PROBLEMNAME)}</td>
+                                <td>${escapeHtml(item.QUANTITY)}</td>
+                                <td>${escapeHtml(item.REMARKS ?? 'N/A')}</td>
+                            </tr>`);
                     });
-
                 } else {
-
-                    tbody.append(`
-                        <tr>
-                            <td colspan="4" class="text-center">
-                                No data found.
-                            </td>
-                        </tr>
-                    `);
+                    tbody.append('<tr><td colspan="4" class="text-center">No data found.</td></tr>');
                 }
             },
             error: function (xhr) {
                 console.log(xhr.responseText);
+                tbody.html('<tr><td colspan="4" class="text-center text-danger">Failed to load data.</td></tr>');
             }
         });
     }
-    // Dependable & Ajax Code End
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<style>
+    .tk-search {
+        max-width: none !important;
+    }
+</style>

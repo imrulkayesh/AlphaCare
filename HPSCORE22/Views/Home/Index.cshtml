@@ -8,724 +8,784 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 @* CDN  Link End *@
 <style>
-        .kpi-box {
-        min-height: 75px !important;
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all .3s ease;
-        box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    /* ============ Responsive dashboard styles (everything this page needs) ============ */
+    .content {
+        padding: 10px;
+    }
+
+    .dash {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-width: 0;
+    }
+
+        .dash > section {
+            min-width: 0;
+        }
+
+        .dash .grid4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .dash .two {
+            grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+        }
+
+        .dash .kpi2 {
+            padding: 10px 16px;
+        }
+
+            .dash .kpi2 .body {
+                min-width: 0;
+            }
+
+            .dash .kpi2 .val {
+                flex-wrap: wrap;
+                row-gap: 0;
+            }
+
+        .dash .card {
+            min-width: 0;
+        }
+
+            .dash .card h3 {
+                min-width: 0;
+            }
+
+        .dash .ch-head {
+            flex-wrap: wrap;
+        }
+
+            .dash .ch-head > div:first-child {
+                min-width: 0;
+            }
+
+        .dash .tbl-head {
+            flex-wrap: wrap;
+            gap: 4px 12px;
+        }
+
+        .dash .tbl-foot {
+            flex-wrap: wrap;
+            gap: 6px 16px;
+        }
+
+    /* chart boxes: Chart.js needs a wrapper with a height */
+    .chart-box {
         position: relative;
+        width: 100%;
+        height: 260px;
+        margin-top: 16px;
     }
 
-    .kpi-box:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0,0,0,.15);
+        .chart-box.trend {
+            height: 320px;
+            margin-top: 8px;
+        }
+
+        .chart-box canvas, .donut canvas {
+            display: block;
+            max-width: 100%;
+        }
+
+    /* the two tables: side by side when each gets >= 540px, otherwise stacked */
+    .tables-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 540px), 1fr));
+        gap: 24px;
     }
 
-    .kpi-box .inner {
-        padding: 12px 15px;
+    .dash .scroll-x {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
-    .kpi-box h4 {
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0;
-        color: #fff;
+    .dash table.t-tech {
+        min-width: 540px;
     }
 
-    .kpi-box p {
-        margin: 2px 0 0;
-        font-size: 13px;
-        color: rgba(255,255,255,.9);
-        font-weight: 500;
+    .dash table.t-shop {
+        min-width: 420px;
     }
 
-    /* Icon Watermark */
-    .kpi-box .icon {
-        position: absolute;
-        right: 12px;
-        top: 8px;
-        font-size: 38px;
-        opacity: .18;
-        color: #fff;
-    }
-    /* card Backgroun-color  */
-    .bg-currentmonthtotal
-    {
-        background-color: green;
-    }
-    .bg-currentday
-    {
-        background-color: cornflowerblue;
-    }
-    .bg-currentMonthPending
-    {
-        background-color: orange;
-    }
-    .bg-Overdue
-    {
-        background-color: red ;
-	}
-    .bg-Technicians
-    {
-        background-color: mediumpurple;
-    }
-    .bg-CurrentMonthSLA
-    {
-        background-color: #1400ff;
-    }
-    .bg-LastMonthSLA {
-        background-color: rebeccapurple;
+    /* Over Due popup */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: rgba(15,23,42,.55);
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
     }
 
-    .bg-SolveGrowthSLA {
-        background-color: green;
-    }
-    .bg-TotalTechnician
-        {
-        background-color: darkorange;
-	}
-    .bg-warningcolor
-    {
-        background-color: red;
-    }
-   /*  only for tables */
-   th
-   {
-        height: 20px !important;
-   }
-    td {
-        height: 20px;
-    }
-    .bg-Averagesolving
-    {
-		background-color: #ff00ff;
-    }
-    .bg-Ideatech
-    {
-        background-color: mediumvioletred;
+    .modal-box {
+        background: #fff;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 1200px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0,0,0,.35);
     }
 
-    .kpi-box p {
-        font-weight: 500 !important;
-        font-size: 12px !important;
+    .modal-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 18px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+        .modal-head h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+    .modal-close {
+        flex: none;
+        width: 36px;
+        height: 36px;
+        border: 0;
+        background: none;
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+        color: #475569;
+        border-radius: 8px;
+    }
+
+        .modal-close:hover {
+            background: #f1f5f9;
+        }
+
+    .modal-body {
+        padding: 14px 18px;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .modal-body table {
+            min-width: 900px;
+        }
+
+        .modal-body th, .modal-body td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+            .modal-body td:nth-child(7) {
+                white-space: normal;
+                min-width: 220px;
+            }
+
+    /* <= 1320px : 2 KPI cards per row, chart sections stacked */
+    @@media (max-width: 1320px) {
+        .dash .grid4 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .dash .two {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+    /* phones / small tablets */
+    @@media (max-width: 767px) {
+        .dash .kpi2 .body .d-md-flex {
+            display: flex !important;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0 8px;
+        }
+    }
+
+    @@media (max-width: 640px) {
+        .dash {
+            gap: 16px;
+        }
+
+            .dash .grid4 {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .dash .card {
+                padding: 16px;
+            }
+
+            .dash .tbl-card {
+                padding: 0;
+            }
+
+            .dash .ch-head {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .dash .legend {
+                flex-wrap: wrap;
+                gap: 6px 16px;
+            }
+
+            .dash .card-foot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .dash .donut-wrap {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .dash .dlegend {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .dash .tbl-head {
+                padding: 16px 14px;
+            }
+
+        .chart-box {
+            height: 240px;
+        }
+
+            .chart-box.trend {
+                height: 260px;
+            }
+
+        .modal-overlay {
+            padding: 8px;
+        }
+
+        .modal-box {
+            max-height: 94vh;
+        }
+
+        .modal-head, .modal-body {
+            padding: 12px;
+        }
     }
 </style>
 <!--begin::App Main-->
-<main class="app-main">
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row g-2 mb-3 align-items-center">
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-currentmonthtotal">
-                        <div class="inner">
-                            <h4 id="Currentmonthtotal">0</h4>
-                            <p class="cardtext"><b>Total Ticket-This M.</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-currentMonthPending">
-                        <div class="inner">
-                            <h4 id="CurrentMonthPending">0</h4>
-                            <p class="cardtext"><b> Solved Ticket- This M.</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-business-time"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-Averagesolving">
-                        <div class="inner">
-                            <h4 id="currentavrg">0</h4>
-                            <p class="cardtext"><b>Total Cancle – This M.</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fa fa-clock-o"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-currentday">
-                        <div class="inner">
-                            <h4 id="currenttotal">0</h4>
-                            <p class="cardtext"><b>Today Total Ticket</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-edit"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-Overdue" onclick="GetAllDetailsData(2)">
-                        <div class="inner">
-                            <h4 id="Overdue">0</h4>
-                            <p class="cardtext"><b>Overdue (3+ Days)</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-business-time"></i>
-                        </div>
-                    </div>
-                </div>    
-                <!--VS Cards-->
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-CurrentMonthSLA">
-                        <div class="inner">
-                            <h4 id="CurrentMonthSLA">0</h4>
-                            <p class="cardtext"><b>Solved SLA – This M.</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-calendar-minus"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-LastMonthSLA">
-                        <div class="inner">
-                            <h4 id="LastMonthSLA">0</h4>
-                            <p class="cardtext"><b>Solved SLA – Last M.</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-calendar-minus"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box" id="growthwork">
-                        <div class="inner">
-                            <div class=""style="display:flex;gap:4%">
-                                <h4 id="SolveGrowthSLA">0</h4>
-                                <i class='fas fa-angle-double-down' style='font-size:24px; margin-top: 2%;' id="downarrow"></i>
-                                <i class='fas fa-angle-double-up' style='font-size:24px; margin-top: 2%;' id="uparrow"></i>
-                            </div>
-                            <p class="cardtext"><b>SLA – Last vs This M.</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-TotalTechnician">
-                        <div class="inner">
-                            <h4 id="TotalTechnician">0</h4>
-                            <p>Total Technicians</p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-user-cog"></i>
-                        </div>
-                    </div>
-                </div>
-                <!--New Cards-->
-              @*   <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-Averagesolving">
-                        <div class="inner">
-                            <h4 id="currentavrg">0</h4>
-                            <p class="cardtext"><b>Avg. Solving Time – M.</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fa fa-clock-o"></i>
-                        </div>
-                    </div>
-                </div> *@
-                <div class="col-lg-2 col-md-4 col-6">
-                    <div class="kpi-box bg-Ideatech">
-                        <div class="inner">
-                            <h4 id="idaltech">0</h4>
-                            <p class="cardtext"><b>Ideal Technicians</b></p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-user-cog"></i>
-                        </div>
-                    </div>
+<div class="dash">
+    <!--Top Cards Box Start-->
+    <section class="grid4">
+        <!--KPI 1 Start-->
+        <div class="card kpi2">
+            <div class="ico bg-blue">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+                    <path d="M5.5 5h13l3.5 7v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z" />
+                </svg>
+            </div>
+            <div class="body">
+                <div class="lbl">Current Month — Total</div>
+                <div class="val" id="CurrentMonthPending">
                 </div>
             </div>
-            <div class="row g-3 mb-3 mt-2">
-                <div class="col-md-6 col-sm-12">
-                    <div class="card card-danger" style="width: 100%;">
-                        <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
-                            <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Most Frequent Problem Type – Current Month</h3>
-                        </div>
-                        <div class="card-body" style="margin-top: 1%;">
-                            <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                </div>
-               <div class="col-md-6 col-sm-12">
-                    <div class="card card-danger">
-                        <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
-                            <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">
-                                Ticket Status (Today)
-                            </h3>
-                        </div>
-                        <div class="card-body" style="margin-top: 1%;">
-                            <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-               </div>
+        </div>
+        <div class="card kpi2">
+            <div class="ico bg-green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></svg>
             </div>
-            @if (Model.Userinformation.USERTYPEID == 1 || Model.Userinformation.USERTYPEID == 5)
-            {
-                <div class="row g-3 mb-3 mt-2 align-items-center">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="card card-primary card-outline">
-                            <div class="card-header" style="height: 30px;text-align: center;">
-                                <h3 class="card-title" style="font-size: 14px;">
-                                    <i class="far fa-chart-bar"></i>
-                                    Ticket Solving Trend Current Month
-                                </h3>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="line-chart"
-                                        style="min-height: 300px; height: 300px; max-height: 300px; width: 100%;">
-                                </canvas>
-                            </div>
-                            <!-- /.card-body-->
-                        </div>
+            <div class="body">
+                <div class="lbl">Current Month — Solved</div>
+                <div class="val" id="CurrentMonthPending">
+                    00
+                </div>
+            </div>
+        </div>
+        <div class="card kpi2">
+            <div class="ico bg-indigo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+            </div>
+            <div class="body">
+                <div class="lbl">Today Total Tickets</div>
+                <div class="val" id="CurrentMonthPending">
+                    00
+                </div>
+            </div>
+        </div>
+        <div class="card kpi2" style="cursor:pointer" onclick="GetAllDetailsData('1')">
+            <div class="ico bg-red">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.3 3.9-8.5 14.7A2 2 0 0 0 3.5 21.6h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" /><path d="M12 9v4M12 17h.01" /></svg>
+            </div>
+            <div class="body">
+                <div class="lbl">Over Due (3+ Days)</div>
+                <div class="val" id="Overdue">00</div>
+            </div>
+        </div>
+        <!--KPI 1 End-->
+        <!--KPI 2 Start-->
+        <div class="card kpi2">
+            <div class="ico bg-green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                </svg>
+            </div>
+            <div class="body"><div class="lbl">Current Month SLA</div><div class="val" id="CurrentMonthSLA"> <small>Target 80%</small></div></div>
+            <div class="bar"><i style="width:71%;background:#14b8a6"></i></div>
+        </div>
+        <div class="card kpi2">
+            <div class="ico bg-purple"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg></div>
+            <div class="body"><div class="lbl">Last Month SLA</div><div class="val" id="LastMonthSLA"> <small style="color:#10b981;font-weight:600">Exceeded</small></div></div>
+            <div class="bar"><i style="width:81%;background:#8b5cf6"></i></div>
+        </div>
+        <div class="card kpi2">
+
+            <div class="ico bg-red" id="downarrow">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m22 17-8.5-8.5-5 5L2 7" />
+                    <path d="M16 17h6v-6" />
+                </svg>
+            </div>
+
+            <div class="ico bg-green" id="uparrow">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m22 7-8.5 8.5-5-5L2 17" />
+                    <path d="M16 7h6v6" />
+                </svg>
+            </div>
+
+            <div class="body">
+                <div class="lbl">SLA Growth (MoM)</div>
+                <div class="d-md-flex">
+                    <div class="val" id="SolveGrowthValue">
+                    </div>
+                    <div>
+                        <small style="color:#ef4444" id="downinfo">Decline</small>
+                        <small style="color:#90EE90" id="Upinfo">Grow</small>
                     </div>
                 </div>
-                <div class="row g-3 mb-3 mt-2">
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card card-danger">
-                            <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
-                                <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Top 5 Technicians – Current Month</h3>
-                            </div>
-                            <div class="card-body">
-                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>SL</th>
-                                            <th>Name</th>
-                                            <th>StaffID</th>
-                                            <th>Current Solved</th>
-                                            <th>Previous Solved</th>
-                                            <th>Solve Growth</th>
-                                            <th>Solve Ratio </th>
-                                        </tr>
-                                    </thead>
 
-                                    <tbody>
-                                        @{
-                                            int i = 1;
-                                            @foreach (var item in Model.Top10TechnicianList)
-                                            {
-                                                <tr>
-                                                    <td>@i</td>
-                                                    <td>@item.TECHNICIANNAME</td>
-                                                    <td>@item.STAFFID</td>
-                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
-                                                    <td>@item.PREVIOUS_MONTH_SOLVE</td>
-                                                    <td>@item.SOLVE_GROWTH</td>
-                                                    <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
-                                                </tr>
-                                                i++;
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        <div class="card card-danger">
-                            <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
-                                <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Top 5 Showroom – Current Month</h3>
-                            </div>
-                            <div class="card-body">
-                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>SL</th>
-                                            <th>Code</th>
-                                            <th>Name</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @{
-                                            int k = 1;
-                                            @foreach (var item in Model.Top5Showroom)
-                                            {
-                                                <tr>
-                                                    <td>@k</td>
-                                                    <td>@item.TECHNICIANNAME</td>
-                                                    <td>@item.STAFFID</td>
-                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
-                                                </tr>
-                                                k++;
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                    </div>
-                    @* <div class="col-md-6 col-sm-12">
-                        <div class="card card-danger">
-                            <div class="card-header" style="height: 30px;text-align: center;padding: 1%;">
-                                <h3 class="card-title" style="font-size: 14px;margin-top:.3%;">Lowest 5 Technicians – Current Month</h3>
-                            </div>
-                            <div class="card-body">
-                                <table id="locationTable" class="table table-hover align-middle" style="height: 354px;">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>SL</th>
-                                            <th>Name</th>
-                                            <th>StaffID</th>
-                                            <th>Current Solved</th>
-                                            <th>Previous Solved</th>
-                                            <th>Solve Growth </th>
-                                            <th>Solve Ratio </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @{
-                                            int j = 1;
-                                            @foreach (var item in Model.Lowest10TechnicianList)
-                                            {
-                                                <tr>
-                                                    <td>@j</td>
-                                                    <td>@item.TECHNICIANNAME</td>
-                                                    <td>@item.STAFFID</td>
-                                                    <td>@item.CURRENT_MONTH_SOLVE</td>
-                                                    <td>@item.PREVIOUS_MONTH_SOLVE</td>
-                                                    <td>@item.SOLVE_GROWTH</td>
-                                                    <td>@item.SOLVE_GROWTH_PERCENTAGE %</td>
-                                                </tr>
-                                                j++;
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                    </div> *@
-                </div>
-            }
+            </div>
 
         </div>
-    </div>
-</main>
-<!--end::App Main-->
-
-<!--Details-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                    Tickets Details
-                </h1>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
-                </button>
+        <div class="card kpi2">
+            <div class="ico bg-sky"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3" /><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" /></svg></div>
+            <div class="body"><div class="lbl">Total Field Technicians</div><div class="val" id="TotalTechnician"> <small>0 Idle (100% busy)</small></div></div>
+            <span class="dot" style="background:#34d399;width:9px;height:9px"></span>
+        </div>
+        <!--KPI 2 End-->
+    </section>
+    <!--Top Cards Box End-->
+    <!-- PROBLEM TYPES + DONUT start-->
+    <section class="two">
+        <div class="card">
+            <div class="ch-head">
+                <div>
+                    <h3>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V10M10 21V4M15 21V14M20 21V8" /></svg>
+                        Most Frequent Problem Type — Current Month
+                    </h3>
+                    <div class="sub">Comparing Current Month vs Previous Month ticket volume</div>
+                </div>
+                <div class="legend">
+                    <span><i class="dot" style="background:#2563eb"></i>Current Month</span>
+                    <span><i class="dot" style="background:#cbd5e1"></i>Previous Month</span>
+                </div>
             </div>
 
-            <div class="modal-body">
+            <!-- Fixed-height wrapper is required for Chart.js -->
+            <div class="chart-box">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+        <div class="card donut-card">
+            <div class="ch-head" style="border:0;padding:0">
+                <div>
+                    <h3>Ticket Status (Today)</h3>
+                    <div class="sub">Total processed tickets allocation</div>
+                </div>
+                <span class="badge-total" id="totalBadge">0 Total</span>
+            </div>
 
-                <div class="table-responsive">
-                    <table id="complaindetails"
-                           class="table table-bordered table-striped table-hover w-100">
+            <div class="donut-wrap">
+                <div class="donut">
+                    <canvas id="donut"></canvas>
+                </div>
+                <div class="dlegend">
+                    <div><i class="dot" style="background:#10b981"></i><span>Solved</span><b id="solveCount">0</b><em id="solvePct">(0%)</em></div>
+                    <div><i class="dot" style="background:#f59e0b"></i><span>Unsolved</span><b id="unsolveCount">0</b><em id="unsolvePct">(0%)</em></div>
+                    <div><i class="dot" style="background:#ef4444"></i><span>Cancelled</span><b id="cancelCount">0</b><em id="cancelPct">(0%)</em></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- PROBLEM TYPES + DONUT start-->
+    @if (Model.Userinformation.USERTYPEID == 1 || Model.Userinformation.USERTYPEID == 5)
+    {
+        <!-- TREND -->
+        <section class="card">
+            <div class="ch-head" style="border:0;padding-bottom:0">
+                <div>
+                    <h3>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18" /><path d="m7 15 4-4 3 3 5-6" /></svg>
+                        Ticket Solving Trend (Current Month — Daily Track)
+                    </h3>
+                    <div class="sub">Day-by-day trajectory of Total Complain registered vs Total Solved</div>
+                </div>
+                <div class="legend">
+                    <span style="color:#2563eb;font-weight:600"><i style="width:12px;height:3px;border-radius:2px;background:#2563eb;display:inline-block"></i> Total Complain (Registered)</span>
+                    <span style="color:#059669;font-weight:600"><i style="width:12px;height:3px;border-radius:2px;background:#10b981;display:inline-block"></i> Total Solved</span>
+                </div>
+            </div>
 
+            <!-- Fixed-height wrapper is required when maintainAspectRatio is false -->
+            <div class="chart-box trend">
+                <canvas id="line-chart"></canvas>
+            </div>
+        </section>
+        <section class="tables-grid">
+            <div class="card tbl-card">
+                <div class="tbl-head">
+                    <h3>
+                        <i class="dot" style="background:#2563eb"></i>Top 5 Technicians — Current Month
+                    </h3><span>Ranked by tickets resolved</span>
+                </div>
+                <div class="scroll-x">
+                    <table class="t-tech">
                         <thead>
                             <tr>
-                                <th>SL</th>
-                                <th>Ticket ID</th>
-                                <th>Showroom Code</th>
-                                <th>Complain & Assign Date</th>
-                                <th>Customer Name</th>
-                                <th>Contact No</th>
-                                <th>Customer Address</th>
-                                <th>Product Name</th>
-                                <th>Assign Person</th>
+                                <th style="width:30px">#</th>
+                                <th>Technician</th>
+                                <th>Staff ID</th>
+                                <th class="num">Current</th>
+                                <th class="num">Previous</th>
+                                <th class="num">Growth</th>
+                                <th class="num">Solve Ratio</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="techBody">
+                            @{
+                                int i = 1;
+                                @foreach (var item in Model.Top10TechnicianList)
+                                {
+                                    <tr>
+                                        <td style="color:#94a3b8">@i</td>
+                                        <td><b>@item.TECHNICIANNAME</b><small>@item.STAFFID</small></td>
+                                        <td class="mono">@item.STAFFID</td>
+                                        <td class="num"><b>@item.CURRENT_MONTH_SOLVE</b></td>
+                                        <td class="num" style="color:#94a3b8">@item.PREVIOUS_MONTH_SOLVE</td>
+                                        <td class="num @(item.SOLVE_GROWTH > 0 ? "pos" : "neg")">@item.SOLVE_GROWTH</td>
+                                        <td class="num"><span class="ratio @(item.SOLVE_GROWTH > 0 ? "r-g" : "r-r")">@item.SOLVE_GROWTH_PERCENTAGE %</span></td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
+            <div class="card tbl-card">
+                <div class="tbl-head"><h3><i class="dot" style="background:#6366f1"></i>Top Showrooms</h3><span>Highest ticket volume</span></div>
+                <div class="scroll-x">
+                    <table class="t-shop">
+                        <thead>
+                            <tr>
+                                <th style="width:30px">#</th>
+                                <th>Code</th>
+                                <th>Showroom Name</th>
+                                <th class="num">Tickets</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shopBody">
+                            @{
+                                int k = 1;
+                                @foreach (var item in Model.Top5Showroom)
+                                {
+                                    <tr>
+                                        <td style="color:#94a3b8">@k</td>
+                                        <td style="font-weight:500;max-width:150px">@item.TECHNICIANNAME</td>
+                                        <td class="num">@item.STAFFID</td>
+                                        <td class="num">@item.CURRENT_MONTH_SOLVE</td>
+                                    </tr>
+                                    k++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+    }
+
+</div><!-- /.dash -->
+<!--Details-->
+<div id="detailsOverlay" class="modal-overlay" onclick="if(event.target===this){closeDetails();}">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+        <div class="modal-head">
+            <h5 id="detailsTitle">Over Due Tickets</h5>
+            <button type="button" class="modal-close" onclick="closeDetails()" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table id="complaindetails" class="table table-bordered table-striped table-hover w-100">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Ticket ID</th>
+                        <th>Showroom Code</th>
+                        <th>Complain &amp; Assign Date</th>
+                        <th>Customer Name</th>
+                        <th>Contact No</th>
+                        <th>Customer Address</th>
+                        <th>Product Name</th>
+                        <th>Assign Person</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
 </div>
-<style>
-    th {
-        height: 20px !important;
-    }
 
-    td {
-        height: 0px;
-    }
-</style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $.ajax({
-             url:'@Url.Action("GetProductWiseProductModel", "Home")',
-            type: 'GET',
-            success: function (data) {
-                console.log(data);
-                $('#Currentmonthtotal').text(data.Singlecard.CurrentMonthCount);
-                $('#currenttotal').text(data.Singlecard.TodayCount);
-                $('#CurrentMonthPending').text(data.Singlecard.PendingFeedbackCount);
-                $('#Overdue').text(data.Singlecard.OldPendingCount);
-                $('#currentavrg').text(data.Singlecard.CANCLE_FEEDBACK_COUNT);
-                
-               // Due Card
-          if ((data.VsCardDetasil.THIS_MONTH_SOLVED_PERCENTAGE  -
-         data.VsCardDetasil.LAST_MONTH_SOLVED_PERCENTAGE) > 0)
-    {
-        $('#growthwork')
-            .removeClass('bg-warningcolor')
-            .addClass('bg-SolveGrowthSLA');
-
-        $('#uparrow').show();
-        $('#downarrow').hide();
+    // ===== Responsive helpers (layout only - your data/ajax code below is unchanged) =====
+    function isPhone() { return window.innerWidth < 640; }
+    function wrapLabel(text, max) {            // "Chiller Plant / Cold Storage" -> ["Chiller Plant /", "Cold Storage"]
+        var words = String(text).split(/\s+/), lines = [], line = '';
+        words.forEach(function (w) {
+            if (line && (line + ' ' + w).length > max) { lines.push(line); line = w; }
+            else { line = line ? line + ' ' + w : w; }
+        });
+        if (line) lines.push(line);
+        return lines;
     }
-    else
-    {
-        $('#growthwork')
-            .removeClass('bg-SolveGrowthSLA')
-            .addClass('bg-warningcolor');
 
-        $('#downarrow').show();
-        $('#uparrow').hide();
-    }
-                $('#CurrentMonthSLA').text(data.VsCardDetasil.THIS_MONTH_SOLVED_PERCENTAGE +"%");
-                $('#LastMonthSLA').text(data.VsCardDetasil.LAST_MONTH_SOLVED_PERCENTAGE +"%");
-                $('#SolveGrowthSLA').text(data.VsCardDetasil.SOLVE_GROWTH_PERCENTAGE +"%");
-                $('#TotalTechnician').text(data.VsCardDetasil.ACTIVE_TECHNICIAN_COUNT);
+    // Problem-type bar chart: vertical on wide cards, horizontal on narrow cards
+    var problemRows = [], problemHorizontal = null;
+    function drawProblemChart() {
+        var canvas = document.getElementById('barChart');
+        if (!canvas || problemRows.length === 0) return;
+        var box = canvas.parentElement;
+        var horizontal = box.clientWidth < 560;
+        problemHorizontal = horizontal;
+        box.style.height = horizontal ? Math.max(240, problemRows.length * 56 + 30) + 'px' : '';
+
+        var fullLabels = problemRows.map(function (r) { return r.label; });
+        var labels = fullLabels.map(function (l) { return wrapLabel(l, horizontal ? 20 : 14); });
+
+        if (window.problemTypeChart) window.problemTypeChart.destroy();
+        window.problemTypeChart = new Chart(canvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Current Month', data: problemRows.map(function (r) { return r.cur; }), backgroundColor: '#2563eb', borderRadius: 4 },
+                    { label: 'Previous Month', data: problemRows.map(function (r) { return r.prev; }), backgroundColor: '#cbd5e1', borderRadius: 4 }
+                ]
             },
-            error: function (xhr, status, error) {
-                console.error('Error fetching dashboard data:', error);
+            options: {
+                indexAxis: horizontal ? 'y' : 'x',
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                datasets: { bar: { grouped: true, barPercentage: 0.85, categoryPercentage: 0.75 } },
+                plugins: {
+                    legend: { display: false },   // the card already has a custom legend
+                    tooltip: { enabled: true, callbacks: { title: function (items) { return fullLabels[items[0].dataIndex]; } } }
+                },
+                scales: horizontal
+                    ? { x: { beginAtZero: true, ticks: { precision: 0, font: { size: 11 } } },
+                        y: { grid: { display: false }, ticks: { font: { size: 11 } } } }
+                    : { x: { grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, minRotation: 0, font: { size: 11 } } },
+                        y: { beginAtZero: true, ticks: { precision: 0, font: { size: 11 } } } }
             }
         });
+    }
+    // re-draw only when the card crosses the narrow/wide breakpoint (resize, rotate, sidebar collapse)
+    (function () {
+        var canvas = document.getElementById('barChart');
+        if (!canvas || !window.ResizeObserver) return;
+        new ResizeObserver(function () {
+            if (problemRows.length === 0) return;
+            if ((canvas.parentElement.clientWidth < 560) !== problemHorizontal) drawProblemChart();
+        }).observe(canvas.parentElement);
+    })();
+
+    // Trend chart: hide axis titles + smaller points on phones
+    window.addEventListener('resize', (function () {
+        var t;
+        return function () {
+            clearTimeout(t);
+            t = setTimeout(function () {
+                var c = window.ticketTrendChart; if (!c) return;
+                var phone = isPhone();
+                c.options.scales.x.title.display = !phone;
+                c.options.scales.y.title.display = !phone;
+                c.data.datasets.forEach(function (d) { d.pointRadius = phone ? 2 : 3; });
+                c.update('none');
+            }, 150);
+        };
+    })());
+
+    // Over Due popup close
+    function closeDetails() {
+        document.getElementById('detailsOverlay').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDetails(); });
+
+    $(document).ready(function () {
         $.ajax({
-        url: '@Url.Action("GetTop5ProblemType", "Home")',
+        url: '@Url.Action("GetProductWiseProductModel", "Home")',
         type: 'GET',
 
         success: function (data) {
 
-            console.log("Top 5 Problem Type:", data);
-           var problemTypeData = data.ProblemTypeData;
-           console.log("Problem Type Data:", problemTypeData);
-         if (!problemTypeData || problemTypeData.length === 0) {
-            console.log("No problem type data found.");
-            return;
-          }
-            var labels = [];
-            var currentMonthValues = [];
-            var previousMonthValues = [];
+            console.log(data);
 
-            $.each(problemTypeData, function (index, item) {
+            $('#Currentmonthtotal').text(data.Singlecard.CurrentMonthCount);
+            $('#currenttotal').text(data.Singlecard.TodayCount);
+            $('#CurrentMonthPending').text(data.Singlecard.PendingFeedbackCount);
+            $('#Overdue').text(data.Singlecard.OldPendingCount);
+            $('#currentavrg').text(data.Singlecard.CANCLE_FEEDBACK_COUNT);
 
-                // Problem Type name
-                labels.push(item.CurrentMonthLabel);
+            // =====================================
+            // SLA Growth (Month over Month)
+            // =====================================
 
-                // Current month count
-                currentMonthValues.push(item.CurrentMonthValue);
+            var thisMonth = Number(data.VsCardDetasil.THIS_MONTH_SOLVED_PERCENTAGE || 0);
+            var lastMonth = Number(data.VsCardDetasil.LAST_MONTH_SOLVED_PERCENTAGE || 0);
+            var growth = Number(data.VsCardDetasil.SOLVE_GROWTH_PERCENTAGE || 0);
 
-                // Previous month count
-                previousMonthValues.push(item.PreviousMonthValue);
-            });
+            $('#CurrentMonthSLA').text(thisMonth + "%");
+            $('#LastMonthSLA').text(lastMonth + "%");
 
+            // Update percentage only
+            $('#SolveGrowthValue').text(growth + "%");
 
-            // ==========================================
-            // Chart Data
-            // ==========================================
+            if (thisMonth > lastMonth) {
 
-            var barChartData = {
+                $('#growthwork')
+                    .removeClass('bg-warningcolor')
+                    .addClass('bg-SolveGrowthSLA');
 
-                labels: labels,
+                $('#uparrow, #Upinfo').show();
+                $('#downarrow, #downinfo').hide();
 
-                datasets: [
+            }
+            else {
 
-                    {
-                        label: 'Current Month',
+                $('#growthwork')
+                    .removeClass('bg-SolveGrowthSLA')
+                    .addClass('bg-warningcolor');
 
-                        backgroundColor: 'rgba(60,141,188,0.9)',
-                        borderColor: 'rgba(60,141,188,0.8)',
-
-                        borderWidth: 1,
-
-                        data: currentMonthValues
-                    },
-
-                    {
-                        label: 'Previous Month',
-
-                        backgroundColor: 'rgba(210,214,222,1)',
-                        borderColor: 'rgba(210,214,222,1)',
-
-                        borderWidth: 1,
-
-                        data: previousMonthValues
-                    }
-
-                ]
-            };
-
-
-            // ==========================================
-            // Chart Options
-            // ==========================================
-
-               var barChartOptions = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        scales: {
-
-            y: {
-                beginAtZero: true,
-
-                ticks: {
-                    precision: 0
-                }
+                $('#downarrow, #downinfo').show();
+                $('#uparrow, #Upinfo').hide();
             }
 
-        }
-
-    };
-
-
-            // ==========================================
-            // Create Chart
-            // ==========================================
-
-            var barChartCanvas = $('#barChart')
-                .get(0)
-                .getContext('2d');
-
-
-            new Chart(barChartCanvas, {
-
-                type: 'bar',
-
-                data: barChartData,
-
-                options: barChartOptions
-
-            });
+            $('#TotalTechnician').text(data.VsCardDetasil.ACTIVE_TECHNICIAN_COUNT);
 
         },
 
         error: function (xhr, status, error) {
+            console.error('Error fetching dashboard data:', error);
+        }
+    });
+           $.ajax({
+        url: '@Url.Action("GetTop5ProblemType", "Home")',
+        type: 'GET',
+        dataType: 'json',
 
-            console.error(
-                'Error fetching Top 5 Problem Type:',
-                error
-            );
+        success: function (data) {
+            console.log("Top 5 Problem Type:", data);
 
+            var rows = data.ProblemTypeData || data.problemTypeData || [];
+            if (rows.length === 0) {
+                console.log("No problem type data found.");
+                return;
+            }
+
+            problemRows = $.map(rows, function (item) {
+                return {
+                    label: item.CurrentMonthLabel ?? item.currentMonthLabel ?? 'N/A',
+                    cur: Number(item.CurrentMonthValue ?? item.currentMonthValue ?? 0),
+                    prev: Number(item.PreviousMonthValue ?? item.previousMonthValue ?? 0)
+                };
+            });
+            drawProblemChart();
+        },
+
+        error: function (xhr, status, error) {
+            console.error('Error fetching Top 5 Problem Type:', error);
             console.error(xhr.responseText);
         }
     });
         $.ajax({
         url: '@Url.Action("GetCurrentDayStatus", "Home")',
         type: 'GET',
-
         success: function (data) {
-
             console.log("Current Day Ticket Status:", data);
 
-            // ==========================================
-            // Dynamic Values
-            // ==========================================
+            var card = data.Singlecard || data.singlecard || {};
 
-            var solve = Number(data.Singlecard.TotalSolve || 0);
-            var unsolve = Number(data.Singlecard.TotalUnsolved || 0);
-            var cancel = Number(data.Singlecard.ToalCancelled || 0);
-            // ==========================================
-            // Donut Chart
-            // ==========================================
-            var donutChartCanvas = $('#donutChart')
-                .get(0)
-                .getContext('2d');
-            var donutData = {
+            var solve   = Number(card.TotalSolve    ?? card.totalSolve    ?? 0);
+            var unsolve = Number(card.TotalUnsolved ?? card.totalUnsolved ?? 0);
+            var cancel  = Number(card.ToalCancelled ?? card.TotalCancelled ??
+                                 card.toalCancelled ?? card.totalCancelled ?? 0);
 
-                labels: [
-                    'Solved',
-                    'Unsolved',
-                    'Cancelled'
-                ],
+            var total = solve + unsolve + cancel;
+            var pct = function (v) { return total > 0 ? (v / total * 100).toFixed(1) : '0.0'; };
 
-                datasets: [
-                    {
-                        data: [
-                            solve,
-                            unsolve,
-                            cancel
-                        ],
+            // ---- Update legend text ----
+            $('#totalBadge').text(total + ' Total');
+            $('#solveCount').text(solve);
+            $('#unsolveCount').text(unsolve);
+            $('#cancelCount').text(cancel);
+            $('#solvePct').text('(' + pct(solve) + '%)');
+            $('#unsolvePct').text('(' + pct(unsolve) + '%)');
+            $('#cancelPct').text('(' + pct(cancel) + '%)');
 
-                        backgroundColor: [
-                            '#00a65a',
-                            '#f39c12',
-                            '#f56954'
-                        ]
-                    }
-                ]
-            };
+            // ---- Chart ----
+            var ctx = document.getElementById('donut').getContext('2d');
 
-
-          var donutOptions = {
-
-        maintainAspectRatio: false,
-
-        responsive: true,
-
-        plugins: {
-
-            legend: {
-                display: true
-            }
-
-        }
-
-    };
-
-
-            // Destroy previous chart if it already exists
+            // Destroy previous chart if it exists
             if (window.ticketStatusChart) {
                 window.ticketStatusChart.destroy();
             }
 
-
-            window.ticketStatusChart = new Chart(
-                donutChartCanvas,
-                {
-                    type: 'doughnut',
-                    data: donutData,
-                    options: donutOptions
+            window.ticketStatusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Solved', 'Unsolved', 'Cancelled'],
+                    datasets: [{
+                        data: total > 0 ? [solve, unsolve, cancel] : [1],   // grey ring when empty
+                        backgroundColor: total > 0
+                            ? ['#10b981', '#f59e0b', '#ef4444']
+                            : ['#f1f5f9'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',                 // donut thickness
+                    plugins: {
+                        legend: { display: false }, // custom HTML legend is used instead
+                        tooltip: { enabled: total > 0 }
+                    }
                 }
-            );
-
+            });
         },
-
         error: function (xhr, status, error) {
-
-            console.error(
-                'Error fetching Current Day Ticket Status:',
-                error
-            );
-
+            console.error('Error fetching Current Day Ticket Status:', error);
             console.error(xhr.responseText);
         }
     });
@@ -734,10 +794,10 @@
         type: 'GET',
 
         success: function (data) {
-
             console.log("Current Time Trend:", data);
 
-            var trendData = data.TimeTrendData;
+            // Handles PascalCase and camelCase JSON
+            var trendData = data.TimeTrendData || data.timeTrendData;
 
             if (!trendData || trendData.length === 0) {
                 console.log("No trend data found.");
@@ -749,230 +809,145 @@
             var totalSolve = [];
 
             $.each(trendData, function (index, item) {
+                var rawDate = item.ReportedDate ?? item.reportedDate;
+                labels.push(formatDate(rawDate));
 
-                labels.push(item.ReportedDate);
-
-                totalComplain.push(
-                    Number(item.TotalTickets || 0)
-                );
-
-                totalSolve.push(
-                    Number(item.SolvedTickets || 0)
-                );
-
+                totalComplain.push(Number(item.TotalTickets ?? item.totalTickets ?? 0));
+                totalSolve.push(Number(item.SolvedTickets ?? item.solvedTickets ?? 0));
             });
 
-            console.log("Labels:", labels);
-            console.log("Total Complain:", totalComplain);
-            console.log("Total Solve:", totalSolve);
-
-
-            // Destroy old chart if already created
+            // Destroy old chart if it already exists
             if (window.ticketTrendChart) {
                 window.ticketTrendChart.destroy();
             }
 
+            var ctx = document.getElementById('line-chart').getContext('2d');
 
-            var lineChartCanvas = document
-                .getElementById('line-chart')
-                .getContext('2d');
-
-
-            window.ticketTrendChart = new Chart(
-                lineChartCanvas,
-                {
-                    type: 'line',
-
-                    data: {
-
-                        labels: labels,
-
-                        datasets: [
-
-                            {
-                                label: 'Total Complain',
-
-                                data: totalComplain,
-
-                                borderColor: '#3c8dbc',
-
-                                backgroundColor: 'rgba(60,141,188,0.1)',
-
-                                borderWidth: 2,
-
-                                fill: false,
-
-                                tension: 0.3,
-
-                                pointRadius: 4,
-
-                                pointHoverRadius: 6
-                            },
-
-                            {
-                                label: 'Total Solve',
-
-                                data: totalSolve,
-
-                                borderColor: '#00a65a',
-
-                                backgroundColor: 'rgba(0,166,90,0.1)',
-
-                                borderWidth: 2,
-
-                                fill: false,
-
-                                tension: 0.3,
-
-                                pointRadius: 4,
-
-                                pointHoverRadius: 6
-                            }
-
-                        ]
-                    },
-
-                    options: {
-
-                        responsive: true,
-
-                        maintainAspectRatio: false,
-
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
+            window.ticketTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Complain (Registered)',
+                            data: totalComplain,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37,99,235,0.10)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: isPhone() ? 2 : 3,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#2563eb'
                         },
-
-                        plugins: {
-
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
-
-                            tooltip: {
-                                enabled: true
-                            }
-
-                        },
-
-                        scales: {
-
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Reported Date'
-                                }
-                            },
-
-                            y: {
-                                beginAtZero: true,
-
-                                title: {
-                                    display: true,
-                                    text: 'Ticket Count'
-                                },
-
-                                ticks: {
-                                    precision: 0
-                                }
-                            }
-
+                        {
+                            label: 'Total Solved',
+                            data: totalSolve,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16,185,129,0.10)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: isPhone() ? 2 : 3,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#10b981'
                         }
-
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },   // custom HTML legend above
+                        tooltip: { enabled: true }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: !isPhone(), text: 'Reported Date' },
+                            grid: { display: false },
+                            ticks: { maxRotation: 0, autoSkipPadding: 14, font: { size: 11 } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: { display: !isPhone(), text: 'Ticket Count' },
+                            ticks: { precision: 0 }
+                        }
                     }
-
                 }
-            );
-
+            });
         },
 
         error: function (xhr, status, error) {
-
-            console.error(
-                'Error fetching Current Time Trend:',
-                error
-            );
-
+            console.error('Error fetching Current Time Trend:', error);
             console.error(xhr.responseText);
-
         }
     });
-	});
-    // Function Method
-       function GetAllDetailsData(TypeID) {
 
+    // Converts "/Date(1730419200000)/", ISO strings, or "2026-11-01" into "01 Nov"
+    function formatDate(value) {
+        if (!value) return '';
+
+        var d;
+        if (typeof value === 'string' && value.indexOf('/Date(') === 0) {
+            d = new Date(parseInt(value.replace(/\D/g, '')));   // old MVC JSON date format
+        } else {
+            d = new Date(value);
+        }
+
+        if (isNaN(d.getTime())) return String(value);   // fall back to the raw value
+
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    }
+    });
+    // Function Method
+            function GetAllDetailsData(TypeID) {
+        var $ = window.jQuery;
         $.ajax({
             url: '@Url.Action("GetDetailsData", "Home")',
             type: 'GET',
-            data: {
-                typeID: TypeID
-            },
+            data: { typeID: TypeID },
 
             success: function (data) {
-
                 console.log("Details Data:", data);
 
+                var list  = data.PendingComplainList || data.pendingComplainList || [];
                 var tbody = $("#complaindetails tbody");
-
-                // Clear previous data
                 tbody.empty();
 
-
-                // Check data
-                if (data.PendingComplainList &&
-                    data.PendingComplainList.length > 0) {
-
-                    $.each(data.PendingComplainList, function (i, item) {
-
-                        var row = `
-                            <tr>
-                                <td>${i + 1}</td>
-                                <td>${item.TICKETCODE ?? 'N/A'}</td>
-                                <td>${item.SHOWROOM ?? 'N/A'}</td>
-                                <td>${item.COMPLAINDATE ?? 'N/A'}</td>
-                                <td>${item.CUSTOMERNAME ?? 'N/A'}</td>
-                                <td>${item.CONTACTNO ?? 'N/A'}</td>
-                                <td>${item.LOCATION ?? 'N/A'}</td>
-                                <td>${item.PRODUCTNAME ?? 'N/A'}</td>
-                                <td>${item.TECHNICIANDETAILS ?? 'N/A'}</td>
-                            </tr>
-                        `;
-
-                        tbody.append(row);
+                if (list.length > 0) {
+                    $.each(list, function (i, item) {
+                        tbody.append(
+                            '<tr>' +
+                            '<td>' + (i + 1) + '</td>' +
+                            '<td>' + (item.TICKETCODE ?? 'N/A') + '</td>' +
+                            '<td>' + (item.SHOWROOM ?? 'N/A') + '</td>' +
+                            '<td>' + (item.COMPLAINDATE ?? 'N/A') + '</td>' +
+                            '<td>' + (item.CUSTOMERNAME ?? 'N/A') + '</td>' +
+                            '<td>' + (item.CONTACTNO ?? 'N/A') + '</td>' +
+                            '<td>' + (item.LOCATION ?? 'N/A') + '</td>' +
+                            '<td>' + (item.PRODUCTNAME ?? 'N/A') + '</td>' +
+                            '<td>' + (item.TECHNICIANDETAILS ?? 'N/A') + '</td>' +
+                            '</tr>');
                     });
-
-                }
-                else {
-
-                    tbody.append(`
-                        <tr>
-                            <td colspan="9" class="text-center">
-                                No data found.
-                            </td>
-                        </tr>
-                    `);
+                } else {
+                    tbody.append('<tr><td colspan="9" class="text-center">No data found.</td></tr>');
                 }
 
-
-                // ==========================================
-                // Open Modal
-                // ==========================================
-                var modal = new bootstrap.Modal(
-                    document.getElementById('exampleModal')
-                );
-
-                modal.show();
-
+                // Open the modal (Bootstrap 5, or Bootstrap 4 as fallback)
+               document.getElementById('detailsOverlay').style.display = 'flex';
+               document.body.style.overflow = 'hidden';
+            @*     if (window.bootstrap && bootstrap.Modal) {
+                    bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                } else if ($.fn.modal) {
+                    $(modalEl).modal('show');
+                } else {
+                    console.error('Bootstrap JS is not loaded, the modal cannot open.');
+                } *@
             },
 
             error: function (xhr, status, error) {
-
-                console.error(
-                    'Error fetching ticket details:',
-                    error
-                );
-
+                console.error('Error fetching ticket details:', xhr.status, error);
                 console.error(xhr.responseText);
             }
         });

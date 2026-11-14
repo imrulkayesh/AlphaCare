@@ -1,0 +1,86 @@
+﻿<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--Data Table-->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<!--Excel File Manage-->
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<style>
+    .entryfromheader {
+        width: 100% !important;
+        margin-left: 0% !important;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        if (!$('#locationTable').length) return;
+
+        var table = $('#locationTable').DataTable({
+            // B = buttons (hidden, triggered by our custom buttons), r = processing, t = table, i = info, p = pagination
+            dom: 'Brtip',
+            buttons: [
+                { extend: 'excelHtml5', title: 'Generated Complain List' },
+                { extend: 'pdfHtml5',   title: 'Generated Complain List', orientation: 'landscape' },
+                { extend: 'print',      title: 'Generated Complain List' }
+            ],
+
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            ordering: true,
+            searching: true,
+            paging: true,
+            info: true,
+            autoWidth: false,
+            responsive: true,
+
+            language: {
+                zeroRecords: "No matching Data found",
+                info: "Showing _START_ to _END_ of _TOTAL_ Data",
+                infoEmpty: "No data available",
+                paginate: { previous: "&lsaquo; Prev", next: "Next &rsaquo;" }
+            }
+        });
+
+        // ---- Custom toolbar wiring ----
+        $('#tblSearch').on('keyup input', function () { table.search(this.value).draw(); });
+        $('#tblLength').on('change', function () { table.page.len(+this.value).draw(); });
+
+        $('#btnExcel').on('click', function () { table.button('.buttons-excel').trigger(); });
+        $('#btnPdf').on('click',   function () { table.button('.buttons-pdf').trigger(); });
+        $('#btnPrint').on('click', function () { table.button('.buttons-print').trigger(); });
+
+        // "10 of 148 Items" chip
+        function updateChip() {
+            var info = table.page.info();
+            var shown = info.end - info.start;
+            $('#tblDisplaying').text(shown + ' of ' + info.recordsDisplay + ' Items');
+        }
+        table.on('draw', updateChip);
+        updateChip();
+    });
+
+    function confirmDelete() {
+        return confirm("⚠️ Are you sure you want to delete?");
+    }
+</script>
+
+<style>
+    .locationTable_wrapper .btn-group button
+    {
+        height: 36px !important;
+    }
+</style>
+<!--Data Table-->

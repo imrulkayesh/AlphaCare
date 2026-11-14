@@ -10,55 +10,94 @@
           ?? new List<RoleWiseMenuPermission>();
 }
 
-<!--begin::Sidebar-->
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="light" style="font-size: 0.875rem; color: #9EE7FF;">
-    <!--begin::Sidebar Brand-->
-    <div class="sidebar-brand">
-        <!--begin::Brand Link-->
-        <a asp-area="" asp-controller="Home" asp-action="Index" class="brand-link">
-            @* <img src="~/assets/img/HPS.png" alt="PRG Logo" class="brand-image" /> *@
-            <span class="brand-text fw-bold">Alpha Care</span>
-            <!--end::Brand Text-->
-        </a>
-        <!--end::Brand Link-->
-    </div>
-    <!--end::Sidebar Brand-->
-    <!--begin::Sidebar Wrapper-->
-    <div class="sidebar-wrapper">
-        <nav class="mt-2">
-            <!--begin::Sidebar Menu-->
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation"> 
-                @{
-                    var ParentMenulist = MenuList.Where(x => x.MENU_PARENT_ID == 0).ToList();
-                    if (ParentMenulist.Count>0)
+@if (MenuList.Count()>0)
+{
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="brand-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg></div>
+            <div><h1>Alpha Care</h1><small>PRG-MIS PLATFORM</small></div>
+            <button class="sb-close" id="sbClose" aria-label="Collapse sidebar" title="Collapse sidebar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg></button>
+        </div>
+        <nav class="nav" aria-label="Main menu">
+            <a class="nav-link active" href="@Url.Content("~/Home/Index")">
+                <svg class="ic">
+                    <use href="#i-home"></use>
+                </svg>
+                Dashboard
+            </a>
+            @{
+                var ParentMenulist = MenuList.Where(x => x.MENU_PARENT_ID == 0).ToList();
+                if (ParentMenulist.Count > 0)
+                {
+                    foreach (var ParentMenu in ParentMenulist)
                     {
-                     foreach (var ParentMenu in ParentMenulist)
-                    {
-                        <li class="nav-item">
-                            <a href="#" class="nav-link"><i class="nav-icon fa-solid @ParentMenu.PAGEICON"></i>@ParentMenu.PARENTMENUNAME<i class="nav-arrow bi bi-chevron-right fs-6"></i></a>
-                                @{
-                                    var ChildMenuList = MenuList.Where(x => x.MENU_PARENT_ID == ParentMenu.PARENTMENUID).ToList();
-                                    if (ChildMenuList.Count>0)
-                                    {
-                                        <ul class="nav nav-treeview">
+                        <div class="nav-group open" data-group="@ParentMenu.TITLE">
+                            <button type="button" class="nav-toggle" aria-expanded="true" aria-controls="sm-feedback"><i class="nav-icon fa-solid @ParentMenu.PAGEICON"></i><span>@ParentMenu.PARENTMENUNAME</span><svg class="ic chev"><use href="#i-chevron" /></svg></button>
+                            @{
+                                var ChildMenuList = MenuList.Where(x => x.MENU_PARENT_ID == ParentMenu.PARENTMENUID).ToList();
+                                if (ChildMenuList.Count()>0)
+                                {
+                                    <div class="submenu" id="sm-feedback">
+                                        <div class="submenu-inner">
                                             @foreach (var ChildMenu in ChildMenuList)
                                             {
-                                                <li class="nav-item"><a href="@Url.Content(ChildMenu.URL)" class="nav-link"><i class="nav-icon fa-solid @ChildMenu.PAGEICON"></i>@ChildMenu.TITLE</a></li>
+                                                <a class="sub-link" href="@Url.Content(ChildMenu.URL)" title="Give Feedback"><i class="nav-icon fa-solid @ChildMenu.PAGEICON"></i><span class="t">@ChildMenu.TITLE</span></a>
                                             }
-                                        </ul>
-                                    }
+                                        </div>
+                                    </div>
                                 }
-                        </li>
-                    }
+                           }
+                        </div>
                     }
                 }
-            </ul>
-            <!--end::Sidebar Menu-->
+            }
         </nav>
-    </div>
-    <!--end::Sidebar Wrapper-->
-</aside>
-<!--end::Sidebar-->
+    </aside>
+}
+
+
+
+
+
+
+
+<style>
+    .nav-link {
+        margin: 2%;
+    }
+
+    .sidebar {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .nav {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+        /* Custom scrollbar */
+        .nav::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .nav::-webkit-scrollbar-thumb {
+            background: #64748b;
+            border-radius: 10px;
+        }
+
+            .nav::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
+</style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -70,16 +109,3 @@
         }
     });
 </script>
-@* <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const currentUrl = window.location.pathname;
-        document.querySelectorAll('.nav-treeview a').forEach(link => {
-            if (link.getAttribute('href') === currentUrl) {
-                link.classList.add('active');
-                link.closest('.nav-item').classList.add('menu-open');
-                link.closest('.nav-item').querySelector('.nav-link').classList.add('active');
-            }
-        });
-    });
-</script>
- *@

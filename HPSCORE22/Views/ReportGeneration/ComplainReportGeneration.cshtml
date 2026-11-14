@@ -1,101 +1,152 @@
 ﻿@model RetailCare.Models.ReportGenerationViewModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
-<partial name="~/Views/PartialView/_DataTableCSS.cshtml" />
+<partial name="~/Views/PartialView/_DataTableCSSReport.cshtml" />
+@functions {
+    // Map status text -> pill colour (adjust names to match your STATUSNAME values)
+    string StatusClass(string status)
+    {
+        var s = (status ?? "").ToLower();
+        if (s.Contains("complete")) return "green";
+        if (s.Contains("Unsolved")) return "red";
+        if (s.Contains("cancel")) return "orange";
+        return "amber"; // unsolved / pending / anything else
+    }
+}
 
-<div class="card">
-    <div class="top-border"></div>
-    <div class="card-header entryfromheader">
-        <h3 class="card-title"> Generated Complain List</h3>
+<div class="complain-page">
+
+    <!-- ================= HEADER + KPIs ================= -->
+    <div class="panel p-4 mb-4">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <h3 class="page-title mb-0">Generated Complain List</h3><br />
+        </div>
+        <p class="text-secondary mt-1 mb-0">Real-time service dispatches, technician timelines, and cross-district SLA tracking.</p>
     </div>
-    <div class="card-body">
 
-        @using (Html.BeginForm("ComplainReport", "ReportGeneration", FormMethod.Post, new { @class = "form-inline" }))
+    <!-- ================= FILTER FORM ================= -->
+    <div class="panel p-4 mb-4">
+        @using (Html.BeginForm("ComplainReport", "ReportGeneration", FormMethod.Post, new { @class = "row g-3 align-items-end" }))
         {
-            <div class="row" style="padding: 1%;margin-left: 7%;">
-                <div class="col-md-3 col-sm-12">
-                    @Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "control-label" })<span style="color:red">*</span>
-                    @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                    @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
+            <div class="col-md-3 col-sm-12">
+                <b>@Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "form-label small fw-semibold text-secondary text-uppercase" })</b><span class="text-danger">*</span>
+                @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-3 col-sm-12">
+                <b>@Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "form-label small fw-semibold text-secondary text-uppercase" })</b><span class="text-danger">*</span>
+                @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4 col-sm-12">
+                <label class="control-label mb-1">STATUS</label>
+                @Html.DropDownListFor(
+                m => m.FilteringOption.StatusID,
+                        new SelectList(Model.StatusList, "STATUSID", "STATUSNAME"),
+                        "All Statuses",
+                        new { @class = "form-select", style = "min-width:250px" }
+                        )
+        </div>
+
+        <div class="col-md-2 col-sm-12">
+            <button class="btn btn-apply w-100" type="submit"><i class="bi bi-funnel-fill me-1"></i> Show</button>
+        </div>
+                }
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    @if (Model.ComplainList != null && Model.ComplainList.Count > 0)
+    {
+        <div class="panel table-panel">
+
+            <!-- Toolbar: search / page length / export -->
+            <div class="p-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="search-box flex-grow-1">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="tblSearch" class="form-control" placeholder="Search Ticket ID, Customer, Staff ID...">
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    @Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "control-label" })<span style="color:red">*</span>
-                    @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                    @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-3 col-sm-12">
-                    @Html.LabelFor(m => m.FilteringOption.StatusID, htmlAttributes: new { @class = "form-control-label" })
-                    @Html.DropDownListFor(m => m.FilteringOption.StatusID, new SelectList(Model.StatusList, "STATUSID", "STATUSNAME"), "Select Status", new { @class = "form-control dropdowndesign" })
-                </div>
-                <div class="col-md-3 col-sm-12 mt-3">
-                    <button class="btn btn-success" type="submit">Show</button>
+
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2 text-secondary small me-2">
+                        Show:
+                        <select id="tblLength" class="form-select form-select-sm show-select">
+                            <option value="5">5 entries</option>
+                            <option value="10" selected>10 entries</option>
+                            <option value="25">25 entries</option>
+                            <option value="50">50 entries</option>
+                        </select>
+                        <span class="items-chip" id="tblDisplaying">–</span>
+                    </div>
+
+                    <button type="button" class="btn-export" id="btnExcel"><i class="bi bi-file-earmark-excel me-1"></i> Excel</button>
+                    <button type="button" class="btn-export" id="btnPdf"><i class="bi bi-file-earmark-pdf me-1"></i> PDF</button>
+                    <button type="button" class="btn-export" id="btnPrint"><i class="bi bi-printer me-1"></i> Print</button>
                 </div>
             </div>
-        }
-       
-        @if (Model.ComplainList.Count>0)
-        {
-            <div class="row">
-                <div class="col-sm-12">
-                    <table id="locationTable" class="table table-hover align-middle">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>SL</th>
-                                <th>Ticket ID</th>
-                                <th>Customer Name</th>
-                                <th>Contact No</th>
-                                <th>Customer Address</th>
-                                <th>Product Name</th>
-                                <th>Problem Name</th>
-                                <th>Assign Person</th>
-                                <th>Assign Person StaffID</th>
-                                <th>Status Name</th>
-                                <th>Complain Date</th>
-                                <th>Assign Date</th>
-                                <th>Working Date</th>
-                                <th>Complete Difference (Days)</th>
-                                <th>Pending Difference (Days)</th>
-                            </tr>
-                        </thead>
 
-                        <tbody>
-                            @{
-                                int i = 1;
-                                @foreach (var item in Model.ComplainList)
-                                {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td>@item.TICKETCODE</td>
-                                        <td>@item.CUSTOMERNAME</td>
-                                        <td>@item.CONTACTNO</td>
-                                        <td>@item.LOCATION</td>
-                                        <td>@item.PRODUCTNAME</td>
-                                        <td>@item.PROBLEMNAME</td>
-                                        <td>@item.TECHNICIANNAME</td>
-                                        <td>@item.STAFFID</td>
-                                        <td>@item.STATUSNAME</td>
-                                        <td>@item.COMPLAINDATE?.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.ASSIGNDATE?.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.WORKINGDATE?.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.CompletedDiff</td>
-                                        <td>@item.PendingDate</td>
-                                    </tr>
-                                    i++;
-                                }
+            <div class="table-responsive">
+                <table id="locationTable" class="table table-hover align-middle table-ticket w-100">
+                    <thead>
+                        <tr>
+                            <th>SL</th>
+                            <th>Ticket ID</th>
+                            <th>Customer Name</th>
+                            <th>Contact No</th>
+                            <th>Customer Address</th>
+                            <th>Product Name</th>
+                            <th>Problem Name</th>
+                            <th>Assign Person</th>
+                            <th>Assign Person StaffID</th>
+                            <th>Status Name</th>
+                            <th>Complain Date</th>
+                            <th>Assign Date</th>
+                            <th>Working Date</th>
+                            <th>Complete Difference (Days)</th>
+                            <th>Pending Difference (Days)</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int i = 1;
+                            foreach (var item in Model.ComplainList)
+                            {
+                                <tr>
+                                    <td class="text-secondary">@i</td>
+                                    <td><span class="ticket-id">@item.TICKETCODE</span></td>
+                                    <td class="cust-name">@item.CUSTOMERNAME</td>
+                                    <td class="phone"><i class="bi bi-telephone"></i>@item.CONTACTNO</td>
+                                    <td class="text-secondary">@item.LOCATION</td>
+                                    <td><span class="pill blue">@item.PRODUCTNAME</span></td>
+                                    <td>@item.PROBLEMNAME</td>
+                                    <td>@item.TECHNICIANNAME</td>
+                                    <td class="mono">@item.STAFFID</td>
+                                    <td><span class="pill @StatusClass(item.STATUSNAME)">@item.STATUSNAME</span></td>
+                                    <td>@item.COMPLAINDATE?.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.ASSIGNDATE?.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.WORKINGDATE?.ToString("dd/MM/yyyy")</td>
+                                    <td class="mono">@item.CompletedDiff</td>
+                                    <td class="mono">@item.PendingDate</td>
+                                </tr>
+                                i++;
                             }
-                        </tbody>
-
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
-        }
-        else
-        {
-            
-        }
-
-
-    </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel p-5 text-center text-secondary">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+            No complaints to show. Pick a date range and click <strong>Show</strong>.
+        </div>
+    }
 </div>
-<partial name="~/Views/PartialView/_DatatableJSCode.cshtml" />
+
+<partial name="~/Views/PartialView/_DatatableJSCodeReport.cshtml" />
+

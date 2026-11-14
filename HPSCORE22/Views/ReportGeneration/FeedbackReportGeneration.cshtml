@@ -2,105 +2,153 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<partial name="~/Views/PartialView/_DataTableCSS.cshtml" />
-<div class="card">
-    <div class="top-border"></div>
-    <div class="card-header entryfromheader">
-        <h3 class="card-title"> Feedback List</h3>
-    </div>
-    <div class="card-body">
+<partial name="~/Views/PartialView/_DataTableCSSReport.cshtml" />
+@functions {
+    // Map status text -> pill colour (adjust names to match your STATUSNAME values)
+    string StatusClass(string status)
+    {
+        var s = (status ?? "").ToLower();
 
-        @using (Html.BeginForm("FeeBackReport", "ReportGeneration", FormMethod.Post, new { @class = "form-inline" }))
+        // "unsolved" must be checked BEFORE "solved", because "unsolved" contains "solved"
+        if (s.Contains("unsolved")) return "red";
+        if (s.Contains("solved") || s.Contains("complete")) return "green";
+        if (s.Contains("cancel")) return "orange";
+        return "amber"; // pending / anything else
+    }
+}
+
+<div class="complain-page">
+
+    <!-- ================= HEADER + KPIs ================= -->
+    <div class="panel p-4 mb-4">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <h3 class="page-title mb-0">Feedback List</h3><br />
+        </div>
+        <p class="text-secondary mt-1 mb-0">Real-time service dispatches, technician timelines, and cross-district SLA tracking.</p>
+    </div>
+
+    <!-- ================= FILTER FORM ================= -->
+    <div class="panel p-4 mb-4">
+        @using (Html.BeginForm("FeeBackReport", "ReportGeneration", FormMethod.Post, new { @class = "row g-3 align-items-end" }))
         {
-            <div class="row" style="padding: 1%;margin-left: 7%;">
-                <div class="col-md-4 col-sm-12">
-                    @Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "control-label" })<span style="color:red">*</span>
-                    @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                    @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-4 col-sm-12">
-                    @Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "control-label" })<span style="color:red">*</span>
-                    @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                    @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-4 col-sm-12 mt-3">
-                    <button class="btn btn-success" type="submit">Show</button>
-                </div>
+            <div class="col-md-3 col-sm-12">
+                <b>@Html.LabelFor(model => model.FilteringOption.StartDate, new { @class = "form-label small fw-semibold text-secondary text-uppercase" })</b><span class="text-danger">*</span>
+                @Html.TextBoxFor(model => model.FilteringOption.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.FilteringOption.StartDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-3 col-sm-12">
+                <b>@Html.LabelFor(model => model.FilteringOption.EndDate, new { @class = "form-label small fw-semibold text-secondary text-uppercase" })</b><span class="text-danger">*</span>
+                @Html.TextBoxFor(model => model.FilteringOption.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.FilteringOption.EndDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-2 col-sm-12">
+                <button class="btn btn-apply w-100" type="submit"><i class="bi bi-funnel-fill me-1"></i> Show</button>
             </div>
         }
+    </div>
 
-        @if (Model.FeedbackReport.Count > 0)
-        {
-            <div class="row">
-                <div class="col-sm-12">
-                    <table id="locationTable" class="table table-hover align-middle">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>SL</th>
-                                <th>Complain Date</th>
-                                <th>Ticket ID</th>
-                                <th>Customer Name</th>
-                                <th>Contact No</th>
-                                <th>Location</th>
-                                <th>Showroom Code</th>
-                                <th>Product Type</th>
-                                <th>Assign Person</th>
-                                <th>Assign Person StaffID</th>
-                                <th>Status</th>
-                                <th>Working Date</th>
-                                <th>Remarks</th>
-                                <th>Details</th>
-                           </tr>
-                        </thead>
+    <!-- ================= TABLE ================= -->
+    @if (Model.FeedbackReport != null && Model.FeedbackReport.Count > 0)
+    {
+        <div class="panel table-panel">
 
-                        <tbody>
-                            @{
-                                int i = 1;
-                                @foreach (var item in Model.FeedbackReport)
-                                {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td>@item.COMPLAINDATE?.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.TICKETCODE</td>
-                                        <td>@item.CUSTOMERNAME</td>
-                                        <td>@item.CONTACTNO</td>
-                                        <td>@item.LOCATION</td>
-                                        <td>@item.SHOWROOM</td>
-                                        <td>@item.PRODUCTNAME</td>
-                                        <td>@item.TECHNICIANNAME</td>
-                                        <td>@item.STAFFID</td>
-                                        <td>@item.STATUSNAME</td>
-                                        <td>@item.WORKINGDATE?.ToString("dd/MM/yyyy")</td>
-                                        <td class="remarks-column">@item.REMARKS</td>
-                                        <!-- Action column -->
-                                        <td>
-                                            <button type="button"
-                                                    class="btn btn-primary btn-sm assign-btn"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#exampleModal"
-                                                    onclick="showDetails('@item.TICKETCODE')">
-                                                <i class="fa fa-plus-circle"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    i++;
-                                }
+            <!-- Toolbar: search / page length / export -->
+            <div class="p-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="search-box flex-grow-1">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="tblSearch" class="form-control" placeholder="Search Ticket ID, Customer, Staff ID...">
+                </div>
+
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2 text-secondary small me-2">
+                        Show:
+                        <select id="tblLength" class="form-select form-select-sm show-select">
+                            <option value="5">5 entries</option>
+                            <option value="10" selected>10 entries</option>
+                            <option value="25">25 entries</option>
+                            <option value="50">50 entries</option>
+                        </select>
+                        <span class="items-chip" id="tblDisplaying">–</span>
+                    </div>
+
+                    <button type="button" class="btn-export" id="btnExcel"><i class="bi bi-file-earmark-excel me-1"></i> Excel</button>
+                    <button type="button" class="btn-export" id="btnPdf"><i class="bi bi-file-earmark-pdf me-1"></i> PDF</button>
+                    <button type="button" class="btn-export" id="btnPrint"><i class="bi bi-printer me-1"></i> Print</button>
+                </div>
+            </div>
+
+            <div class="table-responsive report-scroll">
+                <table id="locationTable" class="table table-hover align-middle table-ticket w-100">
+                    <thead>
+                        <tr>
+                            <th>SL</th>
+                            <th>Complain Date</th>
+                            <th>Ticket ID</th>
+                            <th>Customer Name</th>
+                            <th>Contact No</th>
+                            <th>Location</th>
+                            <th>Showroom Code</th>
+                            <th>Product Type</th>
+                            <th>Assign Person</th>
+                            <th>Assign Person StaffID</th>
+                            <th>Status</th>
+                            <th>Working Date</th>
+                            <th>Remarks</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int i = 1;
+                            foreach (var item in Model.FeedbackReport)
+                            {
+                                <tr>
+                                    <td class="text-secondary">@i</td>
+                                    <td>@item.COMPLAINDATE?.ToString("dd/MM/yyyy")</td>
+                                    <td><span class="ticket-id">@item.TICKETCODE</span></td>
+                                    <td class="cust-name wrap-col">@item.CUSTOMERNAME</td>
+                                    <td class="phone"><i class="bi bi-telephone"></i> @item.CONTACTNO</td>
+                                    <td class="wrap-col">@item.LOCATION</td>
+                                    <td>@item.SHOWROOM</td>
+                                    <td><span class="pill blue">@item.PRODUCTNAME</span></td>
+                                    <td>@item.TECHNICIANNAME</td>
+                                    <td class="mono">@item.STAFFID</td>
+                                    <td><span class="pill @StatusClass(item.STATUSNAME)">@item.STATUSNAME</span></td>
+                                    <td>@item.WORKINGDATE?.ToString("dd/MM/yyyy")</td>
+                                    <td class="wrap-col remarks-column">@item.REMARKS</td>
+                                    <td class="text-center">
+                                        <button type="button"
+                                                class="btn btn-primary btn-sm assign-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal"
+                                                onclick="showDetails('@item.TICKETCODE')">
+                                            <i class="fa fa-plus-circle"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                i++;
                             }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
-        }
-        else
-        {
-
-        }
-
-
-    </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel p-5 text-center text-secondary">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+            No complaints to show. Pick a date range and click <strong>Show</strong>.
+        </div>
+    }
 </div>
+
+<!-- ================= DETAILS MODAL ================= -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Problem Details</h1>
@@ -138,27 +186,69 @@
         </div>
     </div>
 </div>
-<partial name="~/Views/PartialView/_DatatableJSCode.cshtml" />
+
+<partial name="~/Views/PartialView/_DatatableJSCodeReport.cshtml" />
+
 <style>
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
         filter: brightness(0); /* Makes the Bootstrap arrow black */
     }
 
-    #locationTable {
-        width: 100%;
-        table-layout: fixed;
+    /* ---------- Table layout fix ---------- */
+    /* Wrapper scrolls horizontally instead of letting cells overlap */
+    .report-scroll {
+        overflow-x: auto;
     }
 
-        #locationTable .remarks-column {
-            width: 180px !important;
-            max-width: 180px !important;
-            white-space: normal !important;
-            overflow-wrap: break-word;
-            word-break: break-word;
+    /* "auto" lets each column size to its content (was "fixed", which caused the overlap) */
+    #locationTable {
+        width: 100%;
+        table-layout: auto !important;
+    }
+
+        #locationTable th,
+        #locationTable td {
+            white-space: nowrap; /* short fields stay on one line */
+            vertical-align: middle;
+            overflow: visible;
         }
+
+            /* Long-text columns: allow wrapping inside a sensible width range */
+            #locationTable td.wrap-col {
+                white-space: normal;
+                word-break: break-word;
+                overflow-wrap: anywhere;
+                min-width: 160px;
+                max-width: 260px;
+            }
+
+            #locationTable td.remarks-column {
+                min-width: 200px;
+                max-width: 300px;
+            }
+
+            /* Keep the Details button column compact and separate from Remarks */
+            #locationTable th:last-child,
+            #locationTable td:last-child {
+                width: 70px;
+                min-width: 70px;
+                text-align: center;
+            }
 </style>
+
 <script>
+    // Recalculate DataTables column widths once the page has fully loaded (if DataTables is used)
+    $(window).on('load', function () {
+        try {
+            if ($.fn.DataTable && $.fn.DataTable.isDataTable('#locationTable')) {
+                $('#locationTable').DataTable().columns.adjust();
+            }
+        } catch (e) {
+            console.log('DataTable adjust skipped:', e);
+        }
+    });
+
     function showDetails(ticketCode) {
         $.ajax({
             url: '@Url.Action("GetAllComplainProblemList", "ReportGeneration")',
@@ -167,8 +257,6 @@
             dataType: 'json',
 
             success: function (res) {
-
-                console.log(res);
 
                 var tbody = $("#complaindetails tbody");
                 var imageBody = $("#imagedetails");
@@ -207,7 +295,6 @@
                     `);
                 }
 
-
                 // =========================
                 // Image Details
                 // =========================
@@ -216,12 +303,9 @@
                     $.each(res.ImageDetails, function (i, images) {
 
                         // Remove leading slash if IMAGEPATH already starts with /
-                        var imagePath = images.IMAGEPATH || '';
+                        var imagePath = (images.IMAGEPATH || '').replace(/^\/+/, '');
 
-                        imagePath = imagePath.replace(/^\/+/, '');
-
-                        var imageUrl =
-                            'http://pmc.prangroup.com/AlphaCareAPI/' + imagePath;
+                        var imageUrl = 'http://pmc.prangroup.com/AlphaCareAPI/' + imagePath;
 
                         var row = `
                             <div class="carousel-item ${i === 0 ? 'active' : ''}">
