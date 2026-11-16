@@ -25,14 +25,14 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     @Html.LabelFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "form-label" })
                     <div class="input-icon">
-                        <i class="bi bi-tag"></i>
+                      @*   <i class="bi bi-tag"></i> *@
                         @Html.TextBoxFor(model => model.TechnicianDetails.TECHNICIANCODE, new { @class = "form-control" })
                     </div>           
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
                     @Html.LabelFor(m => m.TechnicianDetails.TECHNICIANNAME, htmlAttributes: new { @class = "form-label" })<span class="req">*</span>
                     <div class="input-icon">
-                        <i class="bi bi-person"></i>
+                       @*  <i class="bi bi-person"></i> *@
                         @Html.TextBoxFor(m => m.TechnicianDetails.TECHNICIANNAME, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.TechnicianDetails.TECHNICIANNAME, "", new { @class = "text-danger" })
                     </div>
@@ -40,7 +40,7 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     @Html.LabelFor(m => m.TechnicianDetails.STAFFID, htmlAttributes: new { @class = "form-label" })<span class="req">*</span>
                     <div class="input-icon">
-                        <i class="bi bi-person-badge"></i>
+                       @*  <i class="bi bi-person-badge"></i> *@
                         @Html.TextBoxFor(m => m.TechnicianDetails.STAFFID, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.TechnicianDetails.STAFFID, "", new { @class = "text-danger" })
                     </div>
@@ -48,7 +48,7 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     @Html.LabelFor(m => m.TechnicianDetails.CONTACTNO, htmlAttributes: new { @class = "form-label" }) <span class="req">*</span>
                     <div class="input-icon">
-                        <i class="bi bi-telephone"></i>
+                     @*    <i class="bi bi-telephone"></i> *@
                         @Html.TextBoxFor(m => m.TechnicianDetails.CONTACTNO, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.TechnicianDetails.CONTACTNO, "", new { @class = "text-danger" })
                     </div>
@@ -56,14 +56,14 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     @Html.LabelFor(m => m.TechnicianDetails.EMAIL, htmlAttributes: new { @class = "form-labell" })
                     <div class="input-icon">
-                        <i class="bi bi-envelope"></i>
+                        @* <i class="bi bi-envelope"></i> *@
                         @Html.TextBoxFor(m => m.TechnicianDetails.EMAIL, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
                     @Html.LabelFor(m => m.TechnicianDetails.ADDRESS, htmlAttributes: new { @class = "form-label" })
                     <div class="input-icon">
-                        <i class="bi bi-geo-alt"></i>
+                       @*  <i class="bi bi-geo-alt"></i> *@
                         @Html.TextBoxFor(m => m.TechnicianDetails.ADDRESS, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.TechnicianDetails.ADDRESS, "", new { @class = "text-danger" })
                     </div>
@@ -71,13 +71,13 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     @Html.LabelFor(m => m.TechnicianDetails.ZONEID, htmlAttributes: new { @class = "form-label" })
                     <div class="input-icon">
-                        <i class="bi bi-buildings"></i>
+                       @*  <i class="bi bi-buildings"></i> *@
                         @Html.DropDownListFor(m => m.TechnicianDetails.ZONEID, new SelectList(Model.ZoneList, "ZONEID", "ZONENAME"), "Select Zone Name", new { @class = "form-select" })
                         @Html.ValidationMessageFor(m => m.TechnicianDetails.ZONEID, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="status-box">
+                    <div class="status-box mt-4">
 
                         @Html.CheckBox(
                         "TechnicianDetails.CheckedBox",

@@ -102,7 +102,7 @@
                     <span style="color:red; margin-left:4px;">*</span>
                 </div>                    <div class="field has-ic">
                         <svg class="i ic"><use href="#phone" /></svg>
-                        @Html.TextBoxFor(m => m.ComaplainModel.CONTACTNO, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.TextBoxFor(m => m.ComaplainModel.CONTACTNO, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.ComaplainModel.CONTACTNO, "", new { @class = "text-danger" })
                         <span id="phoneError" class="text-danger"></span>
                     </div>
